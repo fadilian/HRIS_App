@@ -1,0 +1,23 @@
+###
+POST http://localhost:8000/api/register/admin
+Content-Type: application/json
+
+{
+    "name": "Fadil",
+    "email": "fadil@gmail.com",
+    "password": "password123",
+    "password_confirmation": "password123"
+}
+
+###
+POST http://localhost:8000/api/login/admin
+Content-Type: application/json
+
+{
+    "email": "fadil@gmail.com",
+    "password": "password123"
+}
+
+###
+POST http://localhost:8000/api/logout
+Authorization: Bearer 6|I2vGETX8GmopnMa63uDh1TH47QVLiZKm2ESHzxfJ8ce265b6
