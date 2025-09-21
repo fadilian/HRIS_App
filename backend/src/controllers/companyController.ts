@@ -1,0 +1,259 @@
+import { Request, Response } from "express";
+import prisma from "../utils/prisma";
+
+// Helper untuk membatasi angka di belakang koma (maks 8 digit)
+const formatDecimal = (value: any, precision = 8) => {
+    if (value === undefined || value === null || value === "") return null;
+    const num = Number(value); // parse string → number
+    if (isNaN(num)) return null;
+    return Number(num.toFixed(precision));
+};
+
+export async function createCompany(req: Request, res: Response) {
+    try {
+        const userId = (req as any).user.id;
+        const { companyName, latitude, longitude, radius } = req.body;
+
+        // cek role
+        const user = await prisma.user.findFirst({ where: { id: userId, deletedAt: null } });
+        if (!user || (user.role !== "ADMIN" && user.role !== "SUPERADMIN")) {
+        return res.status(403).json({ message: "Unauthorized" });
+        }
+
+        // cek apakah sudah punya company
+        const existing = await prisma.company.findFirst({
+        where: { ownerUserId: userId, deletedAt: null },
+        });
+        if (existing) {
+        return res.status(400).json({ message: "User already owns a company" });
+        }
+
+        // ambil nama file logo dari multer
+        const logoFile = req.file ? req.file.filename : null;
+
+        // buat company baru
+        const company = await prisma.company.create({
+        data: {
+            companyName,
+            ownerUserId: userId,
+            latitude: formatDecimal(latitude),
+            longitude: formatDecimal(longitude),
+            radius: radius ? Number(radius) : 200, // default 200 kalau kosong
+            logo: logoFile,
+        },
+        });
+
+        // update user → companyId
+        await prisma.user.update({
+        where: { id: userId },
+        data: { companyId: company.id },
+        });
+
+        res.json({ message: "Company created successfully", company });
+    } catch (err) {
+        console.error("Error createCompany:", err);
+        res.status(500).json({ message: "Error creating company" });
+    }
+}
+
+export async function getMyCompany(req: Request, res: Response) {
+    try {
+        const userId = (req as any).user.id;
+
+        const company = await prisma.company.findFirst({
+        where: { ownerUserId: userId, deletedAt: null },
+        include: { members: true },
+        });
+
+        if (!company) {
+        return res.status(404).json({ message: "No company found" });
+        }
+
+        res.json({ company });
+    } catch (err) {
+        console.error("Error getMyCompany:", err);
+        res.status(500).json({ message: "Error fetching company" });
+    }
+}
+
+// UPDATE company
+export async function updateCompany(req: Request, res: Response) {
+    try {
+        const userId = (req as any).user.id; // dari JWT
+        const { companyName, latitude, longitude, radius } = req.body;
+        const logoFile = req.file; // file logo dari multer
+
+        // cari company yang dimiliki user
+        const company = await prisma.company.findFirst({
+        where: { ownerUserId: userId, deletedAt: null },
+        });
+
+        if (!company) {
+        return res.status(404).json({ message: "Company not found" });
+        }
+
+        // siapkan data update
+        const updateData: any = {
+        companyName,
+        latitude,
+        longitude,
+        radius: radius ? Number(radius) : undefined,
+        };
+
+        // kalau ada file logo baru, update kolom logo
+        if (logoFile) {
+        updateData.logo = logoFile.filename;
+        }
+
+        const updated = await prisma.company.update({
+        where: { id: company.id },
+        data: updateData,
+        });
+
+        res.json({ message: "Company updated successfully", company: updated });
+    } catch (err) {
+        console.error("Error updateCompany:", err);
+        res.status(500).json({ message: "Error updating company" });
+    }
+}
+
+// admin hapus company miliknya sendiri  (jika tidak ada employee terikat)
+export async function deleteCompanyOwner(req: Request, res: Response) {
+    try {
+        const userId = (req as any).user.id;
+
+        // cari company milik user login
+        const company = await prisma.company.findFirst({
+        where: { ownerUserId: userId, deletedAt: null },
+        });
+
+        if (!company) {
+        return res.status(404).json({ message: "Company not found" });
+        }
+
+        // // jika nanti sudah ada tabel employees bisa aktifkan logika ini:
+        // const employees = await prisma.employee.findMany({
+        //   where: { companyId, deletedAt: null },
+        // });
+        // if (employees.length > 0) {
+        //   return res.status(400).json({ message: "Cannot delete company with active employees" });
+        // }
+
+        // soft delete company
+        await prisma.company.update({
+        where: { id: company.id },
+        data: { deletedAt: new Date() },
+        });
+
+        // putuskan relasi company di user pemilik
+        await prisma.user.update({
+        where: { id: userId },
+        data: { companyId: null },
+        });
+
+        return res.json({ message: "Your company deleted successfully" });
+    } catch (err) {
+        console.error("Error deleteOwnCompany:", err);
+        return res.status(500).json({ message: "Error deleting own company" });
+    }
+}
+
+// superadmin bisa hapus company admin (jika tidak ada employee terikat)
+export async function deleteCompanySuperadmin(req: Request, res: Response) {
+    try {
+        const user = (req as any).user;
+        const companyId = Number(req.params.id);
+
+        if (user.role !== "SUPERADMIN") {
+        return res.status(403).json({ message: "Forbidden: Only SUPERADMIN can delete any company" });
+        }
+
+        const company = await prisma.company.findFirst({
+        where: { id: companyId, deletedAt: null },
+        });
+
+        if (!company) {
+        return res.status(404).json({ message: "Company not found" });
+        }
+
+        // // jika nanti sudah ada tabel employees bisa aktifkan logika ini:
+        // const employees = await prisma.employee.findMany({
+        //   where: { companyId, deletedAt: null },
+        // });
+        // if (employees.length > 0) {
+        //   return res.status(400).json({ message: "Cannot delete company with active employees" });
+        // }
+
+        // soft delete
+        await prisma.company.update({
+        where: { id: company.id },
+        data: { deletedAt: new Date() },
+        });
+
+        // putuskan relasi company di owner
+        await prisma.user.update({
+        where: { id: company.ownerUserId },
+        data: { companyId: null },
+        });
+
+        return res.json({ message: `Company ID ${companyId} deleted by SUPERADMIN` });
+    } catch (err) {
+        console.error("Error deleteCompanyBySuperadmin:", err);
+        return res.status(500).json({ message: "Error deleting company by SUPERADMIN" });
+    }
+}
+
+// export async function deleteCompany(req: Request, res: Response) {
+//     try {
+//         const userId = (req as any).user.id;
+//         const companyId = Number(req.params.id);
+        
+//         // Validasi companyId adalah number yang valid
+//         if (isNaN(companyId)) {
+//             return res.status(400).json({ message: "Invalid company ID" });
+//         }
+        
+//         // cari company aktif (belum soft delete)
+//         const company = await prisma.company.findFirst({
+//             where: { 
+//                 id: companyId,
+//                 deletedAt: null 
+//             },
+//         });
+        
+//         if (!company) {
+//             return res.status(404).json({ message: "Company not found" });
+//         }
+        
+//         if (company.ownerUserId !== userId) {
+//             return res.status(403).json({ message: "Unauthorized" });
+//         }
+        
+//         // jika nanti sudah ada tabel employees bisa aktifkan logika ini:
+//         // const employees = await prisma.employee.findMany({
+//         //   where: { companyId, deletedAt: null },
+//         // });
+//         // if (employees.length > 0) {
+//         //   return res.status(400).json({ message: "Cannot delete company with active employees" });
+//         // }
+        
+//         // soft delete company
+//         await prisma.company.update({
+//             where: { id: companyId },
+//             data: { deletedAt: new Date() },
+//         });
+        
+//         // putuskan relasi company di user pemilik
+//         await prisma.user.update({
+//             where: { id: userId },
+//             data: { companyId: null },
+//         });
+        
+//         return res.json({ message: "Company soft-deleted successfully" });
+//     } catch (err) {
+//         console.error("Error deleteCompany:", err);
+//         return res.status(500).json({ message: "Error deleting company" });
+//     }
+// }
+
+
