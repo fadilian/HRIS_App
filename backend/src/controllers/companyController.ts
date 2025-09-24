@@ -11,7 +11,7 @@ const formatDecimal = (value: any, precision = 8) => {
 
 export async function createCompany(req: Request, res: Response) {
     try {
-        const userId = (req as any).user.id;
+        const userId = (req as any).user.id; // ambil dari JWT
         const { companyName, latitude, longitude, radius } = req.body;
 
         // cek role

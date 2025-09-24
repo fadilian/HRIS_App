@@ -29,6 +29,7 @@ model User {
   company        Company?    @relation(fields: [companyId], references: [id])
   ownedCompanies Company[]   @relation("CompanyOwner") // admin sebagai pemilik company
   tokens         UserToken[] // relasi ke tabel UserToken
+  Employee       Employee[]
 
   @@map("users")
 }
@@ -46,8 +47,9 @@ model Company {
   deletedAt   DateTime? @map("deleted_at") @db.Timestamptz(6)
 
   // Relasi ke User (owner)
-  owner   User   @relation("CompanyOwner", fields: [ownerUserId], references: [id])
-  members User[]
+  owner    User       @relation("CompanyOwner", fields: [ownerUserId], references: [id])
+  members  User[]
+  Employee Employee[]
 
   @@map("companies")
 }
@@ -68,4 +70,29 @@ enum Role {
   SUPERADMIN
   ADMIN
   EMPLOYEE
+}
+
+model Employee {
+  id           Int       @id @default(autoincrement())
+  userId       Int       @map("user_id")
+  companyId    Int       @map("company_id")
+  employeeCode String    @unique @map("employee_code")
+  fullName     String    @map("full_name")
+  nik          String
+  gender       String
+  mobileNumber String?   @map("mobile_number")
+  address      String?
+  position     String
+  department   String
+  photo        String?   @db.VarChar(255) // hanya simpan nama file
+  hireDate     DateTime  @map("hire_date") @db.Date
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt    DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  // Relasi
+  user    User    @relation(fields: [userId], references: [id])
+  company Company @relation(fields: [companyId], references: [id])
+
+  @@map("employees")
 }

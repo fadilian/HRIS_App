@@ -154,6 +154,25 @@ exports.Prisma.UserTokenScalarFieldEnum = {
   expiredAt: 'expiredAt'
 };
 
+exports.Prisma.EmployeeScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  companyId: 'companyId',
+  employeeCode: 'employeeCode',
+  fullName: 'fullName',
+  nik: 'nik',
+  gender: 'gender',
+  mobileNumber: 'mobileNumber',
+  address: 'address',
+  position: 'position',
+  department: 'department',
+  photo: 'photo',
+  hireDate: 'hireDate',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -177,7 +196,8 @@ exports.Role = exports.$Enums.Role = {
 exports.Prisma.ModelName = {
   User: 'User',
   Company: 'Company',
-  UserToken: 'UserToken'
+  UserToken: 'UserToken',
+  Employee: 'Employee'
 };
 
 /**

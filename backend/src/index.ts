@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import authRoutes from "./routes/authRoutes";
 import companyRoutes from "./routes/companyRoutes";
+import employeeRoutes from "./routes/employeeRoutes";
 
 dotenv.config();
 // console.log("✅ Loaded JWT_SECRET:", process.env.JWT_SECRET);
@@ -23,6 +24,7 @@ app.use("/uploads", express.static("public/uploads"));
 // route
 app.use("/api/auth", authRoutes);
 app.use("/api/company", companyRoutes);
+app.use("/api/employee", employeeRoutes);
 
 app.listen(8000, () => {
   console.log("Server running on http://localhost:8000");
