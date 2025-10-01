@@ -296,7 +296,7 @@ export async function updateEmployee(req: Request, res: Response) {
 
         const employee = await prisma.employee.findUnique({
             where: { id: Number(id) },
-            include: { user: true },
+            include: { user: true, company: true },
         });
 
         if (!employee) {
@@ -307,42 +307,49 @@ export async function updateEmployee(req: Request, res: Response) {
             return res.status(410).json({ message: "Employee has been deleted" });
         }
 
+        // Validasi companyId untuk ADMIN (SUPERADMIN bisa bypass)
+        if (currentUser.role === "ADMIN") {
+            // Dapatkan data user lengkap untuk admin
+            const adminUser = await prisma.user.findFirst({
+                where: { id: currentUser.id, deletedAt: null },
+                include: { company: true, ownedCompanies: true },
+            });
+
+            if (!adminUser) {
+                return res.status(404).json({ message: "Admin user not found" });
+            }
+
+            let adminCompanyId: number | null = null;
+            
+            // Cari companyId dari ownedCompanies atau companyId langsung
+            if (adminUser.ownedCompanies.length > 0) {
+                adminCompanyId = adminUser.ownedCompanies[0].id;
+            } else if (adminUser.companyId) {
+                adminCompanyId = adminUser.companyId;
+            }
+
+            if (!adminCompanyId) {
+                return res.status(400).json({ 
+                    message: "Admin tidak terkait dengan perusahaan manapun" 
+                });
+            }
+
+            console.log('Admin Company ID:', adminCompanyId);
+            console.log('Employee Company ID:', employee.companyId);
+            
+            // Validasi companyId
+            if (employee.companyId !== adminCompanyId) {
+                return res.status(403).json({ 
+                    message: "Forbidden: You can only update employees from your own company" 
+                });
+            }
+        }
+
         let updateUserData: any = {};
         let updateEmployeeData: any = {};
 
-        // SUPERADMIN
-        if (currentUser.role === "SUPERADMIN") {
-            if (data.name || data.email) {
-                updateUserData = {
-                    ...(data.name && { name: data.name }),
-                    ...(data.email && { email: data.email }),
-                };
-            }
-
-            updateEmployeeData = {
-                ...(data.fullName && { fullName: data.fullName }),
-                ...(data.nik && { nik: data.nik }),
-                ...(data.gender && { gender: data.gender }),
-                ...(data.mobileNumber && { mobileNumber: data.mobileNumber }),
-                ...(data.address && { address: data.address }),
-                ...(data.position && { position: data.position }),
-                ...(data.department && { department: data.department }),
-                ...(data.dateOfBirth && { dateOfBirth: new Date(data.dateOfBirth) }),
-                ...(data.status && { status: data.status }), // ACTIVE / RESIGNED
-                ...(data.promotionHistory && { promotionHistory: data.promotionHistory }),
-                ...(file && { photo: file.filename }),
-            };
-        } 
-        
-        // ADMIN
-        else if (currentUser.role === "ADMIN") {
-            // pastikan admin hanya update employee dari company yang sama
-            const adminCompanyId = currentUser.companyId || (currentUser.ownedCompanies[0]?.id ?? null);
-
-            if (!adminCompanyId || employee.companyId !== adminCompanyId) {
-                return res.status(403).json({ message: "Forbidden: You cannot update employee from another company" });
-            }
-
+        // ADMIN / SUPERADMIN
+        if (currentUser.role === "ADMIN" || currentUser.role === "SUPERADMIN") {
             if (data.name || data.email) {
                 updateUserData = {
                     ...(data.name && { name: data.name }),
@@ -384,11 +391,10 @@ export async function updateEmployee(req: Request, res: Response) {
             if (data.name || data.email || data.nik || data.gender || 
                 data.position || data.department || data.status || data.promotionHistory) {
                 return res.status(403).json({ 
-                    message: "Forbidden: You cannot update these fields (name, email, nik, gender, position, department, status, promotionHistory)" 
+                    message: "Forbidden: You cannot update these fields" 
                 });
             }
         } 
-        
         else {
             return res.status(403).json({ message: "Unauthorized role" });
         }
@@ -448,7 +454,6 @@ export async function updateEmployee(req: Request, res: Response) {
 }
 
 
-
 // Soft Delete Employee
 export async function deleteEmployee(req: Request, res: Response) {
     const { id } = req.params;
@@ -457,43 +462,81 @@ export async function deleteEmployee(req: Request, res: Response) {
         const currentUser = (req as any).user;
 
         if (currentUser.role !== "ADMIN" && currentUser.role !== "SUPERADMIN") {
-        return res.status(403).json({ message: "Unauthorized" });
+            return res.status(403).json({ message: "Unauthorized" });
         }
 
         const employee = await prisma.employee.findUnique({
-        where: { id: Number(id) },
-        include: { user: true },
+            where: { id: Number(id) },
+            include: { user: true, company: true },
         });
 
         if (!employee) {
-        return res.status(404).json({ message: "Employee not found" });
+            return res.status(404).json({ message: "Employee not found" });
         }
 
         if (employee.deletedAt) {
-        return res.status(410).json({ message: "Employee already deleted" });
+            return res.status(410).json({ message: "Employee already deleted" });
+        }
+
+        // Validasi companyId untuk ADMIN (SUPERADMIN bisa bypass)
+        if (currentUser.role === "ADMIN") {
+            // Dapatkan data user lengkap untuk admin
+            const adminUser = await prisma.user.findFirst({
+                where: { id: currentUser.id, deletedAt: null },
+                include: { company: true, ownedCompanies: true },
+            });
+
+            if (!adminUser) {
+                return res.status(404).json({ message: "Admin user not found" });
+            }
+
+            let adminCompanyId: number | null = null;
+            
+            // Cari companyId dari ownedCompanies atau companyId langsung
+            if (adminUser.ownedCompanies.length > 0) {
+                adminCompanyId = adminUser.ownedCompanies[0].id;
+            } else if (adminUser.companyId) {
+                adminCompanyId = adminUser.companyId;
+            }
+
+            if (!adminCompanyId) {
+                return res.status(400).json({ 
+                    message: "Admin tidak terkait dengan perusahaan manapun" 
+                });
+            }
+
+            console.log('Admin Company ID:', adminCompanyId);
+            console.log('Employee Company ID:', employee.companyId);
+            
+            // Validasi companyId
+            if (employee.companyId !== adminCompanyId) {
+                return res.status(403).json({ 
+                    message: "Forbidden: You can only delete employees from your own company" 
+                });
+            }
         }
 
         if (currentUser.id === employee.userId) {
-        return res.status(400).json({ 
-            message: "You cannot delete your own account" 
-        });
+            return res.status(400).json({ 
+                message: "You cannot delete your own account" 
+            });
         }
 
         await prisma.$transaction(async (tx) => {
-        await tx.employee.update({
-            where: { id: employee.id },
-            data: { deletedAt: new Date() },
-        });
+            await tx.employee.update({
+                where: { id: employee.id },
+                data: { deletedAt: new Date() },
+            });
 
-        await tx.user.update({
-            where: { id: employee.userId },
-            data: { deletedAt: new Date() },
-        });
+            await tx.user.update({
+                where: { id: employee.userId },
+                data: { deletedAt: new Date() },
+            });
         });
 
         res.status(200).json({ 
-        message: "Employee deleted successfully (soft delete)",
-        deletedAt: new Date()
+            message: "Employee deleted successfully (soft delete)",
+            deletedAt: new Date()
         });
     } catch (err) {
         console.error("Error deleteEmployee:", err);
