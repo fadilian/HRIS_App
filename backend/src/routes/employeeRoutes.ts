@@ -8,7 +8,7 @@ import {
   deleteEmployee,
   restoreEmployee,
   getDeletedEmployees,
-} from "../controllers/employeeController";
+} from "../controllers/employeeController"
 import { authMiddleware } from "../middlewares/authMiddleware";
 import uploadEmployeePhoto from "../middlewares/uploadEmployeePhotoMiddleware";
 
@@ -25,8 +25,8 @@ router.post(
 // Get Employee Profile (Current logged in employee)
 router.get("/profile", authMiddleware, getEmployeeProfile);
 
-// Get All Active Employees (Admin/Superadmin only)
-router.get("/", authMiddleware, getEmployees);
+// // Get All Active Employees (Admin/Superadmin only)
+// router.get("/", authMiddleware, getEmployees);
 
 // Get All Employees (alternative route for consistency)
 router.get("/show/my-employees", authMiddleware, getEmployees);

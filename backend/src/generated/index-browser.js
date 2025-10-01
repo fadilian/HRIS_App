@@ -160,6 +160,7 @@ exports.Prisma.EmployeeScalarFieldEnum = {
   companyId: 'companyId',
   employeeCode: 'employeeCode',
   fullName: 'fullName',
+  dateOfBirth: 'dateOfBirth',
   nik: 'nik',
   gender: 'gender',
   mobileNumber: 'mobileNumber',
@@ -168,6 +169,8 @@ exports.Prisma.EmployeeScalarFieldEnum = {
   department: 'department',
   photo: 'photo',
   hireDate: 'hireDate',
+  status: 'status',
+  promotionHistory: 'promotionHistory',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   deletedAt: 'deletedAt'
@@ -191,6 +194,11 @@ exports.Role = exports.$Enums.Role = {
   SUPERADMIN: 'SUPERADMIN',
   ADMIN: 'ADMIN',
   EMPLOYEE: 'EMPLOYEE'
+};
+
+exports.EmployeeStatus = exports.$Enums.EmployeeStatus = {
+  ACTIVE: 'ACTIVE',
+  RESIGNED: 'RESIGNED'
 };
 
 exports.Prisma.ModelName = {
