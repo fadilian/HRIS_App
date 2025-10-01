@@ -179,3 +179,64 @@ export async function getEmployees(req: Request, res: Response) {
         res.status(500).json({ message: "Error fetching employees" });
     }
 }
+
+export async function getEmployeeById(req: Request, res: Response) {
+    try {
+        const userId = (req as any).user.id; // ambil dari JWT
+        const employeeId = Number(req.params.id);
+
+        // cek role user
+        const user = await prisma.user.findFirst({
+            where: { id: userId, deletedAt: null },
+            include: { company: true, ownedCompanies: true },
+        });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        let employee;
+
+        if (user.role === "SUPERADMIN") {
+            // superadmin bisa lihat semua
+            employee = await prisma.employee.findFirst({
+                where: { id: employeeId, deletedAt: null },
+                include: {
+                    company: true,
+                    user: { select: { id: true, name: true, email: true, role: true } },
+                },
+            });
+        } else if (user.role === "ADMIN") {
+            // cari companyId admin
+            let companyId: number | null = null;
+            if (user.ownedCompanies.length > 0) {
+                companyId = user.ownedCompanies[0].id;
+            } else if (user.companyId) {
+                companyId = user.companyId;
+            }
+
+            if (!companyId) {
+                return res.status(400).json({ message: "Admin tidak terkait dengan perusahaan manapun" });
+            }
+
+            employee = await prisma.employee.findFirst({
+                where: { id: employeeId, companyId, deletedAt: null },
+                include: {
+                    company: true,
+                    user: { select: { id: true, name: true, email: true, role: true } },
+                },
+            });
+        } else {
+            return res.status(403).json({ message: "Unauthorized" });
+        }
+
+        if (!employee) {
+            return res.status(404).json({ message: "Employee not found" });
+        }
+
+        res.json({ message: "Success", data: employee });
+    } catch (err) {
+        console.error("Error getEmployeeById:", err);
+        res.status(500).json({ message: "Error fetching employee" });
+    }
+}
