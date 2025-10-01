@@ -227,6 +227,69 @@ export async function getEmployees(req: Request, res: Response) {
 }
 
 // =======================
+// Get Employee By ID
+// =======================
+export async function getEmployeeById(req: Request, res: Response) {
+  try {
+    const userId = (req as any).user.id;
+    const employeeId = Number(req.params.id);
+
+    const user = await prisma.user.findFirst({
+      where: { id: userId, deletedAt: null },
+      include: { company: true, ownedCompanies: true },
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    let employee;
+
+    if (user.role === "SUPERADMIN") {
+      employee = await prisma.employee.findFirst({
+        where: { id: employeeId, deletedAt: null },
+        include: {
+          company: true,
+          user: { select: { id: true, name: true, email: true, role: true } },
+        },
+      });
+    } else if (user.role === "ADMIN") {
+      let companyId: number | null = null;
+      if (user.ownedCompanies.length > 0) {
+        companyId = user.ownedCompanies[0].id;
+      } else if (user.companyId) {
+        companyId = user.companyId;
+      }
+
+      if (!companyId) {
+        return res.status(400).json({ 
+          message: "Admin tidak terkait dengan perusahaan manapun" 
+        });
+      }
+
+      employee = await prisma.employee.findFirst({
+        where: { id: employeeId, companyId, deletedAt: null },
+        include: {
+          company: true,
+          user: { select: { id: true, name: true, email: true, role: true } },
+        },
+      });
+    } else {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
+
+    if (!employee) {
+      return res.status(404).json({ message: "Employee not found" });
+    }
+
+    res.json({ message: "Success", data: employee });
+  } catch (err) {
+    console.error("Error getEmployeeById:", err);
+    res.status(500).json({ message: "Error fetching employee" });
+  }
+}
+
+// =======================
 // Update Employee
 // =======================
 export async function updateEmployee(req: Request, res: Response) {
@@ -246,7 +309,6 @@ export async function updateEmployee(req: Request, res: Response) {
       return res.status(404).json({ message: "Employee not found" });
     }
 
-    // ✅ Cek apakah employee sudah dihapus (soft delete)
     if (employee.deletedAt) {
       return res.status(410).json({ message: "Employee has been deleted" });
     }
@@ -254,9 +316,7 @@ export async function updateEmployee(req: Request, res: Response) {
     let updateUserData: any = {};
     let updateEmployeeData: any = {};
 
-    // ✅ ADMIN / SUPERADMIN dapat update semua field
     if (currentUser.role === "ADMIN" || currentUser.role === "SUPERADMIN") {
-      // Update User table (name, email)
       if (data.name || data.email) {
         updateUserData = {
           ...(data.name && { name: data.name }),
@@ -264,7 +324,6 @@ export async function updateEmployee(req: Request, res: Response) {
         };
       }
       
-      // Update Employee table
       updateEmployeeData = {
         ...(data.fullName && { fullName: data.fullName }),
         ...(data.nik && { nik: data.nik }),
@@ -276,16 +335,13 @@ export async function updateEmployee(req: Request, res: Response) {
         ...(file && { photo: file.filename }),
       };
     } 
-    // ✅ EMPLOYEE hanya dapat update data pribadi tertentu
     else if (currentUser.role === "EMPLOYEE") {
-      // Validasi: Employee hanya bisa update profile sendiri
       if (currentUser.id !== employee.userId) {
         return res.status(403).json({ 
           message: "Forbidden: You can only update your own profile" 
         });
       }
       
-      // Field yang boleh diupdate oleh Employee
       updateEmployeeData = {
         ...(data.fullName && { fullName: data.fullName }),
         ...(data.mobileNumber && { mobileNumber: data.mobileNumber }),
@@ -293,7 +349,6 @@ export async function updateEmployee(req: Request, res: Response) {
         ...(file && { photo: file.filename }),
       };
 
-      // ✅ PENTING: Cegah employee mengubah field yang tidak diizinkan
       if (data.name || data.email || data.nik || data.gender || 
           data.position || data.department) {
         return res.status(403).json({ 
@@ -305,7 +360,6 @@ export async function updateEmployee(req: Request, res: Response) {
       return res.status(403).json({ message: "Unauthorized role" });
     }
 
-    // ✅ Validasi: Jika tidak ada data yang diupdate
     if (Object.keys(updateUserData).length === 0 && 
         Object.keys(updateEmployeeData).length === 0) {
       return res.status(400).json({ 
@@ -313,11 +367,8 @@ export async function updateEmployee(req: Request, res: Response) {
       });
     }
 
-    // ✅ Update dengan transaction
     const updated = await prisma.$transaction(async (tx) => {
-      // Update User table jika ada perubahan
       if (Object.keys(updateUserData).length > 0) {
-        // Validasi email unik jika diupdate
         if (updateUserData.email) {
           const existingEmail = await tx.user.findFirst({
             where: { 
@@ -338,7 +389,6 @@ export async function updateEmployee(req: Request, res: Response) {
         });
       }
 
-      // Update Employee table
       const updatedEmployee = await tx.employee.update({
         where: { id: employee.id },
         data: updateEmployeeData,
@@ -358,7 +408,6 @@ export async function updateEmployee(req: Request, res: Response) {
   } catch (err: any) {
     console.error("Error updateEmployee:", err);
     
-    // ✅ Handle specific errors
     if (err.message === "Email already exists") {
       return res.status(409).json({ message: "Email already exists" });
     }
@@ -376,7 +425,6 @@ export async function deleteEmployee(req: Request, res: Response) {
   try {
     const currentUser = (req as any).user;
 
-    // Only ADMIN and SUPERADMIN can delete employees
     if (currentUser.role !== "ADMIN" && currentUser.role !== "SUPERADMIN") {
       return res.status(403).json({ message: "Unauthorized" });
     }
@@ -394,14 +442,12 @@ export async function deleteEmployee(req: Request, res: Response) {
       return res.status(410).json({ message: "Employee already deleted" });
     }
 
-    // ✅ Prevent admin from deleting themselves
     if (currentUser.id === employee.userId) {
       return res.status(400).json({ 
         message: "You cannot delete your own account" 
       });
     }
 
-    // Soft delete employee and user
     await prisma.$transaction(async (tx) => {
       await tx.employee.update({
         where: { id: employee.id },
@@ -433,7 +479,6 @@ export async function restoreEmployee(req: Request, res: Response) {
   try {
     const currentUser = (req as any).user;
 
-    // Only SUPERADMIN can restore employees
     if (currentUser.role !== "SUPERADMIN") {
       return res.status(403).json({ 
         message: "Unauthorized. Only SUPERADMIN can restore employees" 
@@ -453,7 +498,6 @@ export async function restoreEmployee(req: Request, res: Response) {
       return res.status(400).json({ message: "Employee is not deleted" });
     }
 
-    // Restore employee and user
     await prisma.$transaction(async (tx) => {
       await tx.employee.update({
         where: { id: employee.id },
@@ -495,7 +539,7 @@ export async function getDeletedEmployees(req: Request, res: Response) {
     let employees;
     if (user.role === "SUPERADMIN") {
       employees = await prisma.employee.findMany({
-        where: { deletedAt: { not: null } }, // ✅ Hanya yang sudah dihapus
+        where: { deletedAt: { not: null } },
         include: {
           company: true,
           user: { select: { id: true, name: true, email: true, role: true } },
@@ -519,7 +563,7 @@ export async function getDeletedEmployees(req: Request, res: Response) {
       employees = await prisma.employee.findMany({
         where: { 
           companyId, 
-          deletedAt: { not: null } // ✅ Hanya yang sudah dihapus
+          deletedAt: { not: null }
         },
         include: {
           company: true,

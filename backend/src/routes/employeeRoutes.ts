@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   createEmployee,
   getEmployees,
+  getEmployeeById,
   updateEmployee,
   getEmployeeProfile,
   deleteEmployee,
@@ -27,7 +28,13 @@ router.get("/profile", authMiddleware, getEmployeeProfile);
 // Get All Active Employees (Admin/Superadmin only)
 router.get("/", authMiddleware, getEmployees);
 
-// ✅ Get All Deleted Employees (Admin/Superadmin only)
+// Get All Employees (alternative route for consistency)
+router.get("/show/my-employees", authMiddleware, getEmployees);
+
+// Get Employee By ID
+router.get("/show/my-employees/:id", authMiddleware, getEmployeeById);
+
+// Get All Deleted Employees (Admin/Superadmin only)
 router.get("/deleted", authMiddleware, getDeletedEmployees);
 
 // Update Employee
@@ -38,10 +45,10 @@ router.patch(
   updateEmployee
 );
 
-// ✅ Soft Delete Employee (Admin/Superadmin only)
+// Soft Delete Employee (Admin/Superadmin only)
 router.delete("/delete/:id", authMiddleware, deleteEmployee);
 
-// ✅ Restore Employee (Superadmin only)
+// Restore Employee (Superadmin only)
 router.patch("/restore/:id", authMiddleware, restoreEmployee);
 
 export default router;
