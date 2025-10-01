@@ -72,6 +72,67 @@ export async function loginAdmin(req: Request, res: Response) {
     }
 }
 
+// LOGIN EMPLOYEE (pakai employeeCode)
+export async function loginEmployee(req: Request, res: Response) {
+    const { employeeCode, password } = req.body;
+
+    try {
+        const employee = await prisma.employee.findUnique({
+            where: { employeeCode },
+            include: { user: true },
+        });
+
+        if (!employee || !employee.user || employee.user.deletedAt) {
+            return res.status(400).json({ message: "Invalid credentials" });
+        }
+
+        if (employee.user.role !== "EMPLOYEE") {
+            return res.status(403).json({ message: "Not an employee account" });
+        }
+
+        const isMatch = await bcrypt.compare(password, employee.user.password);
+        if (!isMatch) {
+            return res.status(400).json({ message: "Invalid credentials" });
+        }
+
+        const token = jwt.sign(
+            { id: employee.user.id, role: employee.user.role },
+            JWT_SECRET,
+            { expiresIn: "1d" }
+        );
+
+        const expiredAt = new Date();
+        expiredAt.setDate(expiredAt.getDate() + 1);
+
+        await prisma.userToken.create({
+            data: { userId: employee.user.id, token, expiredAt },
+        });
+
+        res.json({
+            message: "Employee login successful",
+            token,
+            user: {
+                id: employee.user.id,
+                name: employee.user.name,
+                role: employee.user.role,
+                employee: {
+                    id: employee.id,
+                    employeeCode: employee.employeeCode,
+                    fullName: employee.fullName,
+                    position: employee.position,
+                    department: employee.department,
+                    hireDate: employee.hireDate,
+                },
+            },
+        });
+    } catch (err) {
+        console.error("Error loginEmployee:", err);
+        res.status(500).json({ message: "Error logging in employee" });
+    }
+}
+
+
+
 export async function profile(req: Request, res: Response) {
     try {
         const userId = (req as any).user.id; // ambil dari JWT
