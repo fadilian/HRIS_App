@@ -142,7 +142,6 @@ export async function createEmployee(req: Request, res: Response) {
     }
 }
 
-
 // Get Employee Profile
 export async function getEmployeeProfile(req: Request, res: Response) {
     try {
@@ -174,53 +173,110 @@ export async function getEmployeeProfile(req: Request, res: Response) {
 export async function getEmployees(req: Request, res: Response) {
     try {
         const userId = (req as any).user.id;
+        
+        // Get query parameters untuk filter & pagination
+        const {
+            page = 1,
+            limit = 10,
+            search = "",
+            sortBy = "createdAt",
+            sortOrder = "desc"
+        } = req.query;
 
         const user = await prisma.user.findFirst({
-        where: { id: userId, deletedAt: null },
-        include: { company: true, ownedCompanies: true },
+            where: { id: userId, deletedAt: null },
+            include: { company: true, ownedCompanies: true },
         });
 
         if (!user) {
-        return res.status(404).json({ message: "User not found" });
+            return res.status(404).json({ message: "User not found" });
         }
 
-        let employees;
-        if (user.role === "SUPERADMIN") {
-        employees = await prisma.employee.findMany({
-            where: { deletedAt: null },
-            include: {
-            company: true,
-            user: { select: { id: true, name: true, email: true, role: true } },
-            },
-            orderBy: { createdAt: "desc" },
+        // Base where condition
+        let whereCondition: any = { deletedAt: null };
+        
+        // Filter berdasarkan role
+        // superadmin bisa lihat semua data employee dari semua company
+        if (user.role === "ADMIN") {
+            let adminCompanyId: number | null = null;
+            if (user.ownedCompanies.length > 0) {
+                adminCompanyId = user.ownedCompanies[0].id;
+            } else if (user.companyId) {
+                adminCompanyId = user.companyId;
+            }
+            if (!adminCompanyId) {
+                return res.status(400).json({ 
+                    message: "Admin tidak terkait dengan perusahaan manapun" 
+                });
+            }
+            whereCondition.companyId = adminCompanyId;
+        }
+
+        // Kolom-kolom untuk pencarian
+        if (search) {
+            whereCondition.OR = [
+                // Data utama tabel employee
+                { fullName: { contains: search, mode: 'insensitive' } },
+                { employeeCode: { contains: search, mode: 'insensitive' } },
+                { position: { contains: search, mode: 'insensitive' } },
+                { department: { contains: search, mode: 'insensitive' } },
+                
+                // Data company (untuk multi-company superadmin)
+                { company: { companyName: { contains: search, mode: 'insensitive' } } },
+                
+                // Data user (email untuk kontak)
+                { user: { email: { contains: search, mode: 'insensitive' } } }
+            ];
+        }
+
+        // Validasi sort field
+        const allowedSortFields = ['createdAt', 'updatedAt', 'fullName', 'employeeCode', 'hireDate', 'position'];
+        const finalSortBy = allowedSortFields.includes(sortBy as string) 
+            ? sortBy as string 
+            : 'createdAt';
+
+        // Hitung total data
+        const totalEmployees = await prisma.employee.count({
+            where: whereCondition
         });
-        } else if (user.role === "ADMIN") {
-        let companyId: number | null = null;
-        if (user.ownedCompanies.length > 0) {
-            companyId = user.ownedCompanies[0].id;
-        } else if (user.companyId) {
-            companyId = user.companyId;
-        }
 
-        if (!companyId) {
-            return res.status(400).json({ 
-            message: "Admin tidak terkait dengan perusahaan manapun" 
-            });
-        }
-
-        employees = await prisma.employee.findMany({
-            where: { companyId, deletedAt: null },
+        // Get data dengan pagination
+        const employees = await prisma.employee.findMany({
+            where: whereCondition,
             include: {
-            company: true,
-            user: { select: { id: true, name: true, email: true, role: true } },
+                company: {
+                    select: {
+                        id: true,
+                        companyName: true,
+                        logo: true
+                    }
+                },
+                user: { 
+                    select: { 
+                        id: true, 
+                        name: true, 
+                        email: true, 
+                        role: true 
+                    } 
+                },
             },
-            orderBy: { createdAt: "desc" },
+            orderBy: { [finalSortBy]: sortOrder },
+            skip: (Number(page) - 1) * Number(limit),
+            take: Number(limit),
         });
-        } else {
-        return res.status(403).json({ message: "Unauthorized" });
-        }
 
-        res.status(200).json({ message: "Success", data: employees });
+        res.status(200).json({ 
+            message: "Success", 
+            data: employees,
+            pagination: {
+                currentPage: Number(page),
+                totalPages: Math.ceil(totalEmployees / Number(limit)),
+                totalItems: totalEmployees,
+                itemsPerPage: Number(limit),
+                hasNextPage: Number(page) < Math.ceil(totalEmployees / Number(limit)),
+                hasPrevPage: Number(page) > 1
+            }
+        });
     } catch (err) {
         console.error("Error getEmployees:", err);
         res.status(500).json({ message: "Error fetching employees" });
@@ -455,7 +511,6 @@ export async function updateEmployee(req: Request, res: Response) {
         res.status(500).json({ message: "Error updating employee" });
     }
 }
-
 
 // Soft Delete Employee
 export async function deleteEmployee(req: Request, res: Response) {
