@@ -1,7 +1,10 @@
 import { Request, Response } from "express";
 import prisma from "../utils/prisma";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import { Parser } from "json2csv";
+import fs from "fs";
+import path from "path";
+import csv from "csv-parser";
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
@@ -653,5 +656,225 @@ export async function getDeletedEmployees(req: Request, res: Response) {
     } catch (err) {
         console.error("Error getDeletedEmployees:", err);
         res.status(500).json({ message: "Error fetching deleted employees" });
+    }
+}
+
+// export data employee ke file csv
+export async function exportEmployeesCsv(req: Request, res: Response) {
+    try {
+        const userId = (req as any).user.id;
+
+        // cek role user
+        const user = await prisma.user.findFirst({
+            where: { id: userId, deletedAt: null },
+            include: { company: true, ownedCompanies: true },
+        });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        let employees;
+        let fileName = "employees.csv";
+
+        if (user.role === "SUPERADMIN") {
+            // superadmin >> semua employees
+            employees = await prisma.employee.findMany({
+                where: { deletedAt: null },
+                include: { company: true, user: { select: { email: true } } },
+                orderBy: { createdAt: "desc" },
+            });
+            fileName = "employees-all.csv";
+        } else if (user.role === "ADMIN") {
+            // cari companyId admin
+            let companyId: number | null = null;
+            let companyName: string | null = null;
+
+            if (user.ownedCompanies.length > 0) {
+                companyId = user.ownedCompanies[0].id;
+                companyName = user.ownedCompanies[0].companyName;
+            } else if (user.companyId && user.company) {
+                companyId = user.companyId;
+                companyName = user.company.companyName;
+            }
+
+            if (!companyId) {
+                return res.status(400).json({ message: "Admin tidak terkait dengan perusahaan manapun" });
+            }
+
+            employees = await prisma.employee.findMany({
+                where: { companyId, deletedAt: null },
+                include: { company: true, user: { select: { email: true } } },
+                orderBy: { createdAt: "desc" },
+            });
+
+            // generate nama file dengan nama company
+            const safeCompanyName = companyName?.toLowerCase().replace(/\s+/g, "-") || "company";
+            fileName = `employees-${safeCompanyName}.csv`;
+
+        } else {
+            return res.status(403).json({ message: "Unauthorized" });
+        }
+
+        if (!employees || employees.length === 0) {
+            return res.status(404).json({ message: "No employees found" });
+        }
+
+        // mapping kolom sesuai schema
+        const fields = [
+            { label: "Employee Code", value: "employeeCode" },
+            { label: "Full Name", value: "fullName" },
+            { label: "Email", value: "user.email" },
+            { label: "Date of Birth", value: (row: any) => row.dateOfBirth ? row.dateOfBirth.toISOString().split("T")[0] : "" },
+            { label: "NIK", value: "nik" },
+            { label: "Gender", value: "gender" },
+            { label: "Mobile Number", value: "mobileNumber" },
+            { label: "Address", value: "address" },
+            { label: "Position", value: "position" },
+            { label: "Department", value: "department" },
+            { label: "Photo", value: "photo" },
+            { label: "Hire Date", value: (row: any) => row.hireDate.toISOString().split("T")[0] },
+            { label: "Status", value: "status" },
+            { label: "Promotion History", value: "promotionHistory" },
+            { label: "Company ID", value: "company.id" },
+            { label: "Company Name", value: "company.companyName" },
+        ];
+
+        const parser = new Parser({ fields });
+        const csv = parser.parse(employees);
+
+        // set header agar langsung download file CSV
+        res.header("Content-Type", "text/csv");
+        res.attachment(fileName);
+        return res.send(csv);
+    } catch (err) {
+        console.error("Error exportEmployees:", err);
+        res.status(500).json({ message: "Error exporting employees" });
+    }
+}
+
+export async function importEmployeesCsv(req: Request, res: Response) {
+    try {
+        const userId = (req as any).user.id;
+
+        const user = await prisma.user.findFirst({
+            where: { id: userId, deletedAt: null },
+            include: { company: true, ownedCompanies: true },
+        });
+
+        if (!user || (user.role !== "ADMIN" && user.role !== "SUPERADMIN")) {
+            return res.status(403).json({ message: "Unauthorized" });
+        }
+
+        // cari companyId
+        let companyId: number | null = null;
+        if (user.role === "SUPERADMIN") {
+            companyId = req.body.companyId ? Number(req.body.companyId) : null;
+            if (!companyId) {
+                return res.status(400).json({ message: "SUPERADMIN harus menentukan companyId" });
+            }
+        } else if (user.ownedCompanies.length > 0) {
+            companyId = user.ownedCompanies[0].id;
+        } else if (user.companyId) {
+            companyId = user.companyId;
+        }
+
+        if (!companyId) {
+            return res.status(400).json({ message: "User is not linked with any company" });
+        }
+
+        if (!req.file) {
+            return res.status(400).json({ message: "File CSV wajib diupload" });
+        }
+
+        const filePath = req.file.path; // path file CSV yang sudah diupload multer
+        const employeesData: any[] = [];
+
+        // baca CSV
+        fs.createReadStream(filePath)
+            .pipe(csv())
+            .on("data", (row) => {
+                employeesData.push(row);
+            })
+            .on("end", async () => {
+                try {
+                    const results = await prisma.$transaction(async (tx) => {
+                        const createdEmployees = [];
+
+                        for (const row of employeesData) {
+                            const {
+                                name,
+                                email,
+                                password,
+                                fullName,
+                                nik,
+                                gender,
+                                mobileNumber,
+                                address,
+                                position,
+                                department,
+                                hireDate,
+                                dateOfBirth,
+                                promotionHistory,
+                            } = row;
+
+                            if (!name || !email || !fullName) continue;
+
+                            const existing = await tx.user.findFirst({
+                                where: { email, deletedAt: null },
+                            });
+                            if (existing) continue;
+
+                            const hashedPassword = await bcrypt.hash(password || "12345678", 10);
+
+                            const newUser = await tx.user.create({
+                                data: {
+                                    name,
+                                    email,
+                                    password: hashedPassword,
+                                    role: "EMPLOYEE",
+                                    companyId,
+                                },
+                            });
+
+                            const employeeCode = await generateEmployeeCode(companyId!, new Date());
+
+                            const employee = await tx.employee.create({
+                                data: {
+                                    userId: newUser.id,
+                                    companyId,
+                                    employeeCode,
+                                    fullName,
+                                    nik,
+                                    gender,
+                                    mobileNumber,
+                                    address,
+                                    position,
+                                    department,
+                                    hireDate: hireDate ? new Date(hireDate) : new Date(),
+                                    dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : null,
+                                    promotionHistory: promotionHistory || null,
+                                    status: "ACTIVE",
+                                },
+                            });
+
+                            createdEmployees.push(employee);
+                        }
+
+                        return createdEmployees;
+                    });
+
+                    res.status(201).json({
+                        message: `Berhasil import ${results.length} employee`,
+                        data: results,
+                    });
+                } catch (err) {
+                    console.error("Error importEmployees:", err);
+                    res.status(500).json({ message: "Error importing employees" });
+                }
+            });
+    } catch (err) {
+        console.error("Error importEmployees:", err);
+        res.status(500).json({ message: "Error importing employees" });
     }
 }

@@ -8,9 +8,12 @@ import {
   deleteEmployee,
   restoreEmployee,
   getDeletedEmployees,
+  exportEmployeesCsv,
+  importEmployeesCsv
 } from "../controllers/employeeController"
 import { authMiddleware } from "../middlewares/authMiddleware";
 import uploadEmployeePhoto from "../middlewares/uploadEmployeePhotoMiddleware";
+import uploadCsvEmployee from "../middlewares/uploadCsvEmployeeMiddleware";
 
 const router = Router();
 
@@ -24,9 +27,6 @@ router.post(
 
 // Get Employee Profile (Current logged in employee)
 router.get("/profile", authMiddleware, getEmployeeProfile);
-
-// // Get All Active Employees (Admin/Superadmin only)
-// router.get("/", authMiddleware, getEmployees);
 
 // Get All Employees (alternative route for consistency)
 router.get("/show/my-employees", authMiddleware, getEmployees);
@@ -50,5 +50,16 @@ router.delete("/delete/:id", authMiddleware, deleteEmployee);
 
 // Restore Employee (Superadmin only)
 router.patch("/restore/:id", authMiddleware, restoreEmployee);
+
+// Export Employee to CSV
+router.get("/export/csv", authMiddleware, exportEmployeesCsv);
+
+// Import Employee from CSV
+router.post(
+  "/import/csv",
+  authMiddleware,
+  uploadCsvEmployee.single("file"),
+  importEmployeesCsv
+);
 
 export default router;
