@@ -131,13 +131,13 @@ export async function deleteCompanyOwner(req: Request, res: Response) {
         return res.status(404).json({ message: "Company not found" });
         }
 
-        // // jika nanti sudah ada tabel employees bisa aktifkan logika ini:
-        // const employees = await prisma.employee.findMany({
-        //   where: { companyId, deletedAt: null },
-        // });
-        // if (employees.length > 0) {
-        //   return res.status(400).json({ message: "Cannot delete company with active employees" });
-        // }
+        // jika nanti sudah ada tabel employees bisa aktifkan logika ini:
+        const employees = await prisma.employee.findMany({
+          where: { companyId: company.id, deletedAt: null },
+        });
+        if (employees.length > 0) {
+          return res.status(400).json({ message: "Cannot delete company with active employees" });
+        }
 
         // soft delete company
         await prisma.company.update({
@@ -176,13 +176,13 @@ export async function deleteCompanySuperadmin(req: Request, res: Response) {
         return res.status(404).json({ message: "Company not found" });
         }
 
-        // // jika nanti sudah ada tabel employees bisa aktifkan logika ini:
-        // const employees = await prisma.employee.findMany({
-        //   where: { companyId, deletedAt: null },
-        // });
-        // if (employees.length > 0) {
-        //   return res.status(400).json({ message: "Cannot delete company with active employees" });
-        // }
+        // jika nanti sudah ada tabel employees bisa aktifkan logika ini:
+        const employees = await prisma.employee.findMany({
+          where: { companyId, deletedAt: null },
+        });
+        if (employees.length > 0) {
+          return res.status(400).json({ message: "Cannot delete company with active employees" });
+        }
 
         // soft delete
         await prisma.company.update({
@@ -203,57 +203,95 @@ export async function deleteCompanySuperadmin(req: Request, res: Response) {
     }
 }
 
-// export async function deleteCompany(req: Request, res: Response) {
-//     try {
-//         const userId = (req as any).user.id;
-//         const companyId = Number(req.params.id);
-        
-//         // Validasi companyId adalah number yang valid
-//         if (isNaN(companyId)) {
-//             return res.status(400).json({ message: "Invalid company ID" });
-//         }
-        
-//         // cari company aktif (belum soft delete)
-//         const company = await prisma.company.findFirst({
-//             where: { 
-//                 id: companyId,
-//                 deletedAt: null 
-//             },
-//         });
-        
-//         if (!company) {
-//             return res.status(404).json({ message: "Company not found" });
-//         }
-        
-//         if (company.ownerUserId !== userId) {
-//             return res.status(403).json({ message: "Unauthorized" });
-//         }
-        
-//         // jika nanti sudah ada tabel employees bisa aktifkan logika ini:
-//         // const employees = await prisma.employee.findMany({
-//         //   where: { companyId, deletedAt: null },
-//         // });
-//         // if (employees.length > 0) {
-//         //   return res.status(400).json({ message: "Cannot delete company with active employees" });
-//         // }
-        
-//         // soft delete company
-//         await prisma.company.update({
-//             where: { id: companyId },
-//             data: { deletedAt: new Date() },
-//         });
-        
-//         // putuskan relasi company di user pemilik
-//         await prisma.user.update({
-//             where: { id: userId },
-//             data: { companyId: null },
-//         });
-        
-//         return res.json({ message: "Company soft-deleted successfully" });
-//     } catch (err) {
-//         console.error("Error deleteCompany:", err);
-//         return res.status(500).json({ message: "Error deleting company" });
-//     }
-// }
+// tampilkan semua data company (untuk superadmin)
+export async function getAllCompanies(req: Request, res: Response) {
+    try {
+        const userRole = (req as any).user.role;
+        if (userRole !== 'SUPERADMIN') {
+            return res.status(403).json({ message: "Access denied. Superadmin role required." });
+        }
 
+        const { 
+            page = '1', 
+            limit = '10', 
+            search,
+            sortBy = 'createdAt',
+            sortOrder = 'desc'
+        } = req.query;
 
+        const pageNum = parseInt(page as string);
+        const limitNum = parseInt(limit as string);
+        const skip = (pageNum - 1) * limitNum;
+
+        // BUILD WHERE CLAUSE
+        let whereClause: any = { deletedAt: null };
+        
+        if (search) {
+            whereClause.OR = [
+                // Company fields
+                { companyName: { contains: search, mode: 'insensitive' } },
+                
+                // Owner user fields (relational)
+                { owner: { name: { contains: search, mode: 'insensitive' } } },
+                { owner: { email: { contains: search, mode: 'insensitive' } } },
+                
+                // Optional: jika ada field lain di Company
+                // { phone: { contains: search, mode: 'insensitive' } },
+                // { address: { contains: search, mode: 'insensitive' } },
+            ];
+        }
+
+        // Validasi sort field
+        const validSortFields = ['companyName', 'createdAt', 'updatedAt'];
+        const sortField = validSortFields.includes(sortBy as string) ? sortBy : 'createdAt';
+
+        const [companies, totalCount] = await Promise.all([
+            prisma.company.findMany({
+                where: whereClause,
+                include: { 
+                    // members: true,
+                    owner: {
+                        select: {
+                            id: true,
+                            name: true,
+                            email: true,
+                            role: true
+                        }
+                    },
+                    // Include employee count jika perlu
+                    _count: {
+                        select: {
+                            Employee: true,
+                            // members: true
+                        }
+                    }
+                },
+                orderBy: { [sortField as string]: sortOrder },
+                skip: skip,
+                take: limitNum
+            }),
+            prisma.company.count({
+                where: whereClause
+            })
+        ]);
+
+        res.json({ 
+            companies: companies.map(company => ({
+                ...company,
+                employeeCount: company._count?.Employee || 0,
+                // memberCount: company._count?.members || 0
+            })),
+            pagination: {
+                page: pageNum,
+                limit: limitNum,
+                total: totalCount,
+                totalPages: Math.ceil(totalCount / limitNum),
+                hasNext: pageNum < Math.ceil(totalCount / limitNum),
+                hasPrev: pageNum > 1
+            }
+        });
+    } catch (err) {
+        console.error("Error getAllCompanies:", err);
+        res.status(500).json({ message: "Error fetching companies" });
+    }
+}
