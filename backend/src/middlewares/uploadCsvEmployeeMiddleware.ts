@@ -2,7 +2,7 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 
-const uploadDir = "public/uploads/photoEmployee";
+const uploadDir = "public/uploads/csvEmployee";
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
@@ -14,27 +14,27 @@ const storage = multer.diskStorage({
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
     const ext = path.extname(file.originalname);
-    cb(null, file.fieldname + "-" + uniqueSuffix + ext);
+    cb(null, "csvEmployee-" + uniqueSuffix + ext);
   },
 });
 
 // validasi file
 const fileFilter = (req: any, file: Express.Multer.File, cb: any) => {
-  const allowedTypes = /jpeg|jpg|png/;
+  const allowedTypes = /csv/;
   const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-  const mimetype = allowedTypes.test(file.mimetype);
+  const mimetype = file.mimetype === "text/csv" || file.mimetype === "application/vnd.ms-excel";
 
   if (extname && mimetype) {
     cb(null, true);
   } else {
-    cb(new Error("Hanya file JPG, JPEG, dan PNG yang diperbolehkan!"));
+    cb(new Error("Hanya file CSV yang diperbolehkan!"));
   }
 };
 
-const uploadEmployeePhoto = multer({
+const uploadCsvEmployee = multer({
   storage,
-  limits: { fileSize: 2 * 1024 * 1024 },
+  limits: { fileSize: 5 * 1024 * 1024 }, // max 5MB
   fileFilter,
 });
 
-export default uploadEmployeePhoto;
+export default uploadCsvEmployee;
