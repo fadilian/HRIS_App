@@ -809,6 +809,8 @@ export async function exportEmployeesCsv(req: Request, res: Response) {
 }
 
 export async function importEmployeesCsv(req: Request, res: Response) {
+    let filePath: string | null = null;
+    
     try {
         const userId = (req as any).user.id;
 
@@ -842,94 +844,147 @@ export async function importEmployeesCsv(req: Request, res: Response) {
             return res.status(400).json({ message: "File CSV wajib diupload" });
         }
 
-        const filePath = req.file.path; // path file CSV yang sudah diupload multer
+        filePath = req.file.path;
         const employeesData: any[] = [];
 
         // baca CSV
-        fs.createReadStream(filePath)
-            .pipe(csv())
-            .on("data", (row) => {
-                employeesData.push(row);
-            })
-            .on("end", async () => {
-                try {
-                    const results = await prisma.$transaction(async (tx) => {
-                        const createdEmployees = [];
+        await new Promise((resolve, reject) => {
+            fs.createReadStream(filePath!)
+                .pipe(csv())
+                .on("data", (row) => {
+                    employeesData.push(row);
+                })
+                .on("end", resolve)
+                .on("error", reject);
+        });
 
-                        for (const row of employeesData) {
-                            const {
-                                name,
-                                email,
-                                password,
-                                fullName,
-                                nik,
-                                gender,
-                                mobileNumber,
-                                address,
-                                position,
-                                department,
-                                hireDate,
-                                dateOfBirth,
-                                promotionHistory,
-                            } = row;
+        console.log("Data dari CSV:", employeesData);
+        console.log("Jumlah data:", employeesData.length);
 
-                            if (!name || !email || !fullName) continue;
+        if (employeesData.length === 0) {
+            return res.status(400).json({ message: "File CSV kosong atau format tidak sesuai" });
+        }
 
-                            const existing = await tx.user.findFirst({
-                                where: { email, deletedAt: null },
-                            });
-                            if (existing) continue;
+        // Process data tanpa transaction, atau gunakan individual transactions
+        const createdEmployees = [];
+        let processedCount = 0;
+        let successCount = 0;
+        let skippedCount = 0;
 
-                            const hashedPassword = await bcrypt.hash(password || "12345678", 10);
+        for (const row of employeesData) {
+            processedCount++;
+            console.log(`Processing row ${processedCount}:`, row);
 
-                            const newUser = await tx.user.create({
-                                data: {
-                                    name,
-                                    email,
-                                    password: hashedPassword,
-                                    role: "EMPLOYEE",
-                                    companyId,
-                                },
-                            });
+            const {
+                name,
+                email,
+                password,
+                fullName,
+                nik,
+                gender,
+                mobileNumber,
+                address,
+                position,
+                department,
+                hireDate,
+                dateOfBirth,
+                promotionHistory,
+            } = row;
 
-                            const employeeCode = await generateEmployeeCode(companyId!, new Date());
+            // Validasi field required
+            if (!name || !email || !fullName) {
+                console.log(`Skipping row ${processedCount}: Missing required fields`, {
+                    name, email, fullName
+                });
+                skippedCount++;
+                continue;
+            }
 
-                            const employee = await tx.employee.create({
-                                data: {
-                                    userId: newUser.id,
-                                    companyId,
-                                    employeeCode,
-                                    fullName,
-                                    nik,
-                                    gender,
-                                    mobileNumber,
-                                    address,
-                                    position,
-                                    department,
-                                    hireDate: hireDate ? new Date(hireDate) : new Date(),
-                                    dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : null,
-                                    promotionHistory: promotionHistory || null,
-                                    status: "ACTIVE",
-                                },
-                            });
+            try {
+                // Gunakan transaction individual untuk setiap employee
+                const result = await prisma.$transaction(async (tx) => {
+                    // Cek apakah email sudah ada
+                    const existing = await tx.user.findFirst({
+                        where: { 
+                            email: email.trim().toLowerCase(), 
+                            deletedAt: null 
+                        },
+                    });
+                    
+                    if (existing) {
+                        console.log(`Skipping row ${processedCount}: Email already exists - ${email}`);
+                        skippedCount++;
+                        return null;
+                    }
 
-                            createdEmployees.push(employee);
-                        }
+                    const hashedPassword = await bcrypt.hash(password || "12345678", 10);
 
-                        return createdEmployees;
+                    const newUser = await tx.user.create({
+                        data: {
+                            name: name.trim(),
+                            email: email.trim().toLowerCase(),
+                            password: hashedPassword,
+                            role: "EMPLOYEE",
+                            companyId,
+                        },
                     });
 
-                    res.status(201).json({
-                        message: `Berhasil import ${results.length} employee`,
-                        data: results,
+                    const employeeCode = await generateEmployeeCode(companyId!, new Date());
+
+                    const employee = await tx.employee.create({
+                        data: {
+                            userId: newUser.id,
+                            companyId,
+                            employeeCode,
+                            fullName: fullName.trim(),
+                            nik: nik ? nik.trim() : null,
+                            gender: gender ? gender.trim().toUpperCase() : null,
+                            mobileNumber: mobileNumber ? mobileNumber.trim() : null,
+                            address: address ? address.trim() : null,
+                            position: position ? position.trim() : null,
+                            department: department ? department.trim() : null,
+                            hireDate: hireDate ? new Date(hireDate) : new Date(),
+                            dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : null,
+                            promotionHistory: promotionHistory ? promotionHistory.trim() : null,
+                            status: "ACTIVE",
+                        },
                     });
-                } catch (err) {
-                    console.error("Error importEmployees:", err);
-                    res.status(500).json({ message: "Error importing employees" });
+
+                    return employee;
+                });
+
+                if (result) {
+                    createdEmployees.push(result);
+                    successCount++;
+                    console.log(`Successfully created employee: ${result.fullName}`);
                 }
-            });
+
+            } catch (error) {
+                console.error(`Error creating employee for row ${processedCount}:`, error);
+                skippedCount++;
+                continue;
+            }
+        }
+
+        console.log(`Summary - Processed: ${processedCount}, Success: ${successCount}, Skipped: ${skippedCount}`);
+
+        res.status(201).json({
+            message: `Berhasil import ${successCount} employee, skipped: ${skippedCount}`,
+            data: createdEmployees,
+        });
+
     } catch (err) {
         console.error("Error importEmployees:", err);
-        res.status(500).json({ message: "Error importing employees" });
+        res.status(500).json({ 
+            message: "Error importing employees",
+            error: err instanceof Error ? err.message : "Unknown error"
+        });
+    } finally {
+        // Hapus file temporary
+        if (filePath) {
+            fs.unlink(filePath, (err) => {
+                if (err) console.error("Error deleting temp file:", err);
+            });
+        }
     }
 }
