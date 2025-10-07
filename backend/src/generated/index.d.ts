@@ -33,6 +33,16 @@ export type UserToken = $Result.DefaultSelection<Prisma.$UserTokenPayload>
  * 
  */
 export type Employee = $Result.DefaultSelection<Prisma.$EmployeePayload>
+/**
+ * Model ScheduleGroup
+ * 
+ */
+export type ScheduleGroup = $Result.DefaultSelection<Prisma.$ScheduleGroupPayload>
+/**
+ * Model WorkSchedule
+ * 
+ */
+export type WorkSchedule = $Result.DefaultSelection<Prisma.$WorkSchedulePayload>
 
 /**
  * Enums
@@ -54,6 +64,19 @@ export const EmployeeStatus: {
 
 export type EmployeeStatus = (typeof EmployeeStatus)[keyof typeof EmployeeStatus]
 
+
+export const DayOfWeek: {
+  MONDAY: 'MONDAY',
+  TUESDAY: 'TUESDAY',
+  WEDNESDAY: 'WEDNESDAY',
+  THURSDAY: 'THURSDAY',
+  FRIDAY: 'FRIDAY',
+  SATURDAY: 'SATURDAY',
+  SUNDAY: 'SUNDAY'
+};
+
+export type DayOfWeek = (typeof DayOfWeek)[keyof typeof DayOfWeek]
+
 }
 
 export type Role = $Enums.Role
@@ -63,6 +86,10 @@ export const Role: typeof $Enums.Role
 export type EmployeeStatus = $Enums.EmployeeStatus
 
 export const EmployeeStatus: typeof $Enums.EmployeeStatus
+
+export type DayOfWeek = $Enums.DayOfWeek
+
+export const DayOfWeek: typeof $Enums.DayOfWeek
 
 /**
  * ##  Prisma Client ʲˢ
@@ -221,6 +248,26 @@ export class PrismaClient<
     * ```
     */
   get employee(): Prisma.EmployeeDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.scheduleGroup`: Exposes CRUD operations for the **ScheduleGroup** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ScheduleGroups
+    * const scheduleGroups = await prisma.scheduleGroup.findMany()
+    * ```
+    */
+  get scheduleGroup(): Prisma.ScheduleGroupDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.workSchedule`: Exposes CRUD operations for the **WorkSchedule** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more WorkSchedules
+    * const workSchedules = await prisma.workSchedule.findMany()
+    * ```
+    */
+  get workSchedule(): Prisma.WorkScheduleDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -664,7 +711,9 @@ export namespace Prisma {
     User: 'User',
     Company: 'Company',
     UserToken: 'UserToken',
-    Employee: 'Employee'
+    Employee: 'Employee',
+    ScheduleGroup: 'ScheduleGroup',
+    WorkSchedule: 'WorkSchedule'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -683,7 +732,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "company" | "userToken" | "employee"
+      modelProps: "user" | "company" | "userToken" | "employee" | "scheduleGroup" | "workSchedule"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -983,6 +1032,154 @@ export namespace Prisma {
           }
         }
       }
+      ScheduleGroup: {
+        payload: Prisma.$ScheduleGroupPayload<ExtArgs>
+        fields: Prisma.ScheduleGroupFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ScheduleGroupFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduleGroupPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ScheduleGroupFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduleGroupPayload>
+          }
+          findFirst: {
+            args: Prisma.ScheduleGroupFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduleGroupPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ScheduleGroupFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduleGroupPayload>
+          }
+          findMany: {
+            args: Prisma.ScheduleGroupFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduleGroupPayload>[]
+          }
+          create: {
+            args: Prisma.ScheduleGroupCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduleGroupPayload>
+          }
+          createMany: {
+            args: Prisma.ScheduleGroupCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ScheduleGroupCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduleGroupPayload>[]
+          }
+          delete: {
+            args: Prisma.ScheduleGroupDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduleGroupPayload>
+          }
+          update: {
+            args: Prisma.ScheduleGroupUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduleGroupPayload>
+          }
+          deleteMany: {
+            args: Prisma.ScheduleGroupDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ScheduleGroupUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ScheduleGroupUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduleGroupPayload>[]
+          }
+          upsert: {
+            args: Prisma.ScheduleGroupUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduleGroupPayload>
+          }
+          aggregate: {
+            args: Prisma.ScheduleGroupAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateScheduleGroup>
+          }
+          groupBy: {
+            args: Prisma.ScheduleGroupGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ScheduleGroupGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ScheduleGroupCountArgs<ExtArgs>
+            result: $Utils.Optional<ScheduleGroupCountAggregateOutputType> | number
+          }
+        }
+      }
+      WorkSchedule: {
+        payload: Prisma.$WorkSchedulePayload<ExtArgs>
+        fields: Prisma.WorkScheduleFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.WorkScheduleFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkSchedulePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.WorkScheduleFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkSchedulePayload>
+          }
+          findFirst: {
+            args: Prisma.WorkScheduleFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkSchedulePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.WorkScheduleFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkSchedulePayload>
+          }
+          findMany: {
+            args: Prisma.WorkScheduleFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkSchedulePayload>[]
+          }
+          create: {
+            args: Prisma.WorkScheduleCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkSchedulePayload>
+          }
+          createMany: {
+            args: Prisma.WorkScheduleCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.WorkScheduleCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkSchedulePayload>[]
+          }
+          delete: {
+            args: Prisma.WorkScheduleDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkSchedulePayload>
+          }
+          update: {
+            args: Prisma.WorkScheduleUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkSchedulePayload>
+          }
+          deleteMany: {
+            args: Prisma.WorkScheduleDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.WorkScheduleUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.WorkScheduleUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkSchedulePayload>[]
+          }
+          upsert: {
+            args: Prisma.WorkScheduleUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkSchedulePayload>
+          }
+          aggregate: {
+            args: Prisma.WorkScheduleAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateWorkSchedule>
+          }
+          groupBy: {
+            args: Prisma.WorkScheduleGroupByArgs<ExtArgs>
+            result: $Utils.Optional<WorkScheduleGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.WorkScheduleCountArgs<ExtArgs>
+            result: $Utils.Optional<WorkScheduleCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1083,6 +1280,8 @@ export namespace Prisma {
     company?: CompanyOmit
     userToken?: UserTokenOmit
     employee?: EmployeeOmit
+    scheduleGroup?: ScheduleGroupOmit
+    workSchedule?: WorkScheduleOmit
   }
 
   /* Types for Logging */
@@ -1214,11 +1413,15 @@ export namespace Prisma {
   export type CompanyCountOutputType = {
     members: number
     Employee: number
+    ScheduleGroup: number
+    WorkSchedule: number
   }
 
   export type CompanyCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     members?: boolean | CompanyCountOutputTypeCountMembersArgs
     Employee?: boolean | CompanyCountOutputTypeCountEmployeeArgs
+    ScheduleGroup?: boolean | CompanyCountOutputTypeCountScheduleGroupArgs
+    WorkSchedule?: boolean | CompanyCountOutputTypeCountWorkScheduleArgs
   }
 
   // Custom InputTypes
@@ -1243,6 +1446,60 @@ export namespace Prisma {
    * CompanyCountOutputType without action
    */
   export type CompanyCountOutputTypeCountEmployeeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EmployeeWhereInput
+  }
+
+  /**
+   * CompanyCountOutputType without action
+   */
+  export type CompanyCountOutputTypeCountScheduleGroupArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ScheduleGroupWhereInput
+  }
+
+  /**
+   * CompanyCountOutputType without action
+   */
+  export type CompanyCountOutputTypeCountWorkScheduleArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WorkScheduleWhereInput
+  }
+
+
+  /**
+   * Count Type ScheduleGroupCountOutputType
+   */
+
+  export type ScheduleGroupCountOutputType = {
+    workSchedules: number
+    employees: number
+  }
+
+  export type ScheduleGroupCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    workSchedules?: boolean | ScheduleGroupCountOutputTypeCountWorkSchedulesArgs
+    employees?: boolean | ScheduleGroupCountOutputTypeCountEmployeesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ScheduleGroupCountOutputType without action
+   */
+  export type ScheduleGroupCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleGroupCountOutputType
+     */
+    select?: ScheduleGroupCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ScheduleGroupCountOutputType without action
+   */
+  export type ScheduleGroupCountOutputTypeCountWorkSchedulesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WorkScheduleWhereInput
+  }
+
+  /**
+   * ScheduleGroupCountOutputType without action
+   */
+  export type ScheduleGroupCountOutputTypeCountEmployeesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: EmployeeWhereInput
   }
 
@@ -2774,6 +3031,8 @@ export namespace Prisma {
     owner?: boolean | UserDefaultArgs<ExtArgs>
     members?: boolean | Company$membersArgs<ExtArgs>
     Employee?: boolean | Company$EmployeeArgs<ExtArgs>
+    ScheduleGroup?: boolean | Company$ScheduleGroupArgs<ExtArgs>
+    WorkSchedule?: boolean | Company$WorkScheduleArgs<ExtArgs>
     _count?: boolean | CompanyCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["company"]>
 
@@ -2823,6 +3082,8 @@ export namespace Prisma {
     owner?: boolean | UserDefaultArgs<ExtArgs>
     members?: boolean | Company$membersArgs<ExtArgs>
     Employee?: boolean | Company$EmployeeArgs<ExtArgs>
+    ScheduleGroup?: boolean | Company$ScheduleGroupArgs<ExtArgs>
+    WorkSchedule?: boolean | Company$WorkScheduleArgs<ExtArgs>
     _count?: boolean | CompanyCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CompanyIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2838,6 +3099,8 @@ export namespace Prisma {
       owner: Prisma.$UserPayload<ExtArgs>
       members: Prisma.$UserPayload<ExtArgs>[]
       Employee: Prisma.$EmployeePayload<ExtArgs>[]
+      ScheduleGroup: Prisma.$ScheduleGroupPayload<ExtArgs>[]
+      WorkSchedule: Prisma.$WorkSchedulePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -3247,6 +3510,8 @@ export namespace Prisma {
     owner<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     members<T extends Company$membersArgs<ExtArgs> = {}>(args?: Subset<T, Company$membersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     Employee<T extends Company$EmployeeArgs<ExtArgs> = {}>(args?: Subset<T, Company$EmployeeArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    ScheduleGroup<T extends Company$ScheduleGroupArgs<ExtArgs> = {}>(args?: Subset<T, Company$ScheduleGroupArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ScheduleGroupPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    WorkSchedule<T extends Company$WorkScheduleArgs<ExtArgs> = {}>(args?: Subset<T, Company$WorkScheduleArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkSchedulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3727,6 +3992,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: EmployeeScalarFieldEnum | EmployeeScalarFieldEnum[]
+  }
+
+  /**
+   * Company.ScheduleGroup
+   */
+  export type Company$ScheduleGroupArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleGroup
+     */
+    select?: ScheduleGroupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleGroup
+     */
+    omit?: ScheduleGroupOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleGroupInclude<ExtArgs> | null
+    where?: ScheduleGroupWhereInput
+    orderBy?: ScheduleGroupOrderByWithRelationInput | ScheduleGroupOrderByWithRelationInput[]
+    cursor?: ScheduleGroupWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ScheduleGroupScalarFieldEnum | ScheduleGroupScalarFieldEnum[]
+  }
+
+  /**
+   * Company.WorkSchedule
+   */
+  export type Company$WorkScheduleArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkSchedule
+     */
+    select?: WorkScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkSchedule
+     */
+    omit?: WorkScheduleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkScheduleInclude<ExtArgs> | null
+    where?: WorkScheduleWhereInput
+    orderBy?: WorkScheduleOrderByWithRelationInput | WorkScheduleOrderByWithRelationInput[]
+    cursor?: WorkScheduleWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: WorkScheduleScalarFieldEnum | WorkScheduleScalarFieldEnum[]
   }
 
   /**
@@ -4860,12 +5173,14 @@ export namespace Prisma {
     id: number | null
     userId: number | null
     companyId: number | null
+    scheduleGroupId: number | null
   }
 
   export type EmployeeSumAggregateOutputType = {
     id: number | null
     userId: number | null
     companyId: number | null
+    scheduleGroupId: number | null
   }
 
   export type EmployeeMinAggregateOutputType = {
@@ -4885,6 +5200,7 @@ export namespace Prisma {
     hireDate: Date | null
     status: $Enums.EmployeeStatus | null
     promotionHistory: string | null
+    scheduleGroupId: number | null
     createdAt: Date | null
     updatedAt: Date | null
     deletedAt: Date | null
@@ -4907,6 +5223,7 @@ export namespace Prisma {
     hireDate: Date | null
     status: $Enums.EmployeeStatus | null
     promotionHistory: string | null
+    scheduleGroupId: number | null
     createdAt: Date | null
     updatedAt: Date | null
     deletedAt: Date | null
@@ -4929,6 +5246,7 @@ export namespace Prisma {
     hireDate: number
     status: number
     promotionHistory: number
+    scheduleGroupId: number
     createdAt: number
     updatedAt: number
     deletedAt: number
@@ -4940,12 +5258,14 @@ export namespace Prisma {
     id?: true
     userId?: true
     companyId?: true
+    scheduleGroupId?: true
   }
 
   export type EmployeeSumAggregateInputType = {
     id?: true
     userId?: true
     companyId?: true
+    scheduleGroupId?: true
   }
 
   export type EmployeeMinAggregateInputType = {
@@ -4965,6 +5285,7 @@ export namespace Prisma {
     hireDate?: true
     status?: true
     promotionHistory?: true
+    scheduleGroupId?: true
     createdAt?: true
     updatedAt?: true
     deletedAt?: true
@@ -4987,6 +5308,7 @@ export namespace Prisma {
     hireDate?: true
     status?: true
     promotionHistory?: true
+    scheduleGroupId?: true
     createdAt?: true
     updatedAt?: true
     deletedAt?: true
@@ -5009,6 +5331,7 @@ export namespace Prisma {
     hireDate?: true
     status?: true
     promotionHistory?: true
+    scheduleGroupId?: true
     createdAt?: true
     updatedAt?: true
     deletedAt?: true
@@ -5118,6 +5441,7 @@ export namespace Prisma {
     hireDate: Date
     status: $Enums.EmployeeStatus
     promotionHistory: string | null
+    scheduleGroupId: number | null
     createdAt: Date
     updatedAt: Date
     deletedAt: Date | null
@@ -5159,11 +5483,13 @@ export namespace Prisma {
     hireDate?: boolean
     status?: boolean
     promotionHistory?: boolean
+    scheduleGroupId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     company?: boolean | CompanyDefaultArgs<ExtArgs>
+    scheduleGroup?: boolean | Employee$scheduleGroupArgs<ExtArgs>
   }, ExtArgs["result"]["employee"]>
 
   export type EmployeeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -5183,11 +5509,13 @@ export namespace Prisma {
     hireDate?: boolean
     status?: boolean
     promotionHistory?: boolean
+    scheduleGroupId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     company?: boolean | CompanyDefaultArgs<ExtArgs>
+    scheduleGroup?: boolean | Employee$scheduleGroupArgs<ExtArgs>
   }, ExtArgs["result"]["employee"]>
 
   export type EmployeeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -5207,11 +5535,13 @@ export namespace Prisma {
     hireDate?: boolean
     status?: boolean
     promotionHistory?: boolean
+    scheduleGroupId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     company?: boolean | CompanyDefaultArgs<ExtArgs>
+    scheduleGroup?: boolean | Employee$scheduleGroupArgs<ExtArgs>
   }, ExtArgs["result"]["employee"]>
 
   export type EmployeeSelectScalar = {
@@ -5231,23 +5561,27 @@ export namespace Prisma {
     hireDate?: boolean
     status?: boolean
     promotionHistory?: boolean
+    scheduleGroupId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
   }
 
-  export type EmployeeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "companyId" | "employeeCode" | "fullName" | "dateOfBirth" | "nik" | "gender" | "mobileNumber" | "address" | "position" | "department" | "photo" | "hireDate" | "status" | "promotionHistory" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["employee"]>
+  export type EmployeeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "companyId" | "employeeCode" | "fullName" | "dateOfBirth" | "nik" | "gender" | "mobileNumber" | "address" | "position" | "department" | "photo" | "hireDate" | "status" | "promotionHistory" | "scheduleGroupId" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["employee"]>
   export type EmployeeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     company?: boolean | CompanyDefaultArgs<ExtArgs>
+    scheduleGroup?: boolean | Employee$scheduleGroupArgs<ExtArgs>
   }
   export type EmployeeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     company?: boolean | CompanyDefaultArgs<ExtArgs>
+    scheduleGroup?: boolean | Employee$scheduleGroupArgs<ExtArgs>
   }
   export type EmployeeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     company?: boolean | CompanyDefaultArgs<ExtArgs>
+    scheduleGroup?: boolean | Employee$scheduleGroupArgs<ExtArgs>
   }
 
   export type $EmployeePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5255,6 +5589,7 @@ export namespace Prisma {
     objects: {
       user: Prisma.$UserPayload<ExtArgs>
       company: Prisma.$CompanyPayload<ExtArgs>
+      scheduleGroup: Prisma.$ScheduleGroupPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -5273,6 +5608,7 @@ export namespace Prisma {
       hireDate: Date
       status: $Enums.EmployeeStatus
       promotionHistory: string | null
+      scheduleGroupId: number | null
       createdAt: Date
       updatedAt: Date
       deletedAt: Date | null
@@ -5672,6 +6008,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     company<T extends CompanyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CompanyDefaultArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    scheduleGroup<T extends Employee$scheduleGroupArgs<ExtArgs> = {}>(args?: Subset<T, Employee$scheduleGroupArgs<ExtArgs>>): Prisma__ScheduleGroupClient<$Result.GetResult<Prisma.$ScheduleGroupPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5717,6 +6054,7 @@ export namespace Prisma {
     readonly hireDate: FieldRef<"Employee", 'DateTime'>
     readonly status: FieldRef<"Employee", 'EmployeeStatus'>
     readonly promotionHistory: FieldRef<"Employee", 'String'>
+    readonly scheduleGroupId: FieldRef<"Employee", 'Int'>
     readonly createdAt: FieldRef<"Employee", 'DateTime'>
     readonly updatedAt: FieldRef<"Employee", 'DateTime'>
     readonly deletedAt: FieldRef<"Employee", 'DateTime'>
@@ -6116,6 +6454,25 @@ export namespace Prisma {
   }
 
   /**
+   * Employee.scheduleGroup
+   */
+  export type Employee$scheduleGroupArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleGroup
+     */
+    select?: ScheduleGroupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleGroup
+     */
+    omit?: ScheduleGroupOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleGroupInclude<ExtArgs> | null
+    where?: ScheduleGroupWhereInput
+  }
+
+  /**
    * Employee without action
    */
   export type EmployeeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6131,6 +6488,2359 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: EmployeeInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ScheduleGroup
+   */
+
+  export type AggregateScheduleGroup = {
+    _count: ScheduleGroupCountAggregateOutputType | null
+    _avg: ScheduleGroupAvgAggregateOutputType | null
+    _sum: ScheduleGroupSumAggregateOutputType | null
+    _min: ScheduleGroupMinAggregateOutputType | null
+    _max: ScheduleGroupMaxAggregateOutputType | null
+  }
+
+  export type ScheduleGroupAvgAggregateOutputType = {
+    id: number | null
+    companyId: number | null
+  }
+
+  export type ScheduleGroupSumAggregateOutputType = {
+    id: number | null
+    companyId: number | null
+  }
+
+  export type ScheduleGroupMinAggregateOutputType = {
+    id: number | null
+    companyId: number | null
+    nameOfShift: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    deletedAt: Date | null
+  }
+
+  export type ScheduleGroupMaxAggregateOutputType = {
+    id: number | null
+    companyId: number | null
+    nameOfShift: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    deletedAt: Date | null
+  }
+
+  export type ScheduleGroupCountAggregateOutputType = {
+    id: number
+    companyId: number
+    nameOfShift: number
+    createdAt: number
+    updatedAt: number
+    deletedAt: number
+    _all: number
+  }
+
+
+  export type ScheduleGroupAvgAggregateInputType = {
+    id?: true
+    companyId?: true
+  }
+
+  export type ScheduleGroupSumAggregateInputType = {
+    id?: true
+    companyId?: true
+  }
+
+  export type ScheduleGroupMinAggregateInputType = {
+    id?: true
+    companyId?: true
+    nameOfShift?: true
+    createdAt?: true
+    updatedAt?: true
+    deletedAt?: true
+  }
+
+  export type ScheduleGroupMaxAggregateInputType = {
+    id?: true
+    companyId?: true
+    nameOfShift?: true
+    createdAt?: true
+    updatedAt?: true
+    deletedAt?: true
+  }
+
+  export type ScheduleGroupCountAggregateInputType = {
+    id?: true
+    companyId?: true
+    nameOfShift?: true
+    createdAt?: true
+    updatedAt?: true
+    deletedAt?: true
+    _all?: true
+  }
+
+  export type ScheduleGroupAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ScheduleGroup to aggregate.
+     */
+    where?: ScheduleGroupWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ScheduleGroups to fetch.
+     */
+    orderBy?: ScheduleGroupOrderByWithRelationInput | ScheduleGroupOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ScheduleGroupWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ScheduleGroups from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ScheduleGroups.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ScheduleGroups
+    **/
+    _count?: true | ScheduleGroupCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ScheduleGroupAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ScheduleGroupSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ScheduleGroupMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ScheduleGroupMaxAggregateInputType
+  }
+
+  export type GetScheduleGroupAggregateType<T extends ScheduleGroupAggregateArgs> = {
+        [P in keyof T & keyof AggregateScheduleGroup]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateScheduleGroup[P]>
+      : GetScalarType<T[P], AggregateScheduleGroup[P]>
+  }
+
+
+
+
+  export type ScheduleGroupGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ScheduleGroupWhereInput
+    orderBy?: ScheduleGroupOrderByWithAggregationInput | ScheduleGroupOrderByWithAggregationInput[]
+    by: ScheduleGroupScalarFieldEnum[] | ScheduleGroupScalarFieldEnum
+    having?: ScheduleGroupScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ScheduleGroupCountAggregateInputType | true
+    _avg?: ScheduleGroupAvgAggregateInputType
+    _sum?: ScheduleGroupSumAggregateInputType
+    _min?: ScheduleGroupMinAggregateInputType
+    _max?: ScheduleGroupMaxAggregateInputType
+  }
+
+  export type ScheduleGroupGroupByOutputType = {
+    id: number
+    companyId: number
+    nameOfShift: string
+    createdAt: Date
+    updatedAt: Date
+    deletedAt: Date | null
+    _count: ScheduleGroupCountAggregateOutputType | null
+    _avg: ScheduleGroupAvgAggregateOutputType | null
+    _sum: ScheduleGroupSumAggregateOutputType | null
+    _min: ScheduleGroupMinAggregateOutputType | null
+    _max: ScheduleGroupMaxAggregateOutputType | null
+  }
+
+  type GetScheduleGroupGroupByPayload<T extends ScheduleGroupGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ScheduleGroupGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ScheduleGroupGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ScheduleGroupGroupByOutputType[P]>
+            : GetScalarType<T[P], ScheduleGroupGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ScheduleGroupSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    nameOfShift?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    deletedAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    workSchedules?: boolean | ScheduleGroup$workSchedulesArgs<ExtArgs>
+    employees?: boolean | ScheduleGroup$employeesArgs<ExtArgs>
+    _count?: boolean | ScheduleGroupCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["scheduleGroup"]>
+
+  export type ScheduleGroupSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    nameOfShift?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    deletedAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["scheduleGroup"]>
+
+  export type ScheduleGroupSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    nameOfShift?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    deletedAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["scheduleGroup"]>
+
+  export type ScheduleGroupSelectScalar = {
+    id?: boolean
+    companyId?: boolean
+    nameOfShift?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    deletedAt?: boolean
+  }
+
+  export type ScheduleGroupOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyId" | "nameOfShift" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["scheduleGroup"]>
+  export type ScheduleGroupInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    workSchedules?: boolean | ScheduleGroup$workSchedulesArgs<ExtArgs>
+    employees?: boolean | ScheduleGroup$employeesArgs<ExtArgs>
+    _count?: boolean | ScheduleGroupCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type ScheduleGroupIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }
+  export type ScheduleGroupIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }
+
+  export type $ScheduleGroupPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ScheduleGroup"
+    objects: {
+      company: Prisma.$CompanyPayload<ExtArgs>
+      workSchedules: Prisma.$WorkSchedulePayload<ExtArgs>[]
+      employees: Prisma.$EmployeePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      companyId: number
+      nameOfShift: string
+      createdAt: Date
+      updatedAt: Date
+      deletedAt: Date | null
+    }, ExtArgs["result"]["scheduleGroup"]>
+    composites: {}
+  }
+
+  type ScheduleGroupGetPayload<S extends boolean | null | undefined | ScheduleGroupDefaultArgs> = $Result.GetResult<Prisma.$ScheduleGroupPayload, S>
+
+  type ScheduleGroupCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ScheduleGroupFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ScheduleGroupCountAggregateInputType | true
+    }
+
+  export interface ScheduleGroupDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ScheduleGroup'], meta: { name: 'ScheduleGroup' } }
+    /**
+     * Find zero or one ScheduleGroup that matches the filter.
+     * @param {ScheduleGroupFindUniqueArgs} args - Arguments to find a ScheduleGroup
+     * @example
+     * // Get one ScheduleGroup
+     * const scheduleGroup = await prisma.scheduleGroup.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ScheduleGroupFindUniqueArgs>(args: SelectSubset<T, ScheduleGroupFindUniqueArgs<ExtArgs>>): Prisma__ScheduleGroupClient<$Result.GetResult<Prisma.$ScheduleGroupPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ScheduleGroup that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ScheduleGroupFindUniqueOrThrowArgs} args - Arguments to find a ScheduleGroup
+     * @example
+     * // Get one ScheduleGroup
+     * const scheduleGroup = await prisma.scheduleGroup.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ScheduleGroupFindUniqueOrThrowArgs>(args: SelectSubset<T, ScheduleGroupFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ScheduleGroupClient<$Result.GetResult<Prisma.$ScheduleGroupPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ScheduleGroup that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScheduleGroupFindFirstArgs} args - Arguments to find a ScheduleGroup
+     * @example
+     * // Get one ScheduleGroup
+     * const scheduleGroup = await prisma.scheduleGroup.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ScheduleGroupFindFirstArgs>(args?: SelectSubset<T, ScheduleGroupFindFirstArgs<ExtArgs>>): Prisma__ScheduleGroupClient<$Result.GetResult<Prisma.$ScheduleGroupPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ScheduleGroup that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScheduleGroupFindFirstOrThrowArgs} args - Arguments to find a ScheduleGroup
+     * @example
+     * // Get one ScheduleGroup
+     * const scheduleGroup = await prisma.scheduleGroup.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ScheduleGroupFindFirstOrThrowArgs>(args?: SelectSubset<T, ScheduleGroupFindFirstOrThrowArgs<ExtArgs>>): Prisma__ScheduleGroupClient<$Result.GetResult<Prisma.$ScheduleGroupPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ScheduleGroups that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScheduleGroupFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ScheduleGroups
+     * const scheduleGroups = await prisma.scheduleGroup.findMany()
+     * 
+     * // Get first 10 ScheduleGroups
+     * const scheduleGroups = await prisma.scheduleGroup.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const scheduleGroupWithIdOnly = await prisma.scheduleGroup.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ScheduleGroupFindManyArgs>(args?: SelectSubset<T, ScheduleGroupFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ScheduleGroupPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ScheduleGroup.
+     * @param {ScheduleGroupCreateArgs} args - Arguments to create a ScheduleGroup.
+     * @example
+     * // Create one ScheduleGroup
+     * const ScheduleGroup = await prisma.scheduleGroup.create({
+     *   data: {
+     *     // ... data to create a ScheduleGroup
+     *   }
+     * })
+     * 
+     */
+    create<T extends ScheduleGroupCreateArgs>(args: SelectSubset<T, ScheduleGroupCreateArgs<ExtArgs>>): Prisma__ScheduleGroupClient<$Result.GetResult<Prisma.$ScheduleGroupPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ScheduleGroups.
+     * @param {ScheduleGroupCreateManyArgs} args - Arguments to create many ScheduleGroups.
+     * @example
+     * // Create many ScheduleGroups
+     * const scheduleGroup = await prisma.scheduleGroup.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ScheduleGroupCreateManyArgs>(args?: SelectSubset<T, ScheduleGroupCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ScheduleGroups and returns the data saved in the database.
+     * @param {ScheduleGroupCreateManyAndReturnArgs} args - Arguments to create many ScheduleGroups.
+     * @example
+     * // Create many ScheduleGroups
+     * const scheduleGroup = await prisma.scheduleGroup.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ScheduleGroups and only return the `id`
+     * const scheduleGroupWithIdOnly = await prisma.scheduleGroup.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ScheduleGroupCreateManyAndReturnArgs>(args?: SelectSubset<T, ScheduleGroupCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ScheduleGroupPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ScheduleGroup.
+     * @param {ScheduleGroupDeleteArgs} args - Arguments to delete one ScheduleGroup.
+     * @example
+     * // Delete one ScheduleGroup
+     * const ScheduleGroup = await prisma.scheduleGroup.delete({
+     *   where: {
+     *     // ... filter to delete one ScheduleGroup
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ScheduleGroupDeleteArgs>(args: SelectSubset<T, ScheduleGroupDeleteArgs<ExtArgs>>): Prisma__ScheduleGroupClient<$Result.GetResult<Prisma.$ScheduleGroupPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ScheduleGroup.
+     * @param {ScheduleGroupUpdateArgs} args - Arguments to update one ScheduleGroup.
+     * @example
+     * // Update one ScheduleGroup
+     * const scheduleGroup = await prisma.scheduleGroup.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ScheduleGroupUpdateArgs>(args: SelectSubset<T, ScheduleGroupUpdateArgs<ExtArgs>>): Prisma__ScheduleGroupClient<$Result.GetResult<Prisma.$ScheduleGroupPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ScheduleGroups.
+     * @param {ScheduleGroupDeleteManyArgs} args - Arguments to filter ScheduleGroups to delete.
+     * @example
+     * // Delete a few ScheduleGroups
+     * const { count } = await prisma.scheduleGroup.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ScheduleGroupDeleteManyArgs>(args?: SelectSubset<T, ScheduleGroupDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ScheduleGroups.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScheduleGroupUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ScheduleGroups
+     * const scheduleGroup = await prisma.scheduleGroup.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ScheduleGroupUpdateManyArgs>(args: SelectSubset<T, ScheduleGroupUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ScheduleGroups and returns the data updated in the database.
+     * @param {ScheduleGroupUpdateManyAndReturnArgs} args - Arguments to update many ScheduleGroups.
+     * @example
+     * // Update many ScheduleGroups
+     * const scheduleGroup = await prisma.scheduleGroup.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ScheduleGroups and only return the `id`
+     * const scheduleGroupWithIdOnly = await prisma.scheduleGroup.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ScheduleGroupUpdateManyAndReturnArgs>(args: SelectSubset<T, ScheduleGroupUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ScheduleGroupPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ScheduleGroup.
+     * @param {ScheduleGroupUpsertArgs} args - Arguments to update or create a ScheduleGroup.
+     * @example
+     * // Update or create a ScheduleGroup
+     * const scheduleGroup = await prisma.scheduleGroup.upsert({
+     *   create: {
+     *     // ... data to create a ScheduleGroup
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ScheduleGroup we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ScheduleGroupUpsertArgs>(args: SelectSubset<T, ScheduleGroupUpsertArgs<ExtArgs>>): Prisma__ScheduleGroupClient<$Result.GetResult<Prisma.$ScheduleGroupPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ScheduleGroups.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScheduleGroupCountArgs} args - Arguments to filter ScheduleGroups to count.
+     * @example
+     * // Count the number of ScheduleGroups
+     * const count = await prisma.scheduleGroup.count({
+     *   where: {
+     *     // ... the filter for the ScheduleGroups we want to count
+     *   }
+     * })
+    **/
+    count<T extends ScheduleGroupCountArgs>(
+      args?: Subset<T, ScheduleGroupCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ScheduleGroupCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ScheduleGroup.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScheduleGroupAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ScheduleGroupAggregateArgs>(args: Subset<T, ScheduleGroupAggregateArgs>): Prisma.PrismaPromise<GetScheduleGroupAggregateType<T>>
+
+    /**
+     * Group by ScheduleGroup.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScheduleGroupGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ScheduleGroupGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ScheduleGroupGroupByArgs['orderBy'] }
+        : { orderBy?: ScheduleGroupGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ScheduleGroupGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetScheduleGroupGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ScheduleGroup model
+   */
+  readonly fields: ScheduleGroupFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ScheduleGroup.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ScheduleGroupClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    company<T extends CompanyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CompanyDefaultArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    workSchedules<T extends ScheduleGroup$workSchedulesArgs<ExtArgs> = {}>(args?: Subset<T, ScheduleGroup$workSchedulesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkSchedulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    employees<T extends ScheduleGroup$employeesArgs<ExtArgs> = {}>(args?: Subset<T, ScheduleGroup$employeesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ScheduleGroup model
+   */
+  interface ScheduleGroupFieldRefs {
+    readonly id: FieldRef<"ScheduleGroup", 'Int'>
+    readonly companyId: FieldRef<"ScheduleGroup", 'Int'>
+    readonly nameOfShift: FieldRef<"ScheduleGroup", 'String'>
+    readonly createdAt: FieldRef<"ScheduleGroup", 'DateTime'>
+    readonly updatedAt: FieldRef<"ScheduleGroup", 'DateTime'>
+    readonly deletedAt: FieldRef<"ScheduleGroup", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ScheduleGroup findUnique
+   */
+  export type ScheduleGroupFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleGroup
+     */
+    select?: ScheduleGroupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleGroup
+     */
+    omit?: ScheduleGroupOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleGroupInclude<ExtArgs> | null
+    /**
+     * Filter, which ScheduleGroup to fetch.
+     */
+    where: ScheduleGroupWhereUniqueInput
+  }
+
+  /**
+   * ScheduleGroup findUniqueOrThrow
+   */
+  export type ScheduleGroupFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleGroup
+     */
+    select?: ScheduleGroupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleGroup
+     */
+    omit?: ScheduleGroupOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleGroupInclude<ExtArgs> | null
+    /**
+     * Filter, which ScheduleGroup to fetch.
+     */
+    where: ScheduleGroupWhereUniqueInput
+  }
+
+  /**
+   * ScheduleGroup findFirst
+   */
+  export type ScheduleGroupFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleGroup
+     */
+    select?: ScheduleGroupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleGroup
+     */
+    omit?: ScheduleGroupOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleGroupInclude<ExtArgs> | null
+    /**
+     * Filter, which ScheduleGroup to fetch.
+     */
+    where?: ScheduleGroupWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ScheduleGroups to fetch.
+     */
+    orderBy?: ScheduleGroupOrderByWithRelationInput | ScheduleGroupOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ScheduleGroups.
+     */
+    cursor?: ScheduleGroupWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ScheduleGroups from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ScheduleGroups.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ScheduleGroups.
+     */
+    distinct?: ScheduleGroupScalarFieldEnum | ScheduleGroupScalarFieldEnum[]
+  }
+
+  /**
+   * ScheduleGroup findFirstOrThrow
+   */
+  export type ScheduleGroupFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleGroup
+     */
+    select?: ScheduleGroupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleGroup
+     */
+    omit?: ScheduleGroupOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleGroupInclude<ExtArgs> | null
+    /**
+     * Filter, which ScheduleGroup to fetch.
+     */
+    where?: ScheduleGroupWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ScheduleGroups to fetch.
+     */
+    orderBy?: ScheduleGroupOrderByWithRelationInput | ScheduleGroupOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ScheduleGroups.
+     */
+    cursor?: ScheduleGroupWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ScheduleGroups from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ScheduleGroups.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ScheduleGroups.
+     */
+    distinct?: ScheduleGroupScalarFieldEnum | ScheduleGroupScalarFieldEnum[]
+  }
+
+  /**
+   * ScheduleGroup findMany
+   */
+  export type ScheduleGroupFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleGroup
+     */
+    select?: ScheduleGroupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleGroup
+     */
+    omit?: ScheduleGroupOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleGroupInclude<ExtArgs> | null
+    /**
+     * Filter, which ScheduleGroups to fetch.
+     */
+    where?: ScheduleGroupWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ScheduleGroups to fetch.
+     */
+    orderBy?: ScheduleGroupOrderByWithRelationInput | ScheduleGroupOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ScheduleGroups.
+     */
+    cursor?: ScheduleGroupWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ScheduleGroups from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ScheduleGroups.
+     */
+    skip?: number
+    distinct?: ScheduleGroupScalarFieldEnum | ScheduleGroupScalarFieldEnum[]
+  }
+
+  /**
+   * ScheduleGroup create
+   */
+  export type ScheduleGroupCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleGroup
+     */
+    select?: ScheduleGroupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleGroup
+     */
+    omit?: ScheduleGroupOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleGroupInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ScheduleGroup.
+     */
+    data: XOR<ScheduleGroupCreateInput, ScheduleGroupUncheckedCreateInput>
+  }
+
+  /**
+   * ScheduleGroup createMany
+   */
+  export type ScheduleGroupCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ScheduleGroups.
+     */
+    data: ScheduleGroupCreateManyInput | ScheduleGroupCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ScheduleGroup createManyAndReturn
+   */
+  export type ScheduleGroupCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleGroup
+     */
+    select?: ScheduleGroupSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleGroup
+     */
+    omit?: ScheduleGroupOmit<ExtArgs> | null
+    /**
+     * The data used to create many ScheduleGroups.
+     */
+    data: ScheduleGroupCreateManyInput | ScheduleGroupCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleGroupIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ScheduleGroup update
+   */
+  export type ScheduleGroupUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleGroup
+     */
+    select?: ScheduleGroupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleGroup
+     */
+    omit?: ScheduleGroupOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleGroupInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ScheduleGroup.
+     */
+    data: XOR<ScheduleGroupUpdateInput, ScheduleGroupUncheckedUpdateInput>
+    /**
+     * Choose, which ScheduleGroup to update.
+     */
+    where: ScheduleGroupWhereUniqueInput
+  }
+
+  /**
+   * ScheduleGroup updateMany
+   */
+  export type ScheduleGroupUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ScheduleGroups.
+     */
+    data: XOR<ScheduleGroupUpdateManyMutationInput, ScheduleGroupUncheckedUpdateManyInput>
+    /**
+     * Filter which ScheduleGroups to update
+     */
+    where?: ScheduleGroupWhereInput
+    /**
+     * Limit how many ScheduleGroups to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ScheduleGroup updateManyAndReturn
+   */
+  export type ScheduleGroupUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleGroup
+     */
+    select?: ScheduleGroupSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleGroup
+     */
+    omit?: ScheduleGroupOmit<ExtArgs> | null
+    /**
+     * The data used to update ScheduleGroups.
+     */
+    data: XOR<ScheduleGroupUpdateManyMutationInput, ScheduleGroupUncheckedUpdateManyInput>
+    /**
+     * Filter which ScheduleGroups to update
+     */
+    where?: ScheduleGroupWhereInput
+    /**
+     * Limit how many ScheduleGroups to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleGroupIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ScheduleGroup upsert
+   */
+  export type ScheduleGroupUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleGroup
+     */
+    select?: ScheduleGroupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleGroup
+     */
+    omit?: ScheduleGroupOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleGroupInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ScheduleGroup to update in case it exists.
+     */
+    where: ScheduleGroupWhereUniqueInput
+    /**
+     * In case the ScheduleGroup found by the `where` argument doesn't exist, create a new ScheduleGroup with this data.
+     */
+    create: XOR<ScheduleGroupCreateInput, ScheduleGroupUncheckedCreateInput>
+    /**
+     * In case the ScheduleGroup was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ScheduleGroupUpdateInput, ScheduleGroupUncheckedUpdateInput>
+  }
+
+  /**
+   * ScheduleGroup delete
+   */
+  export type ScheduleGroupDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleGroup
+     */
+    select?: ScheduleGroupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleGroup
+     */
+    omit?: ScheduleGroupOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleGroupInclude<ExtArgs> | null
+    /**
+     * Filter which ScheduleGroup to delete.
+     */
+    where: ScheduleGroupWhereUniqueInput
+  }
+
+  /**
+   * ScheduleGroup deleteMany
+   */
+  export type ScheduleGroupDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ScheduleGroups to delete
+     */
+    where?: ScheduleGroupWhereInput
+    /**
+     * Limit how many ScheduleGroups to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ScheduleGroup.workSchedules
+   */
+  export type ScheduleGroup$workSchedulesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkSchedule
+     */
+    select?: WorkScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkSchedule
+     */
+    omit?: WorkScheduleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkScheduleInclude<ExtArgs> | null
+    where?: WorkScheduleWhereInput
+    orderBy?: WorkScheduleOrderByWithRelationInput | WorkScheduleOrderByWithRelationInput[]
+    cursor?: WorkScheduleWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: WorkScheduleScalarFieldEnum | WorkScheduleScalarFieldEnum[]
+  }
+
+  /**
+   * ScheduleGroup.employees
+   */
+  export type ScheduleGroup$employeesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Employee
+     */
+    select?: EmployeeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Employee
+     */
+    omit?: EmployeeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeInclude<ExtArgs> | null
+    where?: EmployeeWhereInput
+    orderBy?: EmployeeOrderByWithRelationInput | EmployeeOrderByWithRelationInput[]
+    cursor?: EmployeeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: EmployeeScalarFieldEnum | EmployeeScalarFieldEnum[]
+  }
+
+  /**
+   * ScheduleGroup without action
+   */
+  export type ScheduleGroupDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleGroup
+     */
+    select?: ScheduleGroupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleGroup
+     */
+    omit?: ScheduleGroupOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleGroupInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model WorkSchedule
+   */
+
+  export type AggregateWorkSchedule = {
+    _count: WorkScheduleCountAggregateOutputType | null
+    _avg: WorkScheduleAvgAggregateOutputType | null
+    _sum: WorkScheduleSumAggregateOutputType | null
+    _min: WorkScheduleMinAggregateOutputType | null
+    _max: WorkScheduleMaxAggregateOutputType | null
+  }
+
+  export type WorkScheduleAvgAggregateOutputType = {
+    id: number | null
+    companyId: number | null
+    scheduleGroupId: number | null
+  }
+
+  export type WorkScheduleSumAggregateOutputType = {
+    id: number | null
+    companyId: number | null
+    scheduleGroupId: number | null
+  }
+
+  export type WorkScheduleMinAggregateOutputType = {
+    id: number | null
+    companyId: number | null
+    scheduleGroupId: number | null
+    dayOfWeek: $Enums.DayOfWeek | null
+    startTime: string | null
+    breakStart: string | null
+    breakEnd: string | null
+    endTime: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    deletedAt: Date | null
+  }
+
+  export type WorkScheduleMaxAggregateOutputType = {
+    id: number | null
+    companyId: number | null
+    scheduleGroupId: number | null
+    dayOfWeek: $Enums.DayOfWeek | null
+    startTime: string | null
+    breakStart: string | null
+    breakEnd: string | null
+    endTime: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    deletedAt: Date | null
+  }
+
+  export type WorkScheduleCountAggregateOutputType = {
+    id: number
+    companyId: number
+    scheduleGroupId: number
+    dayOfWeek: number
+    startTime: number
+    breakStart: number
+    breakEnd: number
+    endTime: number
+    createdAt: number
+    updatedAt: number
+    deletedAt: number
+    _all: number
+  }
+
+
+  export type WorkScheduleAvgAggregateInputType = {
+    id?: true
+    companyId?: true
+    scheduleGroupId?: true
+  }
+
+  export type WorkScheduleSumAggregateInputType = {
+    id?: true
+    companyId?: true
+    scheduleGroupId?: true
+  }
+
+  export type WorkScheduleMinAggregateInputType = {
+    id?: true
+    companyId?: true
+    scheduleGroupId?: true
+    dayOfWeek?: true
+    startTime?: true
+    breakStart?: true
+    breakEnd?: true
+    endTime?: true
+    createdAt?: true
+    updatedAt?: true
+    deletedAt?: true
+  }
+
+  export type WorkScheduleMaxAggregateInputType = {
+    id?: true
+    companyId?: true
+    scheduleGroupId?: true
+    dayOfWeek?: true
+    startTime?: true
+    breakStart?: true
+    breakEnd?: true
+    endTime?: true
+    createdAt?: true
+    updatedAt?: true
+    deletedAt?: true
+  }
+
+  export type WorkScheduleCountAggregateInputType = {
+    id?: true
+    companyId?: true
+    scheduleGroupId?: true
+    dayOfWeek?: true
+    startTime?: true
+    breakStart?: true
+    breakEnd?: true
+    endTime?: true
+    createdAt?: true
+    updatedAt?: true
+    deletedAt?: true
+    _all?: true
+  }
+
+  export type WorkScheduleAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WorkSchedule to aggregate.
+     */
+    where?: WorkScheduleWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkSchedules to fetch.
+     */
+    orderBy?: WorkScheduleOrderByWithRelationInput | WorkScheduleOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: WorkScheduleWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkSchedules from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkSchedules.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned WorkSchedules
+    **/
+    _count?: true | WorkScheduleCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: WorkScheduleAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: WorkScheduleSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: WorkScheduleMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: WorkScheduleMaxAggregateInputType
+  }
+
+  export type GetWorkScheduleAggregateType<T extends WorkScheduleAggregateArgs> = {
+        [P in keyof T & keyof AggregateWorkSchedule]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateWorkSchedule[P]>
+      : GetScalarType<T[P], AggregateWorkSchedule[P]>
+  }
+
+
+
+
+  export type WorkScheduleGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WorkScheduleWhereInput
+    orderBy?: WorkScheduleOrderByWithAggregationInput | WorkScheduleOrderByWithAggregationInput[]
+    by: WorkScheduleScalarFieldEnum[] | WorkScheduleScalarFieldEnum
+    having?: WorkScheduleScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: WorkScheduleCountAggregateInputType | true
+    _avg?: WorkScheduleAvgAggregateInputType
+    _sum?: WorkScheduleSumAggregateInputType
+    _min?: WorkScheduleMinAggregateInputType
+    _max?: WorkScheduleMaxAggregateInputType
+  }
+
+  export type WorkScheduleGroupByOutputType = {
+    id: number
+    companyId: number
+    scheduleGroupId: number
+    dayOfWeek: $Enums.DayOfWeek
+    startTime: string
+    breakStart: string | null
+    breakEnd: string | null
+    endTime: string
+    createdAt: Date
+    updatedAt: Date
+    deletedAt: Date | null
+    _count: WorkScheduleCountAggregateOutputType | null
+    _avg: WorkScheduleAvgAggregateOutputType | null
+    _sum: WorkScheduleSumAggregateOutputType | null
+    _min: WorkScheduleMinAggregateOutputType | null
+    _max: WorkScheduleMaxAggregateOutputType | null
+  }
+
+  type GetWorkScheduleGroupByPayload<T extends WorkScheduleGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<WorkScheduleGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof WorkScheduleGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], WorkScheduleGroupByOutputType[P]>
+            : GetScalarType<T[P], WorkScheduleGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type WorkScheduleSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    scheduleGroupId?: boolean
+    dayOfWeek?: boolean
+    startTime?: boolean
+    breakStart?: boolean
+    breakEnd?: boolean
+    endTime?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    deletedAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    scheduleGroup?: boolean | ScheduleGroupDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["workSchedule"]>
+
+  export type WorkScheduleSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    scheduleGroupId?: boolean
+    dayOfWeek?: boolean
+    startTime?: boolean
+    breakStart?: boolean
+    breakEnd?: boolean
+    endTime?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    deletedAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    scheduleGroup?: boolean | ScheduleGroupDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["workSchedule"]>
+
+  export type WorkScheduleSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    scheduleGroupId?: boolean
+    dayOfWeek?: boolean
+    startTime?: boolean
+    breakStart?: boolean
+    breakEnd?: boolean
+    endTime?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    deletedAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    scheduleGroup?: boolean | ScheduleGroupDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["workSchedule"]>
+
+  export type WorkScheduleSelectScalar = {
+    id?: boolean
+    companyId?: boolean
+    scheduleGroupId?: boolean
+    dayOfWeek?: boolean
+    startTime?: boolean
+    breakStart?: boolean
+    breakEnd?: boolean
+    endTime?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    deletedAt?: boolean
+  }
+
+  export type WorkScheduleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyId" | "scheduleGroupId" | "dayOfWeek" | "startTime" | "breakStart" | "breakEnd" | "endTime" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["workSchedule"]>
+  export type WorkScheduleInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    scheduleGroup?: boolean | ScheduleGroupDefaultArgs<ExtArgs>
+  }
+  export type WorkScheduleIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    scheduleGroup?: boolean | ScheduleGroupDefaultArgs<ExtArgs>
+  }
+  export type WorkScheduleIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    scheduleGroup?: boolean | ScheduleGroupDefaultArgs<ExtArgs>
+  }
+
+  export type $WorkSchedulePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "WorkSchedule"
+    objects: {
+      company: Prisma.$CompanyPayload<ExtArgs>
+      scheduleGroup: Prisma.$ScheduleGroupPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      companyId: number
+      scheduleGroupId: number
+      dayOfWeek: $Enums.DayOfWeek
+      startTime: string
+      breakStart: string | null
+      breakEnd: string | null
+      endTime: string
+      createdAt: Date
+      updatedAt: Date
+      deletedAt: Date | null
+    }, ExtArgs["result"]["workSchedule"]>
+    composites: {}
+  }
+
+  type WorkScheduleGetPayload<S extends boolean | null | undefined | WorkScheduleDefaultArgs> = $Result.GetResult<Prisma.$WorkSchedulePayload, S>
+
+  type WorkScheduleCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<WorkScheduleFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: WorkScheduleCountAggregateInputType | true
+    }
+
+  export interface WorkScheduleDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['WorkSchedule'], meta: { name: 'WorkSchedule' } }
+    /**
+     * Find zero or one WorkSchedule that matches the filter.
+     * @param {WorkScheduleFindUniqueArgs} args - Arguments to find a WorkSchedule
+     * @example
+     * // Get one WorkSchedule
+     * const workSchedule = await prisma.workSchedule.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends WorkScheduleFindUniqueArgs>(args: SelectSubset<T, WorkScheduleFindUniqueArgs<ExtArgs>>): Prisma__WorkScheduleClient<$Result.GetResult<Prisma.$WorkSchedulePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one WorkSchedule that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {WorkScheduleFindUniqueOrThrowArgs} args - Arguments to find a WorkSchedule
+     * @example
+     * // Get one WorkSchedule
+     * const workSchedule = await prisma.workSchedule.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends WorkScheduleFindUniqueOrThrowArgs>(args: SelectSubset<T, WorkScheduleFindUniqueOrThrowArgs<ExtArgs>>): Prisma__WorkScheduleClient<$Result.GetResult<Prisma.$WorkSchedulePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WorkSchedule that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkScheduleFindFirstArgs} args - Arguments to find a WorkSchedule
+     * @example
+     * // Get one WorkSchedule
+     * const workSchedule = await prisma.workSchedule.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends WorkScheduleFindFirstArgs>(args?: SelectSubset<T, WorkScheduleFindFirstArgs<ExtArgs>>): Prisma__WorkScheduleClient<$Result.GetResult<Prisma.$WorkSchedulePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WorkSchedule that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkScheduleFindFirstOrThrowArgs} args - Arguments to find a WorkSchedule
+     * @example
+     * // Get one WorkSchedule
+     * const workSchedule = await prisma.workSchedule.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends WorkScheduleFindFirstOrThrowArgs>(args?: SelectSubset<T, WorkScheduleFindFirstOrThrowArgs<ExtArgs>>): Prisma__WorkScheduleClient<$Result.GetResult<Prisma.$WorkSchedulePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more WorkSchedules that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkScheduleFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all WorkSchedules
+     * const workSchedules = await prisma.workSchedule.findMany()
+     * 
+     * // Get first 10 WorkSchedules
+     * const workSchedules = await prisma.workSchedule.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const workScheduleWithIdOnly = await prisma.workSchedule.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends WorkScheduleFindManyArgs>(args?: SelectSubset<T, WorkScheduleFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkSchedulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a WorkSchedule.
+     * @param {WorkScheduleCreateArgs} args - Arguments to create a WorkSchedule.
+     * @example
+     * // Create one WorkSchedule
+     * const WorkSchedule = await prisma.workSchedule.create({
+     *   data: {
+     *     // ... data to create a WorkSchedule
+     *   }
+     * })
+     * 
+     */
+    create<T extends WorkScheduleCreateArgs>(args: SelectSubset<T, WorkScheduleCreateArgs<ExtArgs>>): Prisma__WorkScheduleClient<$Result.GetResult<Prisma.$WorkSchedulePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many WorkSchedules.
+     * @param {WorkScheduleCreateManyArgs} args - Arguments to create many WorkSchedules.
+     * @example
+     * // Create many WorkSchedules
+     * const workSchedule = await prisma.workSchedule.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends WorkScheduleCreateManyArgs>(args?: SelectSubset<T, WorkScheduleCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many WorkSchedules and returns the data saved in the database.
+     * @param {WorkScheduleCreateManyAndReturnArgs} args - Arguments to create many WorkSchedules.
+     * @example
+     * // Create many WorkSchedules
+     * const workSchedule = await prisma.workSchedule.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many WorkSchedules and only return the `id`
+     * const workScheduleWithIdOnly = await prisma.workSchedule.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends WorkScheduleCreateManyAndReturnArgs>(args?: SelectSubset<T, WorkScheduleCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkSchedulePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a WorkSchedule.
+     * @param {WorkScheduleDeleteArgs} args - Arguments to delete one WorkSchedule.
+     * @example
+     * // Delete one WorkSchedule
+     * const WorkSchedule = await prisma.workSchedule.delete({
+     *   where: {
+     *     // ... filter to delete one WorkSchedule
+     *   }
+     * })
+     * 
+     */
+    delete<T extends WorkScheduleDeleteArgs>(args: SelectSubset<T, WorkScheduleDeleteArgs<ExtArgs>>): Prisma__WorkScheduleClient<$Result.GetResult<Prisma.$WorkSchedulePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one WorkSchedule.
+     * @param {WorkScheduleUpdateArgs} args - Arguments to update one WorkSchedule.
+     * @example
+     * // Update one WorkSchedule
+     * const workSchedule = await prisma.workSchedule.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends WorkScheduleUpdateArgs>(args: SelectSubset<T, WorkScheduleUpdateArgs<ExtArgs>>): Prisma__WorkScheduleClient<$Result.GetResult<Prisma.$WorkSchedulePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more WorkSchedules.
+     * @param {WorkScheduleDeleteManyArgs} args - Arguments to filter WorkSchedules to delete.
+     * @example
+     * // Delete a few WorkSchedules
+     * const { count } = await prisma.workSchedule.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends WorkScheduleDeleteManyArgs>(args?: SelectSubset<T, WorkScheduleDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WorkSchedules.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkScheduleUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many WorkSchedules
+     * const workSchedule = await prisma.workSchedule.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends WorkScheduleUpdateManyArgs>(args: SelectSubset<T, WorkScheduleUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WorkSchedules and returns the data updated in the database.
+     * @param {WorkScheduleUpdateManyAndReturnArgs} args - Arguments to update many WorkSchedules.
+     * @example
+     * // Update many WorkSchedules
+     * const workSchedule = await prisma.workSchedule.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more WorkSchedules and only return the `id`
+     * const workScheduleWithIdOnly = await prisma.workSchedule.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends WorkScheduleUpdateManyAndReturnArgs>(args: SelectSubset<T, WorkScheduleUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkSchedulePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one WorkSchedule.
+     * @param {WorkScheduleUpsertArgs} args - Arguments to update or create a WorkSchedule.
+     * @example
+     * // Update or create a WorkSchedule
+     * const workSchedule = await prisma.workSchedule.upsert({
+     *   create: {
+     *     // ... data to create a WorkSchedule
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the WorkSchedule we want to update
+     *   }
+     * })
+     */
+    upsert<T extends WorkScheduleUpsertArgs>(args: SelectSubset<T, WorkScheduleUpsertArgs<ExtArgs>>): Prisma__WorkScheduleClient<$Result.GetResult<Prisma.$WorkSchedulePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of WorkSchedules.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkScheduleCountArgs} args - Arguments to filter WorkSchedules to count.
+     * @example
+     * // Count the number of WorkSchedules
+     * const count = await prisma.workSchedule.count({
+     *   where: {
+     *     // ... the filter for the WorkSchedules we want to count
+     *   }
+     * })
+    **/
+    count<T extends WorkScheduleCountArgs>(
+      args?: Subset<T, WorkScheduleCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], WorkScheduleCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a WorkSchedule.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkScheduleAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends WorkScheduleAggregateArgs>(args: Subset<T, WorkScheduleAggregateArgs>): Prisma.PrismaPromise<GetWorkScheduleAggregateType<T>>
+
+    /**
+     * Group by WorkSchedule.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkScheduleGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends WorkScheduleGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: WorkScheduleGroupByArgs['orderBy'] }
+        : { orderBy?: WorkScheduleGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, WorkScheduleGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWorkScheduleGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the WorkSchedule model
+   */
+  readonly fields: WorkScheduleFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for WorkSchedule.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__WorkScheduleClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    company<T extends CompanyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CompanyDefaultArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    scheduleGroup<T extends ScheduleGroupDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ScheduleGroupDefaultArgs<ExtArgs>>): Prisma__ScheduleGroupClient<$Result.GetResult<Prisma.$ScheduleGroupPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the WorkSchedule model
+   */
+  interface WorkScheduleFieldRefs {
+    readonly id: FieldRef<"WorkSchedule", 'Int'>
+    readonly companyId: FieldRef<"WorkSchedule", 'Int'>
+    readonly scheduleGroupId: FieldRef<"WorkSchedule", 'Int'>
+    readonly dayOfWeek: FieldRef<"WorkSchedule", 'DayOfWeek'>
+    readonly startTime: FieldRef<"WorkSchedule", 'String'>
+    readonly breakStart: FieldRef<"WorkSchedule", 'String'>
+    readonly breakEnd: FieldRef<"WorkSchedule", 'String'>
+    readonly endTime: FieldRef<"WorkSchedule", 'String'>
+    readonly createdAt: FieldRef<"WorkSchedule", 'DateTime'>
+    readonly updatedAt: FieldRef<"WorkSchedule", 'DateTime'>
+    readonly deletedAt: FieldRef<"WorkSchedule", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * WorkSchedule findUnique
+   */
+  export type WorkScheduleFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkSchedule
+     */
+    select?: WorkScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkSchedule
+     */
+    omit?: WorkScheduleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkScheduleInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkSchedule to fetch.
+     */
+    where: WorkScheduleWhereUniqueInput
+  }
+
+  /**
+   * WorkSchedule findUniqueOrThrow
+   */
+  export type WorkScheduleFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkSchedule
+     */
+    select?: WorkScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkSchedule
+     */
+    omit?: WorkScheduleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkScheduleInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkSchedule to fetch.
+     */
+    where: WorkScheduleWhereUniqueInput
+  }
+
+  /**
+   * WorkSchedule findFirst
+   */
+  export type WorkScheduleFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkSchedule
+     */
+    select?: WorkScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkSchedule
+     */
+    omit?: WorkScheduleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkScheduleInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkSchedule to fetch.
+     */
+    where?: WorkScheduleWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkSchedules to fetch.
+     */
+    orderBy?: WorkScheduleOrderByWithRelationInput | WorkScheduleOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WorkSchedules.
+     */
+    cursor?: WorkScheduleWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkSchedules from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkSchedules.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkSchedules.
+     */
+    distinct?: WorkScheduleScalarFieldEnum | WorkScheduleScalarFieldEnum[]
+  }
+
+  /**
+   * WorkSchedule findFirstOrThrow
+   */
+  export type WorkScheduleFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkSchedule
+     */
+    select?: WorkScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkSchedule
+     */
+    omit?: WorkScheduleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkScheduleInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkSchedule to fetch.
+     */
+    where?: WorkScheduleWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkSchedules to fetch.
+     */
+    orderBy?: WorkScheduleOrderByWithRelationInput | WorkScheduleOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WorkSchedules.
+     */
+    cursor?: WorkScheduleWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkSchedules from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkSchedules.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkSchedules.
+     */
+    distinct?: WorkScheduleScalarFieldEnum | WorkScheduleScalarFieldEnum[]
+  }
+
+  /**
+   * WorkSchedule findMany
+   */
+  export type WorkScheduleFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkSchedule
+     */
+    select?: WorkScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkSchedule
+     */
+    omit?: WorkScheduleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkScheduleInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkSchedules to fetch.
+     */
+    where?: WorkScheduleWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkSchedules to fetch.
+     */
+    orderBy?: WorkScheduleOrderByWithRelationInput | WorkScheduleOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing WorkSchedules.
+     */
+    cursor?: WorkScheduleWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkSchedules from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkSchedules.
+     */
+    skip?: number
+    distinct?: WorkScheduleScalarFieldEnum | WorkScheduleScalarFieldEnum[]
+  }
+
+  /**
+   * WorkSchedule create
+   */
+  export type WorkScheduleCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkSchedule
+     */
+    select?: WorkScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkSchedule
+     */
+    omit?: WorkScheduleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkScheduleInclude<ExtArgs> | null
+    /**
+     * The data needed to create a WorkSchedule.
+     */
+    data: XOR<WorkScheduleCreateInput, WorkScheduleUncheckedCreateInput>
+  }
+
+  /**
+   * WorkSchedule createMany
+   */
+  export type WorkScheduleCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many WorkSchedules.
+     */
+    data: WorkScheduleCreateManyInput | WorkScheduleCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * WorkSchedule createManyAndReturn
+   */
+  export type WorkScheduleCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkSchedule
+     */
+    select?: WorkScheduleSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkSchedule
+     */
+    omit?: WorkScheduleOmit<ExtArgs> | null
+    /**
+     * The data used to create many WorkSchedules.
+     */
+    data: WorkScheduleCreateManyInput | WorkScheduleCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkScheduleIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * WorkSchedule update
+   */
+  export type WorkScheduleUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkSchedule
+     */
+    select?: WorkScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkSchedule
+     */
+    omit?: WorkScheduleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkScheduleInclude<ExtArgs> | null
+    /**
+     * The data needed to update a WorkSchedule.
+     */
+    data: XOR<WorkScheduleUpdateInput, WorkScheduleUncheckedUpdateInput>
+    /**
+     * Choose, which WorkSchedule to update.
+     */
+    where: WorkScheduleWhereUniqueInput
+  }
+
+  /**
+   * WorkSchedule updateMany
+   */
+  export type WorkScheduleUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update WorkSchedules.
+     */
+    data: XOR<WorkScheduleUpdateManyMutationInput, WorkScheduleUncheckedUpdateManyInput>
+    /**
+     * Filter which WorkSchedules to update
+     */
+    where?: WorkScheduleWhereInput
+    /**
+     * Limit how many WorkSchedules to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * WorkSchedule updateManyAndReturn
+   */
+  export type WorkScheduleUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkSchedule
+     */
+    select?: WorkScheduleSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkSchedule
+     */
+    omit?: WorkScheduleOmit<ExtArgs> | null
+    /**
+     * The data used to update WorkSchedules.
+     */
+    data: XOR<WorkScheduleUpdateManyMutationInput, WorkScheduleUncheckedUpdateManyInput>
+    /**
+     * Filter which WorkSchedules to update
+     */
+    where?: WorkScheduleWhereInput
+    /**
+     * Limit how many WorkSchedules to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkScheduleIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * WorkSchedule upsert
+   */
+  export type WorkScheduleUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkSchedule
+     */
+    select?: WorkScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkSchedule
+     */
+    omit?: WorkScheduleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkScheduleInclude<ExtArgs> | null
+    /**
+     * The filter to search for the WorkSchedule to update in case it exists.
+     */
+    where: WorkScheduleWhereUniqueInput
+    /**
+     * In case the WorkSchedule found by the `where` argument doesn't exist, create a new WorkSchedule with this data.
+     */
+    create: XOR<WorkScheduleCreateInput, WorkScheduleUncheckedCreateInput>
+    /**
+     * In case the WorkSchedule was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<WorkScheduleUpdateInput, WorkScheduleUncheckedUpdateInput>
+  }
+
+  /**
+   * WorkSchedule delete
+   */
+  export type WorkScheduleDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkSchedule
+     */
+    select?: WorkScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkSchedule
+     */
+    omit?: WorkScheduleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkScheduleInclude<ExtArgs> | null
+    /**
+     * Filter which WorkSchedule to delete.
+     */
+    where: WorkScheduleWhereUniqueInput
+  }
+
+  /**
+   * WorkSchedule deleteMany
+   */
+  export type WorkScheduleDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WorkSchedules to delete
+     */
+    where?: WorkScheduleWhereInput
+    /**
+     * Limit how many WorkSchedules to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * WorkSchedule without action
+   */
+  export type WorkScheduleDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkSchedule
+     */
+    select?: WorkScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkSchedule
+     */
+    omit?: WorkScheduleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkScheduleInclude<ExtArgs> | null
   }
 
 
@@ -6208,12 +8918,42 @@ export namespace Prisma {
     hireDate: 'hireDate',
     status: 'status',
     promotionHistory: 'promotionHistory',
+    scheduleGroupId: 'scheduleGroupId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     deletedAt: 'deletedAt'
   };
 
   export type EmployeeScalarFieldEnum = (typeof EmployeeScalarFieldEnum)[keyof typeof EmployeeScalarFieldEnum]
+
+
+  export const ScheduleGroupScalarFieldEnum: {
+    id: 'id',
+    companyId: 'companyId',
+    nameOfShift: 'nameOfShift',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    deletedAt: 'deletedAt'
+  };
+
+  export type ScheduleGroupScalarFieldEnum = (typeof ScheduleGroupScalarFieldEnum)[keyof typeof ScheduleGroupScalarFieldEnum]
+
+
+  export const WorkScheduleScalarFieldEnum: {
+    id: 'id',
+    companyId: 'companyId',
+    scheduleGroupId: 'scheduleGroupId',
+    dayOfWeek: 'dayOfWeek',
+    startTime: 'startTime',
+    breakStart: 'breakStart',
+    breakEnd: 'breakEnd',
+    endTime: 'endTime',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    deletedAt: 'deletedAt'
+  };
+
+  export type WorkScheduleScalarFieldEnum = (typeof WorkScheduleScalarFieldEnum)[keyof typeof WorkScheduleScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -6326,6 +9066,20 @@ export namespace Prisma {
    * Reference to a field of type 'EmployeeStatus[]'
    */
   export type ListEnumEmployeeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmployeeStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'DayOfWeek'
+   */
+  export type EnumDayOfWeekFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DayOfWeek'>
+    
+
+
+  /**
+   * Reference to a field of type 'DayOfWeek[]'
+   */
+  export type ListEnumDayOfWeekFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DayOfWeek[]'>
     
 
 
@@ -6454,6 +9208,8 @@ export namespace Prisma {
     owner?: XOR<UserScalarRelationFilter, UserWhereInput>
     members?: UserListRelationFilter
     Employee?: EmployeeListRelationFilter
+    ScheduleGroup?: ScheduleGroupListRelationFilter
+    WorkSchedule?: WorkScheduleListRelationFilter
   }
 
   export type CompanyOrderByWithRelationInput = {
@@ -6470,6 +9226,8 @@ export namespace Prisma {
     owner?: UserOrderByWithRelationInput
     members?: UserOrderByRelationAggregateInput
     Employee?: EmployeeOrderByRelationAggregateInput
+    ScheduleGroup?: ScheduleGroupOrderByRelationAggregateInput
+    WorkSchedule?: WorkScheduleOrderByRelationAggregateInput
   }
 
   export type CompanyWhereUniqueInput = Prisma.AtLeast<{
@@ -6489,6 +9247,8 @@ export namespace Prisma {
     owner?: XOR<UserScalarRelationFilter, UserWhereInput>
     members?: UserListRelationFilter
     Employee?: EmployeeListRelationFilter
+    ScheduleGroup?: ScheduleGroupListRelationFilter
+    WorkSchedule?: WorkScheduleListRelationFilter
   }, "id">
 
   export type CompanyOrderByWithAggregationInput = {
@@ -6602,11 +9362,13 @@ export namespace Prisma {
     hireDate?: DateTimeFilter<"Employee"> | Date | string
     status?: EnumEmployeeStatusFilter<"Employee"> | $Enums.EmployeeStatus
     promotionHistory?: StringNullableFilter<"Employee"> | string | null
+    scheduleGroupId?: IntNullableFilter<"Employee"> | number | null
     createdAt?: DateTimeFilter<"Employee"> | Date | string
     updatedAt?: DateTimeFilter<"Employee"> | Date | string
     deletedAt?: DateTimeNullableFilter<"Employee"> | Date | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+    scheduleGroup?: XOR<ScheduleGroupNullableScalarRelationFilter, ScheduleGroupWhereInput> | null
   }
 
   export type EmployeeOrderByWithRelationInput = {
@@ -6626,16 +9388,19 @@ export namespace Prisma {
     hireDate?: SortOrder
     status?: SortOrder
     promotionHistory?: SortOrderInput | SortOrder
+    scheduleGroupId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
     user?: UserOrderByWithRelationInput
     company?: CompanyOrderByWithRelationInput
+    scheduleGroup?: ScheduleGroupOrderByWithRelationInput
   }
 
   export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
     id?: number
     employeeCode?: string
+    nik?: string
     AND?: EmployeeWhereInput | EmployeeWhereInput[]
     OR?: EmployeeWhereInput[]
     NOT?: EmployeeWhereInput | EmployeeWhereInput[]
@@ -6643,7 +9408,6 @@ export namespace Prisma {
     companyId?: IntFilter<"Employee"> | number
     fullName?: StringFilter<"Employee"> | string
     dateOfBirth?: DateTimeNullableFilter<"Employee"> | Date | string | null
-    nik?: StringFilter<"Employee"> | string
     gender?: StringFilter<"Employee"> | string
     mobileNumber?: StringNullableFilter<"Employee"> | string | null
     address?: StringNullableFilter<"Employee"> | string | null
@@ -6653,12 +9417,14 @@ export namespace Prisma {
     hireDate?: DateTimeFilter<"Employee"> | Date | string
     status?: EnumEmployeeStatusFilter<"Employee"> | $Enums.EmployeeStatus
     promotionHistory?: StringNullableFilter<"Employee"> | string | null
+    scheduleGroupId?: IntNullableFilter<"Employee"> | number | null
     createdAt?: DateTimeFilter<"Employee"> | Date | string
     updatedAt?: DateTimeFilter<"Employee"> | Date | string
     deletedAt?: DateTimeNullableFilter<"Employee"> | Date | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
-  }, "id" | "employeeCode">
+    scheduleGroup?: XOR<ScheduleGroupNullableScalarRelationFilter, ScheduleGroupWhereInput> | null
+  }, "id" | "employeeCode" | "nik">
 
   export type EmployeeOrderByWithAggregationInput = {
     id?: SortOrder
@@ -6677,6 +9443,7 @@ export namespace Prisma {
     hireDate?: SortOrder
     status?: SortOrder
     promotionHistory?: SortOrderInput | SortOrder
+    scheduleGroupId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
@@ -6707,9 +9474,169 @@ export namespace Prisma {
     hireDate?: DateTimeWithAggregatesFilter<"Employee"> | Date | string
     status?: EnumEmployeeStatusWithAggregatesFilter<"Employee"> | $Enums.EmployeeStatus
     promotionHistory?: StringNullableWithAggregatesFilter<"Employee"> | string | null
+    scheduleGroupId?: IntNullableWithAggregatesFilter<"Employee"> | number | null
     createdAt?: DateTimeWithAggregatesFilter<"Employee"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Employee"> | Date | string
     deletedAt?: DateTimeNullableWithAggregatesFilter<"Employee"> | Date | string | null
+  }
+
+  export type ScheduleGroupWhereInput = {
+    AND?: ScheduleGroupWhereInput | ScheduleGroupWhereInput[]
+    OR?: ScheduleGroupWhereInput[]
+    NOT?: ScheduleGroupWhereInput | ScheduleGroupWhereInput[]
+    id?: IntFilter<"ScheduleGroup"> | number
+    companyId?: IntFilter<"ScheduleGroup"> | number
+    nameOfShift?: StringFilter<"ScheduleGroup"> | string
+    createdAt?: DateTimeFilter<"ScheduleGroup"> | Date | string
+    updatedAt?: DateTimeFilter<"ScheduleGroup"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"ScheduleGroup"> | Date | string | null
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+    workSchedules?: WorkScheduleListRelationFilter
+    employees?: EmployeeListRelationFilter
+  }
+
+  export type ScheduleGroupOrderByWithRelationInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    nameOfShift?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
+    company?: CompanyOrderByWithRelationInput
+    workSchedules?: WorkScheduleOrderByRelationAggregateInput
+    employees?: EmployeeOrderByRelationAggregateInput
+  }
+
+  export type ScheduleGroupWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    companyId_nameOfShift?: ScheduleGroupCompanyIdNameOfShiftCompoundUniqueInput
+    AND?: ScheduleGroupWhereInput | ScheduleGroupWhereInput[]
+    OR?: ScheduleGroupWhereInput[]
+    NOT?: ScheduleGroupWhereInput | ScheduleGroupWhereInput[]
+    companyId?: IntFilter<"ScheduleGroup"> | number
+    nameOfShift?: StringFilter<"ScheduleGroup"> | string
+    createdAt?: DateTimeFilter<"ScheduleGroup"> | Date | string
+    updatedAt?: DateTimeFilter<"ScheduleGroup"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"ScheduleGroup"> | Date | string | null
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+    workSchedules?: WorkScheduleListRelationFilter
+    employees?: EmployeeListRelationFilter
+  }, "id" | "companyId_nameOfShift">
+
+  export type ScheduleGroupOrderByWithAggregationInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    nameOfShift?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
+    _count?: ScheduleGroupCountOrderByAggregateInput
+    _avg?: ScheduleGroupAvgOrderByAggregateInput
+    _max?: ScheduleGroupMaxOrderByAggregateInput
+    _min?: ScheduleGroupMinOrderByAggregateInput
+    _sum?: ScheduleGroupSumOrderByAggregateInput
+  }
+
+  export type ScheduleGroupScalarWhereWithAggregatesInput = {
+    AND?: ScheduleGroupScalarWhereWithAggregatesInput | ScheduleGroupScalarWhereWithAggregatesInput[]
+    OR?: ScheduleGroupScalarWhereWithAggregatesInput[]
+    NOT?: ScheduleGroupScalarWhereWithAggregatesInput | ScheduleGroupScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"ScheduleGroup"> | number
+    companyId?: IntWithAggregatesFilter<"ScheduleGroup"> | number
+    nameOfShift?: StringWithAggregatesFilter<"ScheduleGroup"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"ScheduleGroup"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ScheduleGroup"> | Date | string
+    deletedAt?: DateTimeNullableWithAggregatesFilter<"ScheduleGroup"> | Date | string | null
+  }
+
+  export type WorkScheduleWhereInput = {
+    AND?: WorkScheduleWhereInput | WorkScheduleWhereInput[]
+    OR?: WorkScheduleWhereInput[]
+    NOT?: WorkScheduleWhereInput | WorkScheduleWhereInput[]
+    id?: IntFilter<"WorkSchedule"> | number
+    companyId?: IntFilter<"WorkSchedule"> | number
+    scheduleGroupId?: IntFilter<"WorkSchedule"> | number
+    dayOfWeek?: EnumDayOfWeekFilter<"WorkSchedule"> | $Enums.DayOfWeek
+    startTime?: StringFilter<"WorkSchedule"> | string
+    breakStart?: StringNullableFilter<"WorkSchedule"> | string | null
+    breakEnd?: StringNullableFilter<"WorkSchedule"> | string | null
+    endTime?: StringFilter<"WorkSchedule"> | string
+    createdAt?: DateTimeFilter<"WorkSchedule"> | Date | string
+    updatedAt?: DateTimeFilter<"WorkSchedule"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"WorkSchedule"> | Date | string | null
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+    scheduleGroup?: XOR<ScheduleGroupScalarRelationFilter, ScheduleGroupWhereInput>
+  }
+
+  export type WorkScheduleOrderByWithRelationInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    scheduleGroupId?: SortOrder
+    dayOfWeek?: SortOrder
+    startTime?: SortOrder
+    breakStart?: SortOrderInput | SortOrder
+    breakEnd?: SortOrderInput | SortOrder
+    endTime?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
+    company?: CompanyOrderByWithRelationInput
+    scheduleGroup?: ScheduleGroupOrderByWithRelationInput
+  }
+
+  export type WorkScheduleWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: WorkScheduleWhereInput | WorkScheduleWhereInput[]
+    OR?: WorkScheduleWhereInput[]
+    NOT?: WorkScheduleWhereInput | WorkScheduleWhereInput[]
+    companyId?: IntFilter<"WorkSchedule"> | number
+    scheduleGroupId?: IntFilter<"WorkSchedule"> | number
+    dayOfWeek?: EnumDayOfWeekFilter<"WorkSchedule"> | $Enums.DayOfWeek
+    startTime?: StringFilter<"WorkSchedule"> | string
+    breakStart?: StringNullableFilter<"WorkSchedule"> | string | null
+    breakEnd?: StringNullableFilter<"WorkSchedule"> | string | null
+    endTime?: StringFilter<"WorkSchedule"> | string
+    createdAt?: DateTimeFilter<"WorkSchedule"> | Date | string
+    updatedAt?: DateTimeFilter<"WorkSchedule"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"WorkSchedule"> | Date | string | null
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+    scheduleGroup?: XOR<ScheduleGroupScalarRelationFilter, ScheduleGroupWhereInput>
+  }, "id">
+
+  export type WorkScheduleOrderByWithAggregationInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    scheduleGroupId?: SortOrder
+    dayOfWeek?: SortOrder
+    startTime?: SortOrder
+    breakStart?: SortOrderInput | SortOrder
+    breakEnd?: SortOrderInput | SortOrder
+    endTime?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
+    _count?: WorkScheduleCountOrderByAggregateInput
+    _avg?: WorkScheduleAvgOrderByAggregateInput
+    _max?: WorkScheduleMaxOrderByAggregateInput
+    _min?: WorkScheduleMinOrderByAggregateInput
+    _sum?: WorkScheduleSumOrderByAggregateInput
+  }
+
+  export type WorkScheduleScalarWhereWithAggregatesInput = {
+    AND?: WorkScheduleScalarWhereWithAggregatesInput | WorkScheduleScalarWhereWithAggregatesInput[]
+    OR?: WorkScheduleScalarWhereWithAggregatesInput[]
+    NOT?: WorkScheduleScalarWhereWithAggregatesInput | WorkScheduleScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"WorkSchedule"> | number
+    companyId?: IntWithAggregatesFilter<"WorkSchedule"> | number
+    scheduleGroupId?: IntWithAggregatesFilter<"WorkSchedule"> | number
+    dayOfWeek?: EnumDayOfWeekWithAggregatesFilter<"WorkSchedule"> | $Enums.DayOfWeek
+    startTime?: StringWithAggregatesFilter<"WorkSchedule"> | string
+    breakStart?: StringNullableWithAggregatesFilter<"WorkSchedule"> | string | null
+    breakEnd?: StringNullableWithAggregatesFilter<"WorkSchedule"> | string | null
+    endTime?: StringWithAggregatesFilter<"WorkSchedule"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"WorkSchedule"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"WorkSchedule"> | Date | string
+    deletedAt?: DateTimeNullableWithAggregatesFilter<"WorkSchedule"> | Date | string | null
   }
 
   export type UserCreateInput = {
@@ -6823,6 +9750,8 @@ export namespace Prisma {
     owner: UserCreateNestedOneWithoutOwnedCompaniesInput
     members?: UserCreateNestedManyWithoutCompanyInput
     Employee?: EmployeeCreateNestedManyWithoutCompanyInput
+    ScheduleGroup?: ScheduleGroupCreateNestedManyWithoutCompanyInput
+    WorkSchedule?: WorkScheduleCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateInput = {
@@ -6838,6 +9767,8 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     members?: UserUncheckedCreateNestedManyWithoutCompanyInput
     Employee?: EmployeeUncheckedCreateNestedManyWithoutCompanyInput
+    ScheduleGroup?: ScheduleGroupUncheckedCreateNestedManyWithoutCompanyInput
+    WorkSchedule?: WorkScheduleUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUpdateInput = {
@@ -6852,6 +9783,8 @@ export namespace Prisma {
     owner?: UserUpdateOneRequiredWithoutOwnedCompaniesNestedInput
     members?: UserUpdateManyWithoutCompanyNestedInput
     Employee?: EmployeeUpdateManyWithoutCompanyNestedInput
+    ScheduleGroup?: ScheduleGroupUpdateManyWithoutCompanyNestedInput
+    WorkSchedule?: WorkScheduleUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateInput = {
@@ -6867,6 +9800,8 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     members?: UserUncheckedUpdateManyWithoutCompanyNestedInput
     Employee?: EmployeeUncheckedUpdateManyWithoutCompanyNestedInput
+    ScheduleGroup?: ScheduleGroupUncheckedUpdateManyWithoutCompanyNestedInput
+    WorkSchedule?: WorkScheduleUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyCreateManyInput = {
@@ -6977,6 +9912,7 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     user: UserCreateNestedOneWithoutEmployeeInput
     company: CompanyCreateNestedOneWithoutEmployeeInput
+    scheduleGroup?: ScheduleGroupCreateNestedOneWithoutEmployeesInput
   }
 
   export type EmployeeUncheckedCreateInput = {
@@ -6996,6 +9932,7 @@ export namespace Prisma {
     hireDate: Date | string
     status?: $Enums.EmployeeStatus
     promotionHistory?: string | null
+    scheduleGroupId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -7020,6 +9957,7 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutEmployeeNestedInput
     company?: CompanyUpdateOneRequiredWithoutEmployeeNestedInput
+    scheduleGroup?: ScheduleGroupUpdateOneWithoutEmployeesNestedInput
   }
 
   export type EmployeeUncheckedUpdateInput = {
@@ -7039,6 +9977,7 @@ export namespace Prisma {
     hireDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
     promotionHistory?: NullableStringFieldUpdateOperationsInput | string | null
+    scheduleGroupId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7061,6 +10000,7 @@ export namespace Prisma {
     hireDate: Date | string
     status?: $Enums.EmployeeStatus
     promotionHistory?: string | null
+    scheduleGroupId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -7102,6 +10042,167 @@ export namespace Prisma {
     hireDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
     promotionHistory?: NullableStringFieldUpdateOperationsInput | string | null
+    scheduleGroupId?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ScheduleGroupCreateInput = {
+    nameOfShift: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    company: CompanyCreateNestedOneWithoutScheduleGroupInput
+    workSchedules?: WorkScheduleCreateNestedManyWithoutScheduleGroupInput
+    employees?: EmployeeCreateNestedManyWithoutScheduleGroupInput
+  }
+
+  export type ScheduleGroupUncheckedCreateInput = {
+    id?: number
+    companyId: number
+    nameOfShift: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    workSchedules?: WorkScheduleUncheckedCreateNestedManyWithoutScheduleGroupInput
+    employees?: EmployeeUncheckedCreateNestedManyWithoutScheduleGroupInput
+  }
+
+  export type ScheduleGroupUpdateInput = {
+    nameOfShift?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    company?: CompanyUpdateOneRequiredWithoutScheduleGroupNestedInput
+    workSchedules?: WorkScheduleUpdateManyWithoutScheduleGroupNestedInput
+    employees?: EmployeeUpdateManyWithoutScheduleGroupNestedInput
+  }
+
+  export type ScheduleGroupUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    companyId?: IntFieldUpdateOperationsInput | number
+    nameOfShift?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    workSchedules?: WorkScheduleUncheckedUpdateManyWithoutScheduleGroupNestedInput
+    employees?: EmployeeUncheckedUpdateManyWithoutScheduleGroupNestedInput
+  }
+
+  export type ScheduleGroupCreateManyInput = {
+    id?: number
+    companyId: number
+    nameOfShift: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+  }
+
+  export type ScheduleGroupUpdateManyMutationInput = {
+    nameOfShift?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ScheduleGroupUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    companyId?: IntFieldUpdateOperationsInput | number
+    nameOfShift?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type WorkScheduleCreateInput = {
+    dayOfWeek: $Enums.DayOfWeek
+    startTime: string
+    breakStart?: string | null
+    breakEnd?: string | null
+    endTime: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    company: CompanyCreateNestedOneWithoutWorkScheduleInput
+    scheduleGroup: ScheduleGroupCreateNestedOneWithoutWorkSchedulesInput
+  }
+
+  export type WorkScheduleUncheckedCreateInput = {
+    id?: number
+    companyId: number
+    scheduleGroupId: number
+    dayOfWeek: $Enums.DayOfWeek
+    startTime: string
+    breakStart?: string | null
+    breakEnd?: string | null
+    endTime: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+  }
+
+  export type WorkScheduleUpdateInput = {
+    dayOfWeek?: EnumDayOfWeekFieldUpdateOperationsInput | $Enums.DayOfWeek
+    startTime?: StringFieldUpdateOperationsInput | string
+    breakStart?: NullableStringFieldUpdateOperationsInput | string | null
+    breakEnd?: NullableStringFieldUpdateOperationsInput | string | null
+    endTime?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    company?: CompanyUpdateOneRequiredWithoutWorkScheduleNestedInput
+    scheduleGroup?: ScheduleGroupUpdateOneRequiredWithoutWorkSchedulesNestedInput
+  }
+
+  export type WorkScheduleUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    companyId?: IntFieldUpdateOperationsInput | number
+    scheduleGroupId?: IntFieldUpdateOperationsInput | number
+    dayOfWeek?: EnumDayOfWeekFieldUpdateOperationsInput | $Enums.DayOfWeek
+    startTime?: StringFieldUpdateOperationsInput | string
+    breakStart?: NullableStringFieldUpdateOperationsInput | string | null
+    breakEnd?: NullableStringFieldUpdateOperationsInput | string | null
+    endTime?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type WorkScheduleCreateManyInput = {
+    id?: number
+    companyId: number
+    scheduleGroupId: number
+    dayOfWeek: $Enums.DayOfWeek
+    startTime: string
+    breakStart?: string | null
+    breakEnd?: string | null
+    endTime: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+  }
+
+  export type WorkScheduleUpdateManyMutationInput = {
+    dayOfWeek?: EnumDayOfWeekFieldUpdateOperationsInput | $Enums.DayOfWeek
+    startTime?: StringFieldUpdateOperationsInput | string
+    breakStart?: NullableStringFieldUpdateOperationsInput | string | null
+    breakEnd?: NullableStringFieldUpdateOperationsInput | string | null
+    endTime?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type WorkScheduleUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    companyId?: IntFieldUpdateOperationsInput | number
+    scheduleGroupId?: IntFieldUpdateOperationsInput | number
+    dayOfWeek?: EnumDayOfWeekFieldUpdateOperationsInput | $Enums.DayOfWeek
+    startTime?: StringFieldUpdateOperationsInput | string
+    breakStart?: NullableStringFieldUpdateOperationsInput | string | null
+    breakEnd?: NullableStringFieldUpdateOperationsInput | string | null
+    endTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7405,7 +10506,27 @@ export namespace Prisma {
     none?: UserWhereInput
   }
 
+  export type ScheduleGroupListRelationFilter = {
+    every?: ScheduleGroupWhereInput
+    some?: ScheduleGroupWhereInput
+    none?: ScheduleGroupWhereInput
+  }
+
+  export type WorkScheduleListRelationFilter = {
+    every?: WorkScheduleWhereInput
+    some?: WorkScheduleWhereInput
+    none?: WorkScheduleWhereInput
+  }
+
   export type UserOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ScheduleGroupOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type WorkScheduleOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -7526,6 +10647,11 @@ export namespace Prisma {
     isNot?: CompanyWhereInput
   }
 
+  export type ScheduleGroupNullableScalarRelationFilter = {
+    is?: ScheduleGroupWhereInput | null
+    isNot?: ScheduleGroupWhereInput | null
+  }
+
   export type EmployeeCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
@@ -7543,6 +10669,7 @@ export namespace Prisma {
     hireDate?: SortOrder
     status?: SortOrder
     promotionHistory?: SortOrder
+    scheduleGroupId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
@@ -7552,6 +10679,7 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     companyId?: SortOrder
+    scheduleGroupId?: SortOrder
   }
 
   export type EmployeeMaxOrderByAggregateInput = {
@@ -7571,6 +10699,7 @@ export namespace Prisma {
     hireDate?: SortOrder
     status?: SortOrder
     promotionHistory?: SortOrder
+    scheduleGroupId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
@@ -7593,6 +10722,7 @@ export namespace Prisma {
     hireDate?: SortOrder
     status?: SortOrder
     promotionHistory?: SortOrder
+    scheduleGroupId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
@@ -7602,6 +10732,7 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     companyId?: SortOrder
+    scheduleGroupId?: SortOrder
   }
 
   export type EnumEmployeeStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -7612,6 +10743,124 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumEmployeeStatusFilter<$PrismaModel>
     _max?: NestedEnumEmployeeStatusFilter<$PrismaModel>
+  }
+
+  export type ScheduleGroupCompanyIdNameOfShiftCompoundUniqueInput = {
+    companyId: number
+    nameOfShift: string
+  }
+
+  export type ScheduleGroupCountOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    nameOfShift?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrder
+  }
+
+  export type ScheduleGroupAvgOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+  }
+
+  export type ScheduleGroupMaxOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    nameOfShift?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrder
+  }
+
+  export type ScheduleGroupMinOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    nameOfShift?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrder
+  }
+
+  export type ScheduleGroupSumOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+  }
+
+  export type EnumDayOfWeekFilter<$PrismaModel = never> = {
+    equals?: $Enums.DayOfWeek | EnumDayOfWeekFieldRefInput<$PrismaModel>
+    in?: $Enums.DayOfWeek[] | ListEnumDayOfWeekFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DayOfWeek[] | ListEnumDayOfWeekFieldRefInput<$PrismaModel>
+    not?: NestedEnumDayOfWeekFilter<$PrismaModel> | $Enums.DayOfWeek
+  }
+
+  export type ScheduleGroupScalarRelationFilter = {
+    is?: ScheduleGroupWhereInput
+    isNot?: ScheduleGroupWhereInput
+  }
+
+  export type WorkScheduleCountOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    scheduleGroupId?: SortOrder
+    dayOfWeek?: SortOrder
+    startTime?: SortOrder
+    breakStart?: SortOrder
+    breakEnd?: SortOrder
+    endTime?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrder
+  }
+
+  export type WorkScheduleAvgOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    scheduleGroupId?: SortOrder
+  }
+
+  export type WorkScheduleMaxOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    scheduleGroupId?: SortOrder
+    dayOfWeek?: SortOrder
+    startTime?: SortOrder
+    breakStart?: SortOrder
+    breakEnd?: SortOrder
+    endTime?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrder
+  }
+
+  export type WorkScheduleMinOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    scheduleGroupId?: SortOrder
+    dayOfWeek?: SortOrder
+    startTime?: SortOrder
+    breakStart?: SortOrder
+    breakEnd?: SortOrder
+    endTime?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrder
+  }
+
+  export type WorkScheduleSumOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    scheduleGroupId?: SortOrder
+  }
+
+  export type EnumDayOfWeekWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.DayOfWeek | EnumDayOfWeekFieldRefInput<$PrismaModel>
+    in?: $Enums.DayOfWeek[] | ListEnumDayOfWeekFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DayOfWeek[] | ListEnumDayOfWeekFieldRefInput<$PrismaModel>
+    not?: NestedEnumDayOfWeekWithAggregatesFilter<$PrismaModel> | $Enums.DayOfWeek
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumDayOfWeekFilter<$PrismaModel>
+    _max?: NestedEnumDayOfWeekFilter<$PrismaModel>
   }
 
   export type CompanyCreateNestedOneWithoutMembersInput = {
@@ -7812,6 +11061,20 @@ export namespace Prisma {
     connect?: EmployeeWhereUniqueInput | EmployeeWhereUniqueInput[]
   }
 
+  export type ScheduleGroupCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<ScheduleGroupCreateWithoutCompanyInput, ScheduleGroupUncheckedCreateWithoutCompanyInput> | ScheduleGroupCreateWithoutCompanyInput[] | ScheduleGroupUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: ScheduleGroupCreateOrConnectWithoutCompanyInput | ScheduleGroupCreateOrConnectWithoutCompanyInput[]
+    createMany?: ScheduleGroupCreateManyCompanyInputEnvelope
+    connect?: ScheduleGroupWhereUniqueInput | ScheduleGroupWhereUniqueInput[]
+  }
+
+  export type WorkScheduleCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<WorkScheduleCreateWithoutCompanyInput, WorkScheduleUncheckedCreateWithoutCompanyInput> | WorkScheduleCreateWithoutCompanyInput[] | WorkScheduleUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: WorkScheduleCreateOrConnectWithoutCompanyInput | WorkScheduleCreateOrConnectWithoutCompanyInput[]
+    createMany?: WorkScheduleCreateManyCompanyInputEnvelope
+    connect?: WorkScheduleWhereUniqueInput | WorkScheduleWhereUniqueInput[]
+  }
+
   export type UserUncheckedCreateNestedManyWithoutCompanyInput = {
     create?: XOR<UserCreateWithoutCompanyInput, UserUncheckedCreateWithoutCompanyInput> | UserCreateWithoutCompanyInput[] | UserUncheckedCreateWithoutCompanyInput[]
     connectOrCreate?: UserCreateOrConnectWithoutCompanyInput | UserCreateOrConnectWithoutCompanyInput[]
@@ -7824,6 +11087,20 @@ export namespace Prisma {
     connectOrCreate?: EmployeeCreateOrConnectWithoutCompanyInput | EmployeeCreateOrConnectWithoutCompanyInput[]
     createMany?: EmployeeCreateManyCompanyInputEnvelope
     connect?: EmployeeWhereUniqueInput | EmployeeWhereUniqueInput[]
+  }
+
+  export type ScheduleGroupUncheckedCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<ScheduleGroupCreateWithoutCompanyInput, ScheduleGroupUncheckedCreateWithoutCompanyInput> | ScheduleGroupCreateWithoutCompanyInput[] | ScheduleGroupUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: ScheduleGroupCreateOrConnectWithoutCompanyInput | ScheduleGroupCreateOrConnectWithoutCompanyInput[]
+    createMany?: ScheduleGroupCreateManyCompanyInputEnvelope
+    connect?: ScheduleGroupWhereUniqueInput | ScheduleGroupWhereUniqueInput[]
+  }
+
+  export type WorkScheduleUncheckedCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<WorkScheduleCreateWithoutCompanyInput, WorkScheduleUncheckedCreateWithoutCompanyInput> | WorkScheduleCreateWithoutCompanyInput[] | WorkScheduleUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: WorkScheduleCreateOrConnectWithoutCompanyInput | WorkScheduleCreateOrConnectWithoutCompanyInput[]
+    createMany?: WorkScheduleCreateManyCompanyInputEnvelope
+    connect?: WorkScheduleWhereUniqueInput | WorkScheduleWhereUniqueInput[]
   }
 
   export type NullableDecimalFieldUpdateOperationsInput = {
@@ -7870,6 +11147,34 @@ export namespace Prisma {
     deleteMany?: EmployeeScalarWhereInput | EmployeeScalarWhereInput[]
   }
 
+  export type ScheduleGroupUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<ScheduleGroupCreateWithoutCompanyInput, ScheduleGroupUncheckedCreateWithoutCompanyInput> | ScheduleGroupCreateWithoutCompanyInput[] | ScheduleGroupUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: ScheduleGroupCreateOrConnectWithoutCompanyInput | ScheduleGroupCreateOrConnectWithoutCompanyInput[]
+    upsert?: ScheduleGroupUpsertWithWhereUniqueWithoutCompanyInput | ScheduleGroupUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: ScheduleGroupCreateManyCompanyInputEnvelope
+    set?: ScheduleGroupWhereUniqueInput | ScheduleGroupWhereUniqueInput[]
+    disconnect?: ScheduleGroupWhereUniqueInput | ScheduleGroupWhereUniqueInput[]
+    delete?: ScheduleGroupWhereUniqueInput | ScheduleGroupWhereUniqueInput[]
+    connect?: ScheduleGroupWhereUniqueInput | ScheduleGroupWhereUniqueInput[]
+    update?: ScheduleGroupUpdateWithWhereUniqueWithoutCompanyInput | ScheduleGroupUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: ScheduleGroupUpdateManyWithWhereWithoutCompanyInput | ScheduleGroupUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: ScheduleGroupScalarWhereInput | ScheduleGroupScalarWhereInput[]
+  }
+
+  export type WorkScheduleUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<WorkScheduleCreateWithoutCompanyInput, WorkScheduleUncheckedCreateWithoutCompanyInput> | WorkScheduleCreateWithoutCompanyInput[] | WorkScheduleUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: WorkScheduleCreateOrConnectWithoutCompanyInput | WorkScheduleCreateOrConnectWithoutCompanyInput[]
+    upsert?: WorkScheduleUpsertWithWhereUniqueWithoutCompanyInput | WorkScheduleUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: WorkScheduleCreateManyCompanyInputEnvelope
+    set?: WorkScheduleWhereUniqueInput | WorkScheduleWhereUniqueInput[]
+    disconnect?: WorkScheduleWhereUniqueInput | WorkScheduleWhereUniqueInput[]
+    delete?: WorkScheduleWhereUniqueInput | WorkScheduleWhereUniqueInput[]
+    connect?: WorkScheduleWhereUniqueInput | WorkScheduleWhereUniqueInput[]
+    update?: WorkScheduleUpdateWithWhereUniqueWithoutCompanyInput | WorkScheduleUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: WorkScheduleUpdateManyWithWhereWithoutCompanyInput | WorkScheduleUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: WorkScheduleScalarWhereInput | WorkScheduleScalarWhereInput[]
+  }
+
   export type UserUncheckedUpdateManyWithoutCompanyNestedInput = {
     create?: XOR<UserCreateWithoutCompanyInput, UserUncheckedCreateWithoutCompanyInput> | UserCreateWithoutCompanyInput[] | UserUncheckedCreateWithoutCompanyInput[]
     connectOrCreate?: UserCreateOrConnectWithoutCompanyInput | UserCreateOrConnectWithoutCompanyInput[]
@@ -7898,6 +11203,34 @@ export namespace Prisma {
     deleteMany?: EmployeeScalarWhereInput | EmployeeScalarWhereInput[]
   }
 
+  export type ScheduleGroupUncheckedUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<ScheduleGroupCreateWithoutCompanyInput, ScheduleGroupUncheckedCreateWithoutCompanyInput> | ScheduleGroupCreateWithoutCompanyInput[] | ScheduleGroupUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: ScheduleGroupCreateOrConnectWithoutCompanyInput | ScheduleGroupCreateOrConnectWithoutCompanyInput[]
+    upsert?: ScheduleGroupUpsertWithWhereUniqueWithoutCompanyInput | ScheduleGroupUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: ScheduleGroupCreateManyCompanyInputEnvelope
+    set?: ScheduleGroupWhereUniqueInput | ScheduleGroupWhereUniqueInput[]
+    disconnect?: ScheduleGroupWhereUniqueInput | ScheduleGroupWhereUniqueInput[]
+    delete?: ScheduleGroupWhereUniqueInput | ScheduleGroupWhereUniqueInput[]
+    connect?: ScheduleGroupWhereUniqueInput | ScheduleGroupWhereUniqueInput[]
+    update?: ScheduleGroupUpdateWithWhereUniqueWithoutCompanyInput | ScheduleGroupUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: ScheduleGroupUpdateManyWithWhereWithoutCompanyInput | ScheduleGroupUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: ScheduleGroupScalarWhereInput | ScheduleGroupScalarWhereInput[]
+  }
+
+  export type WorkScheduleUncheckedUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<WorkScheduleCreateWithoutCompanyInput, WorkScheduleUncheckedCreateWithoutCompanyInput> | WorkScheduleCreateWithoutCompanyInput[] | WorkScheduleUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: WorkScheduleCreateOrConnectWithoutCompanyInput | WorkScheduleCreateOrConnectWithoutCompanyInput[]
+    upsert?: WorkScheduleUpsertWithWhereUniqueWithoutCompanyInput | WorkScheduleUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: WorkScheduleCreateManyCompanyInputEnvelope
+    set?: WorkScheduleWhereUniqueInput | WorkScheduleWhereUniqueInput[]
+    disconnect?: WorkScheduleWhereUniqueInput | WorkScheduleWhereUniqueInput[]
+    delete?: WorkScheduleWhereUniqueInput | WorkScheduleWhereUniqueInput[]
+    connect?: WorkScheduleWhereUniqueInput | WorkScheduleWhereUniqueInput[]
+    update?: WorkScheduleUpdateWithWhereUniqueWithoutCompanyInput | WorkScheduleUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: WorkScheduleUpdateManyWithWhereWithoutCompanyInput | WorkScheduleUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: WorkScheduleScalarWhereInput | WorkScheduleScalarWhereInput[]
+  }
+
   export type UserCreateNestedOneWithoutTokensInput = {
     create?: XOR<UserCreateWithoutTokensInput, UserUncheckedCreateWithoutTokensInput>
     connectOrCreate?: UserCreateOrConnectWithoutTokensInput
@@ -7924,6 +11257,12 @@ export namespace Prisma {
     connect?: CompanyWhereUniqueInput
   }
 
+  export type ScheduleGroupCreateNestedOneWithoutEmployeesInput = {
+    create?: XOR<ScheduleGroupCreateWithoutEmployeesInput, ScheduleGroupUncheckedCreateWithoutEmployeesInput>
+    connectOrCreate?: ScheduleGroupCreateOrConnectWithoutEmployeesInput
+    connect?: ScheduleGroupWhereUniqueInput
+  }
+
   export type EnumEmployeeStatusFieldUpdateOperationsInput = {
     set?: $Enums.EmployeeStatus
   }
@@ -7942,6 +11281,146 @@ export namespace Prisma {
     upsert?: CompanyUpsertWithoutEmployeeInput
     connect?: CompanyWhereUniqueInput
     update?: XOR<XOR<CompanyUpdateToOneWithWhereWithoutEmployeeInput, CompanyUpdateWithoutEmployeeInput>, CompanyUncheckedUpdateWithoutEmployeeInput>
+  }
+
+  export type ScheduleGroupUpdateOneWithoutEmployeesNestedInput = {
+    create?: XOR<ScheduleGroupCreateWithoutEmployeesInput, ScheduleGroupUncheckedCreateWithoutEmployeesInput>
+    connectOrCreate?: ScheduleGroupCreateOrConnectWithoutEmployeesInput
+    upsert?: ScheduleGroupUpsertWithoutEmployeesInput
+    disconnect?: ScheduleGroupWhereInput | boolean
+    delete?: ScheduleGroupWhereInput | boolean
+    connect?: ScheduleGroupWhereUniqueInput
+    update?: XOR<XOR<ScheduleGroupUpdateToOneWithWhereWithoutEmployeesInput, ScheduleGroupUpdateWithoutEmployeesInput>, ScheduleGroupUncheckedUpdateWithoutEmployeesInput>
+  }
+
+  export type CompanyCreateNestedOneWithoutScheduleGroupInput = {
+    create?: XOR<CompanyCreateWithoutScheduleGroupInput, CompanyUncheckedCreateWithoutScheduleGroupInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutScheduleGroupInput
+    connect?: CompanyWhereUniqueInput
+  }
+
+  export type WorkScheduleCreateNestedManyWithoutScheduleGroupInput = {
+    create?: XOR<WorkScheduleCreateWithoutScheduleGroupInput, WorkScheduleUncheckedCreateWithoutScheduleGroupInput> | WorkScheduleCreateWithoutScheduleGroupInput[] | WorkScheduleUncheckedCreateWithoutScheduleGroupInput[]
+    connectOrCreate?: WorkScheduleCreateOrConnectWithoutScheduleGroupInput | WorkScheduleCreateOrConnectWithoutScheduleGroupInput[]
+    createMany?: WorkScheduleCreateManyScheduleGroupInputEnvelope
+    connect?: WorkScheduleWhereUniqueInput | WorkScheduleWhereUniqueInput[]
+  }
+
+  export type EmployeeCreateNestedManyWithoutScheduleGroupInput = {
+    create?: XOR<EmployeeCreateWithoutScheduleGroupInput, EmployeeUncheckedCreateWithoutScheduleGroupInput> | EmployeeCreateWithoutScheduleGroupInput[] | EmployeeUncheckedCreateWithoutScheduleGroupInput[]
+    connectOrCreate?: EmployeeCreateOrConnectWithoutScheduleGroupInput | EmployeeCreateOrConnectWithoutScheduleGroupInput[]
+    createMany?: EmployeeCreateManyScheduleGroupInputEnvelope
+    connect?: EmployeeWhereUniqueInput | EmployeeWhereUniqueInput[]
+  }
+
+  export type WorkScheduleUncheckedCreateNestedManyWithoutScheduleGroupInput = {
+    create?: XOR<WorkScheduleCreateWithoutScheduleGroupInput, WorkScheduleUncheckedCreateWithoutScheduleGroupInput> | WorkScheduleCreateWithoutScheduleGroupInput[] | WorkScheduleUncheckedCreateWithoutScheduleGroupInput[]
+    connectOrCreate?: WorkScheduleCreateOrConnectWithoutScheduleGroupInput | WorkScheduleCreateOrConnectWithoutScheduleGroupInput[]
+    createMany?: WorkScheduleCreateManyScheduleGroupInputEnvelope
+    connect?: WorkScheduleWhereUniqueInput | WorkScheduleWhereUniqueInput[]
+  }
+
+  export type EmployeeUncheckedCreateNestedManyWithoutScheduleGroupInput = {
+    create?: XOR<EmployeeCreateWithoutScheduleGroupInput, EmployeeUncheckedCreateWithoutScheduleGroupInput> | EmployeeCreateWithoutScheduleGroupInput[] | EmployeeUncheckedCreateWithoutScheduleGroupInput[]
+    connectOrCreate?: EmployeeCreateOrConnectWithoutScheduleGroupInput | EmployeeCreateOrConnectWithoutScheduleGroupInput[]
+    createMany?: EmployeeCreateManyScheduleGroupInputEnvelope
+    connect?: EmployeeWhereUniqueInput | EmployeeWhereUniqueInput[]
+  }
+
+  export type CompanyUpdateOneRequiredWithoutScheduleGroupNestedInput = {
+    create?: XOR<CompanyCreateWithoutScheduleGroupInput, CompanyUncheckedCreateWithoutScheduleGroupInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutScheduleGroupInput
+    upsert?: CompanyUpsertWithoutScheduleGroupInput
+    connect?: CompanyWhereUniqueInput
+    update?: XOR<XOR<CompanyUpdateToOneWithWhereWithoutScheduleGroupInput, CompanyUpdateWithoutScheduleGroupInput>, CompanyUncheckedUpdateWithoutScheduleGroupInput>
+  }
+
+  export type WorkScheduleUpdateManyWithoutScheduleGroupNestedInput = {
+    create?: XOR<WorkScheduleCreateWithoutScheduleGroupInput, WorkScheduleUncheckedCreateWithoutScheduleGroupInput> | WorkScheduleCreateWithoutScheduleGroupInput[] | WorkScheduleUncheckedCreateWithoutScheduleGroupInput[]
+    connectOrCreate?: WorkScheduleCreateOrConnectWithoutScheduleGroupInput | WorkScheduleCreateOrConnectWithoutScheduleGroupInput[]
+    upsert?: WorkScheduleUpsertWithWhereUniqueWithoutScheduleGroupInput | WorkScheduleUpsertWithWhereUniqueWithoutScheduleGroupInput[]
+    createMany?: WorkScheduleCreateManyScheduleGroupInputEnvelope
+    set?: WorkScheduleWhereUniqueInput | WorkScheduleWhereUniqueInput[]
+    disconnect?: WorkScheduleWhereUniqueInput | WorkScheduleWhereUniqueInput[]
+    delete?: WorkScheduleWhereUniqueInput | WorkScheduleWhereUniqueInput[]
+    connect?: WorkScheduleWhereUniqueInput | WorkScheduleWhereUniqueInput[]
+    update?: WorkScheduleUpdateWithWhereUniqueWithoutScheduleGroupInput | WorkScheduleUpdateWithWhereUniqueWithoutScheduleGroupInput[]
+    updateMany?: WorkScheduleUpdateManyWithWhereWithoutScheduleGroupInput | WorkScheduleUpdateManyWithWhereWithoutScheduleGroupInput[]
+    deleteMany?: WorkScheduleScalarWhereInput | WorkScheduleScalarWhereInput[]
+  }
+
+  export type EmployeeUpdateManyWithoutScheduleGroupNestedInput = {
+    create?: XOR<EmployeeCreateWithoutScheduleGroupInput, EmployeeUncheckedCreateWithoutScheduleGroupInput> | EmployeeCreateWithoutScheduleGroupInput[] | EmployeeUncheckedCreateWithoutScheduleGroupInput[]
+    connectOrCreate?: EmployeeCreateOrConnectWithoutScheduleGroupInput | EmployeeCreateOrConnectWithoutScheduleGroupInput[]
+    upsert?: EmployeeUpsertWithWhereUniqueWithoutScheduleGroupInput | EmployeeUpsertWithWhereUniqueWithoutScheduleGroupInput[]
+    createMany?: EmployeeCreateManyScheduleGroupInputEnvelope
+    set?: EmployeeWhereUniqueInput | EmployeeWhereUniqueInput[]
+    disconnect?: EmployeeWhereUniqueInput | EmployeeWhereUniqueInput[]
+    delete?: EmployeeWhereUniqueInput | EmployeeWhereUniqueInput[]
+    connect?: EmployeeWhereUniqueInput | EmployeeWhereUniqueInput[]
+    update?: EmployeeUpdateWithWhereUniqueWithoutScheduleGroupInput | EmployeeUpdateWithWhereUniqueWithoutScheduleGroupInput[]
+    updateMany?: EmployeeUpdateManyWithWhereWithoutScheduleGroupInput | EmployeeUpdateManyWithWhereWithoutScheduleGroupInput[]
+    deleteMany?: EmployeeScalarWhereInput | EmployeeScalarWhereInput[]
+  }
+
+  export type WorkScheduleUncheckedUpdateManyWithoutScheduleGroupNestedInput = {
+    create?: XOR<WorkScheduleCreateWithoutScheduleGroupInput, WorkScheduleUncheckedCreateWithoutScheduleGroupInput> | WorkScheduleCreateWithoutScheduleGroupInput[] | WorkScheduleUncheckedCreateWithoutScheduleGroupInput[]
+    connectOrCreate?: WorkScheduleCreateOrConnectWithoutScheduleGroupInput | WorkScheduleCreateOrConnectWithoutScheduleGroupInput[]
+    upsert?: WorkScheduleUpsertWithWhereUniqueWithoutScheduleGroupInput | WorkScheduleUpsertWithWhereUniqueWithoutScheduleGroupInput[]
+    createMany?: WorkScheduleCreateManyScheduleGroupInputEnvelope
+    set?: WorkScheduleWhereUniqueInput | WorkScheduleWhereUniqueInput[]
+    disconnect?: WorkScheduleWhereUniqueInput | WorkScheduleWhereUniqueInput[]
+    delete?: WorkScheduleWhereUniqueInput | WorkScheduleWhereUniqueInput[]
+    connect?: WorkScheduleWhereUniqueInput | WorkScheduleWhereUniqueInput[]
+    update?: WorkScheduleUpdateWithWhereUniqueWithoutScheduleGroupInput | WorkScheduleUpdateWithWhereUniqueWithoutScheduleGroupInput[]
+    updateMany?: WorkScheduleUpdateManyWithWhereWithoutScheduleGroupInput | WorkScheduleUpdateManyWithWhereWithoutScheduleGroupInput[]
+    deleteMany?: WorkScheduleScalarWhereInput | WorkScheduleScalarWhereInput[]
+  }
+
+  export type EmployeeUncheckedUpdateManyWithoutScheduleGroupNestedInput = {
+    create?: XOR<EmployeeCreateWithoutScheduleGroupInput, EmployeeUncheckedCreateWithoutScheduleGroupInput> | EmployeeCreateWithoutScheduleGroupInput[] | EmployeeUncheckedCreateWithoutScheduleGroupInput[]
+    connectOrCreate?: EmployeeCreateOrConnectWithoutScheduleGroupInput | EmployeeCreateOrConnectWithoutScheduleGroupInput[]
+    upsert?: EmployeeUpsertWithWhereUniqueWithoutScheduleGroupInput | EmployeeUpsertWithWhereUniqueWithoutScheduleGroupInput[]
+    createMany?: EmployeeCreateManyScheduleGroupInputEnvelope
+    set?: EmployeeWhereUniqueInput | EmployeeWhereUniqueInput[]
+    disconnect?: EmployeeWhereUniqueInput | EmployeeWhereUniqueInput[]
+    delete?: EmployeeWhereUniqueInput | EmployeeWhereUniqueInput[]
+    connect?: EmployeeWhereUniqueInput | EmployeeWhereUniqueInput[]
+    update?: EmployeeUpdateWithWhereUniqueWithoutScheduleGroupInput | EmployeeUpdateWithWhereUniqueWithoutScheduleGroupInput[]
+    updateMany?: EmployeeUpdateManyWithWhereWithoutScheduleGroupInput | EmployeeUpdateManyWithWhereWithoutScheduleGroupInput[]
+    deleteMany?: EmployeeScalarWhereInput | EmployeeScalarWhereInput[]
+  }
+
+  export type CompanyCreateNestedOneWithoutWorkScheduleInput = {
+    create?: XOR<CompanyCreateWithoutWorkScheduleInput, CompanyUncheckedCreateWithoutWorkScheduleInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutWorkScheduleInput
+    connect?: CompanyWhereUniqueInput
+  }
+
+  export type ScheduleGroupCreateNestedOneWithoutWorkSchedulesInput = {
+    create?: XOR<ScheduleGroupCreateWithoutWorkSchedulesInput, ScheduleGroupUncheckedCreateWithoutWorkSchedulesInput>
+    connectOrCreate?: ScheduleGroupCreateOrConnectWithoutWorkSchedulesInput
+    connect?: ScheduleGroupWhereUniqueInput
+  }
+
+  export type EnumDayOfWeekFieldUpdateOperationsInput = {
+    set?: $Enums.DayOfWeek
+  }
+
+  export type CompanyUpdateOneRequiredWithoutWorkScheduleNestedInput = {
+    create?: XOR<CompanyCreateWithoutWorkScheduleInput, CompanyUncheckedCreateWithoutWorkScheduleInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutWorkScheduleInput
+    upsert?: CompanyUpsertWithoutWorkScheduleInput
+    connect?: CompanyWhereUniqueInput
+    update?: XOR<XOR<CompanyUpdateToOneWithWhereWithoutWorkScheduleInput, CompanyUpdateWithoutWorkScheduleInput>, CompanyUncheckedUpdateWithoutWorkScheduleInput>
+  }
+
+  export type ScheduleGroupUpdateOneRequiredWithoutWorkSchedulesNestedInput = {
+    create?: XOR<ScheduleGroupCreateWithoutWorkSchedulesInput, ScheduleGroupUncheckedCreateWithoutWorkSchedulesInput>
+    connectOrCreate?: ScheduleGroupCreateOrConnectWithoutWorkSchedulesInput
+    upsert?: ScheduleGroupUpsertWithoutWorkSchedulesInput
+    connect?: ScheduleGroupWhereUniqueInput
+    update?: XOR<XOR<ScheduleGroupUpdateToOneWithWhereWithoutWorkSchedulesInput, ScheduleGroupUpdateWithoutWorkSchedulesInput>, ScheduleGroupUncheckedUpdateWithoutWorkSchedulesInput>
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -8193,6 +11672,23 @@ export namespace Prisma {
     _max?: NestedEnumEmployeeStatusFilter<$PrismaModel>
   }
 
+  export type NestedEnumDayOfWeekFilter<$PrismaModel = never> = {
+    equals?: $Enums.DayOfWeek | EnumDayOfWeekFieldRefInput<$PrismaModel>
+    in?: $Enums.DayOfWeek[] | ListEnumDayOfWeekFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DayOfWeek[] | ListEnumDayOfWeekFieldRefInput<$PrismaModel>
+    not?: NestedEnumDayOfWeekFilter<$PrismaModel> | $Enums.DayOfWeek
+  }
+
+  export type NestedEnumDayOfWeekWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.DayOfWeek | EnumDayOfWeekFieldRefInput<$PrismaModel>
+    in?: $Enums.DayOfWeek[] | ListEnumDayOfWeekFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DayOfWeek[] | ListEnumDayOfWeekFieldRefInput<$PrismaModel>
+    not?: NestedEnumDayOfWeekWithAggregatesFilter<$PrismaModel> | $Enums.DayOfWeek
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumDayOfWeekFilter<$PrismaModel>
+    _max?: NestedEnumDayOfWeekFilter<$PrismaModel>
+  }
+
   export type CompanyCreateWithoutMembersInput = {
     companyName: string
     latitude?: Decimal | DecimalJsLike | number | string | null
@@ -8204,6 +11700,8 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     owner: UserCreateNestedOneWithoutOwnedCompaniesInput
     Employee?: EmployeeCreateNestedManyWithoutCompanyInput
+    ScheduleGroup?: ScheduleGroupCreateNestedManyWithoutCompanyInput
+    WorkSchedule?: WorkScheduleCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutMembersInput = {
@@ -8218,6 +11716,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     Employee?: EmployeeUncheckedCreateNestedManyWithoutCompanyInput
+    ScheduleGroup?: ScheduleGroupUncheckedCreateNestedManyWithoutCompanyInput
+    WorkSchedule?: WorkScheduleUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyCreateOrConnectWithoutMembersInput = {
@@ -8236,6 +11736,8 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     members?: UserCreateNestedManyWithoutCompanyInput
     Employee?: EmployeeCreateNestedManyWithoutCompanyInput
+    ScheduleGroup?: ScheduleGroupCreateNestedManyWithoutCompanyInput
+    WorkSchedule?: WorkScheduleCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutOwnerInput = {
@@ -8250,6 +11752,8 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     members?: UserUncheckedCreateNestedManyWithoutCompanyInput
     Employee?: EmployeeUncheckedCreateNestedManyWithoutCompanyInput
+    ScheduleGroup?: ScheduleGroupUncheckedCreateNestedManyWithoutCompanyInput
+    WorkSchedule?: WorkScheduleUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyCreateOrConnectWithoutOwnerInput = {
@@ -8303,6 +11807,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     company: CompanyCreateNestedOneWithoutEmployeeInput
+    scheduleGroup?: ScheduleGroupCreateNestedOneWithoutEmployeesInput
   }
 
   export type EmployeeUncheckedCreateWithoutUserInput = {
@@ -8321,6 +11826,7 @@ export namespace Prisma {
     hireDate: Date | string
     status?: $Enums.EmployeeStatus
     promotionHistory?: string | null
+    scheduleGroupId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -8358,6 +11864,8 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     owner?: UserUpdateOneRequiredWithoutOwnedCompaniesNestedInput
     Employee?: EmployeeUpdateManyWithoutCompanyNestedInput
+    ScheduleGroup?: ScheduleGroupUpdateManyWithoutCompanyNestedInput
+    WorkSchedule?: WorkScheduleUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutMembersInput = {
@@ -8372,6 +11880,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     Employee?: EmployeeUncheckedUpdateManyWithoutCompanyNestedInput
+    ScheduleGroup?: ScheduleGroupUncheckedUpdateManyWithoutCompanyNestedInput
+    WorkSchedule?: WorkScheduleUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUpsertWithWhereUniqueWithoutOwnerInput = {
@@ -8469,6 +11979,7 @@ export namespace Prisma {
     hireDate?: DateTimeFilter<"Employee"> | Date | string
     status?: EnumEmployeeStatusFilter<"Employee"> | $Enums.EmployeeStatus
     promotionHistory?: StringNullableFilter<"Employee"> | string | null
+    scheduleGroupId?: IntNullableFilter<"Employee"> | number | null
     createdAt?: DateTimeFilter<"Employee"> | Date | string
     updatedAt?: DateTimeFilter<"Employee"> | Date | string
     deletedAt?: DateTimeNullableFilter<"Employee"> | Date | string | null
@@ -8565,6 +12076,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     user: UserCreateNestedOneWithoutEmployeeInput
+    scheduleGroup?: ScheduleGroupCreateNestedOneWithoutEmployeesInput
   }
 
   export type EmployeeUncheckedCreateWithoutCompanyInput = {
@@ -8583,6 +12095,7 @@ export namespace Prisma {
     hireDate: Date | string
     status?: $Enums.EmployeeStatus
     promotionHistory?: string | null
+    scheduleGroupId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -8595,6 +12108,70 @@ export namespace Prisma {
 
   export type EmployeeCreateManyCompanyInputEnvelope = {
     data: EmployeeCreateManyCompanyInput | EmployeeCreateManyCompanyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ScheduleGroupCreateWithoutCompanyInput = {
+    nameOfShift: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    workSchedules?: WorkScheduleCreateNestedManyWithoutScheduleGroupInput
+    employees?: EmployeeCreateNestedManyWithoutScheduleGroupInput
+  }
+
+  export type ScheduleGroupUncheckedCreateWithoutCompanyInput = {
+    id?: number
+    nameOfShift: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    workSchedules?: WorkScheduleUncheckedCreateNestedManyWithoutScheduleGroupInput
+    employees?: EmployeeUncheckedCreateNestedManyWithoutScheduleGroupInput
+  }
+
+  export type ScheduleGroupCreateOrConnectWithoutCompanyInput = {
+    where: ScheduleGroupWhereUniqueInput
+    create: XOR<ScheduleGroupCreateWithoutCompanyInput, ScheduleGroupUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type ScheduleGroupCreateManyCompanyInputEnvelope = {
+    data: ScheduleGroupCreateManyCompanyInput | ScheduleGroupCreateManyCompanyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type WorkScheduleCreateWithoutCompanyInput = {
+    dayOfWeek: $Enums.DayOfWeek
+    startTime: string
+    breakStart?: string | null
+    breakEnd?: string | null
+    endTime: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    scheduleGroup: ScheduleGroupCreateNestedOneWithoutWorkSchedulesInput
+  }
+
+  export type WorkScheduleUncheckedCreateWithoutCompanyInput = {
+    id?: number
+    scheduleGroupId: number
+    dayOfWeek: $Enums.DayOfWeek
+    startTime: string
+    breakStart?: string | null
+    breakEnd?: string | null
+    endTime: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+  }
+
+  export type WorkScheduleCreateOrConnectWithoutCompanyInput = {
+    where: WorkScheduleWhereUniqueInput
+    create: XOR<WorkScheduleCreateWithoutCompanyInput, WorkScheduleUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type WorkScheduleCreateManyCompanyInputEnvelope = {
+    data: WorkScheduleCreateManyCompanyInput | WorkScheduleCreateManyCompanyInput[]
     skipDuplicates?: boolean
   }
 
@@ -8684,6 +12261,67 @@ export namespace Prisma {
   export type EmployeeUpdateManyWithWhereWithoutCompanyInput = {
     where: EmployeeScalarWhereInput
     data: XOR<EmployeeUpdateManyMutationInput, EmployeeUncheckedUpdateManyWithoutCompanyInput>
+  }
+
+  export type ScheduleGroupUpsertWithWhereUniqueWithoutCompanyInput = {
+    where: ScheduleGroupWhereUniqueInput
+    update: XOR<ScheduleGroupUpdateWithoutCompanyInput, ScheduleGroupUncheckedUpdateWithoutCompanyInput>
+    create: XOR<ScheduleGroupCreateWithoutCompanyInput, ScheduleGroupUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type ScheduleGroupUpdateWithWhereUniqueWithoutCompanyInput = {
+    where: ScheduleGroupWhereUniqueInput
+    data: XOR<ScheduleGroupUpdateWithoutCompanyInput, ScheduleGroupUncheckedUpdateWithoutCompanyInput>
+  }
+
+  export type ScheduleGroupUpdateManyWithWhereWithoutCompanyInput = {
+    where: ScheduleGroupScalarWhereInput
+    data: XOR<ScheduleGroupUpdateManyMutationInput, ScheduleGroupUncheckedUpdateManyWithoutCompanyInput>
+  }
+
+  export type ScheduleGroupScalarWhereInput = {
+    AND?: ScheduleGroupScalarWhereInput | ScheduleGroupScalarWhereInput[]
+    OR?: ScheduleGroupScalarWhereInput[]
+    NOT?: ScheduleGroupScalarWhereInput | ScheduleGroupScalarWhereInput[]
+    id?: IntFilter<"ScheduleGroup"> | number
+    companyId?: IntFilter<"ScheduleGroup"> | number
+    nameOfShift?: StringFilter<"ScheduleGroup"> | string
+    createdAt?: DateTimeFilter<"ScheduleGroup"> | Date | string
+    updatedAt?: DateTimeFilter<"ScheduleGroup"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"ScheduleGroup"> | Date | string | null
+  }
+
+  export type WorkScheduleUpsertWithWhereUniqueWithoutCompanyInput = {
+    where: WorkScheduleWhereUniqueInput
+    update: XOR<WorkScheduleUpdateWithoutCompanyInput, WorkScheduleUncheckedUpdateWithoutCompanyInput>
+    create: XOR<WorkScheduleCreateWithoutCompanyInput, WorkScheduleUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type WorkScheduleUpdateWithWhereUniqueWithoutCompanyInput = {
+    where: WorkScheduleWhereUniqueInput
+    data: XOR<WorkScheduleUpdateWithoutCompanyInput, WorkScheduleUncheckedUpdateWithoutCompanyInput>
+  }
+
+  export type WorkScheduleUpdateManyWithWhereWithoutCompanyInput = {
+    where: WorkScheduleScalarWhereInput
+    data: XOR<WorkScheduleUpdateManyMutationInput, WorkScheduleUncheckedUpdateManyWithoutCompanyInput>
+  }
+
+  export type WorkScheduleScalarWhereInput = {
+    AND?: WorkScheduleScalarWhereInput | WorkScheduleScalarWhereInput[]
+    OR?: WorkScheduleScalarWhereInput[]
+    NOT?: WorkScheduleScalarWhereInput | WorkScheduleScalarWhereInput[]
+    id?: IntFilter<"WorkSchedule"> | number
+    companyId?: IntFilter<"WorkSchedule"> | number
+    scheduleGroupId?: IntFilter<"WorkSchedule"> | number
+    dayOfWeek?: EnumDayOfWeekFilter<"WorkSchedule"> | $Enums.DayOfWeek
+    startTime?: StringFilter<"WorkSchedule"> | string
+    breakStart?: StringNullableFilter<"WorkSchedule"> | string | null
+    breakEnd?: StringNullableFilter<"WorkSchedule"> | string | null
+    endTime?: StringFilter<"WorkSchedule"> | string
+    createdAt?: DateTimeFilter<"WorkSchedule"> | Date | string
+    updatedAt?: DateTimeFilter<"WorkSchedule"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"WorkSchedule"> | Date | string | null
   }
 
   export type UserCreateWithoutTokensInput = {
@@ -8805,6 +12443,8 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     owner: UserCreateNestedOneWithoutOwnedCompaniesInput
     members?: UserCreateNestedManyWithoutCompanyInput
+    ScheduleGroup?: ScheduleGroupCreateNestedManyWithoutCompanyInput
+    WorkSchedule?: WorkScheduleCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutEmployeeInput = {
@@ -8819,11 +12459,37 @@ export namespace Prisma {
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     members?: UserUncheckedCreateNestedManyWithoutCompanyInput
+    ScheduleGroup?: ScheduleGroupUncheckedCreateNestedManyWithoutCompanyInput
+    WorkSchedule?: WorkScheduleUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyCreateOrConnectWithoutEmployeeInput = {
     where: CompanyWhereUniqueInput
     create: XOR<CompanyCreateWithoutEmployeeInput, CompanyUncheckedCreateWithoutEmployeeInput>
+  }
+
+  export type ScheduleGroupCreateWithoutEmployeesInput = {
+    nameOfShift: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    company: CompanyCreateNestedOneWithoutScheduleGroupInput
+    workSchedules?: WorkScheduleCreateNestedManyWithoutScheduleGroupInput
+  }
+
+  export type ScheduleGroupUncheckedCreateWithoutEmployeesInput = {
+    id?: number
+    companyId: number
+    nameOfShift: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    workSchedules?: WorkScheduleUncheckedCreateNestedManyWithoutScheduleGroupInput
+  }
+
+  export type ScheduleGroupCreateOrConnectWithoutEmployeesInput = {
+    where: ScheduleGroupWhereUniqueInput
+    create: XOR<ScheduleGroupCreateWithoutEmployeesInput, ScheduleGroupUncheckedCreateWithoutEmployeesInput>
   }
 
   export type UserUpsertWithoutEmployeeInput = {
@@ -8888,6 +12554,8 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     owner?: UserUpdateOneRequiredWithoutOwnedCompaniesNestedInput
     members?: UserUpdateManyWithoutCompanyNestedInput
+    ScheduleGroup?: ScheduleGroupUpdateManyWithoutCompanyNestedInput
+    WorkSchedule?: WorkScheduleUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutEmployeeInput = {
@@ -8902,6 +12570,368 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     members?: UserUncheckedUpdateManyWithoutCompanyNestedInput
+    ScheduleGroup?: ScheduleGroupUncheckedUpdateManyWithoutCompanyNestedInput
+    WorkSchedule?: WorkScheduleUncheckedUpdateManyWithoutCompanyNestedInput
+  }
+
+  export type ScheduleGroupUpsertWithoutEmployeesInput = {
+    update: XOR<ScheduleGroupUpdateWithoutEmployeesInput, ScheduleGroupUncheckedUpdateWithoutEmployeesInput>
+    create: XOR<ScheduleGroupCreateWithoutEmployeesInput, ScheduleGroupUncheckedCreateWithoutEmployeesInput>
+    where?: ScheduleGroupWhereInput
+  }
+
+  export type ScheduleGroupUpdateToOneWithWhereWithoutEmployeesInput = {
+    where?: ScheduleGroupWhereInput
+    data: XOR<ScheduleGroupUpdateWithoutEmployeesInput, ScheduleGroupUncheckedUpdateWithoutEmployeesInput>
+  }
+
+  export type ScheduleGroupUpdateWithoutEmployeesInput = {
+    nameOfShift?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    company?: CompanyUpdateOneRequiredWithoutScheduleGroupNestedInput
+    workSchedules?: WorkScheduleUpdateManyWithoutScheduleGroupNestedInput
+  }
+
+  export type ScheduleGroupUncheckedUpdateWithoutEmployeesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    companyId?: IntFieldUpdateOperationsInput | number
+    nameOfShift?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    workSchedules?: WorkScheduleUncheckedUpdateManyWithoutScheduleGroupNestedInput
+  }
+
+  export type CompanyCreateWithoutScheduleGroupInput = {
+    companyName: string
+    latitude?: Decimal | DecimalJsLike | number | string | null
+    longitude?: Decimal | DecimalJsLike | number | string | null
+    radius?: number
+    logo?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    owner: UserCreateNestedOneWithoutOwnedCompaniesInput
+    members?: UserCreateNestedManyWithoutCompanyInput
+    Employee?: EmployeeCreateNestedManyWithoutCompanyInput
+    WorkSchedule?: WorkScheduleCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyUncheckedCreateWithoutScheduleGroupInput = {
+    id?: number
+    companyName: string
+    ownerUserId: number
+    latitude?: Decimal | DecimalJsLike | number | string | null
+    longitude?: Decimal | DecimalJsLike | number | string | null
+    radius?: number
+    logo?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    members?: UserUncheckedCreateNestedManyWithoutCompanyInput
+    Employee?: EmployeeUncheckedCreateNestedManyWithoutCompanyInput
+    WorkSchedule?: WorkScheduleUncheckedCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyCreateOrConnectWithoutScheduleGroupInput = {
+    where: CompanyWhereUniqueInput
+    create: XOR<CompanyCreateWithoutScheduleGroupInput, CompanyUncheckedCreateWithoutScheduleGroupInput>
+  }
+
+  export type WorkScheduleCreateWithoutScheduleGroupInput = {
+    dayOfWeek: $Enums.DayOfWeek
+    startTime: string
+    breakStart?: string | null
+    breakEnd?: string | null
+    endTime: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    company: CompanyCreateNestedOneWithoutWorkScheduleInput
+  }
+
+  export type WorkScheduleUncheckedCreateWithoutScheduleGroupInput = {
+    id?: number
+    companyId: number
+    dayOfWeek: $Enums.DayOfWeek
+    startTime: string
+    breakStart?: string | null
+    breakEnd?: string | null
+    endTime: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+  }
+
+  export type WorkScheduleCreateOrConnectWithoutScheduleGroupInput = {
+    where: WorkScheduleWhereUniqueInput
+    create: XOR<WorkScheduleCreateWithoutScheduleGroupInput, WorkScheduleUncheckedCreateWithoutScheduleGroupInput>
+  }
+
+  export type WorkScheduleCreateManyScheduleGroupInputEnvelope = {
+    data: WorkScheduleCreateManyScheduleGroupInput | WorkScheduleCreateManyScheduleGroupInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type EmployeeCreateWithoutScheduleGroupInput = {
+    employeeCode: string
+    fullName: string
+    dateOfBirth?: Date | string | null
+    nik: string
+    gender: string
+    mobileNumber?: string | null
+    address?: string | null
+    position: string
+    department: string
+    photo?: string | null
+    hireDate: Date | string
+    status?: $Enums.EmployeeStatus
+    promotionHistory?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    user: UserCreateNestedOneWithoutEmployeeInput
+    company: CompanyCreateNestedOneWithoutEmployeeInput
+  }
+
+  export type EmployeeUncheckedCreateWithoutScheduleGroupInput = {
+    id?: number
+    userId: number
+    companyId: number
+    employeeCode: string
+    fullName: string
+    dateOfBirth?: Date | string | null
+    nik: string
+    gender: string
+    mobileNumber?: string | null
+    address?: string | null
+    position: string
+    department: string
+    photo?: string | null
+    hireDate: Date | string
+    status?: $Enums.EmployeeStatus
+    promotionHistory?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+  }
+
+  export type EmployeeCreateOrConnectWithoutScheduleGroupInput = {
+    where: EmployeeWhereUniqueInput
+    create: XOR<EmployeeCreateWithoutScheduleGroupInput, EmployeeUncheckedCreateWithoutScheduleGroupInput>
+  }
+
+  export type EmployeeCreateManyScheduleGroupInputEnvelope = {
+    data: EmployeeCreateManyScheduleGroupInput | EmployeeCreateManyScheduleGroupInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CompanyUpsertWithoutScheduleGroupInput = {
+    update: XOR<CompanyUpdateWithoutScheduleGroupInput, CompanyUncheckedUpdateWithoutScheduleGroupInput>
+    create: XOR<CompanyCreateWithoutScheduleGroupInput, CompanyUncheckedCreateWithoutScheduleGroupInput>
+    where?: CompanyWhereInput
+  }
+
+  export type CompanyUpdateToOneWithWhereWithoutScheduleGroupInput = {
+    where?: CompanyWhereInput
+    data: XOR<CompanyUpdateWithoutScheduleGroupInput, CompanyUncheckedUpdateWithoutScheduleGroupInput>
+  }
+
+  export type CompanyUpdateWithoutScheduleGroupInput = {
+    companyName?: StringFieldUpdateOperationsInput | string
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    radius?: IntFieldUpdateOperationsInput | number
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    owner?: UserUpdateOneRequiredWithoutOwnedCompaniesNestedInput
+    members?: UserUpdateManyWithoutCompanyNestedInput
+    Employee?: EmployeeUpdateManyWithoutCompanyNestedInput
+    WorkSchedule?: WorkScheduleUpdateManyWithoutCompanyNestedInput
+  }
+
+  export type CompanyUncheckedUpdateWithoutScheduleGroupInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    companyName?: StringFieldUpdateOperationsInput | string
+    ownerUserId?: IntFieldUpdateOperationsInput | number
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    radius?: IntFieldUpdateOperationsInput | number
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    members?: UserUncheckedUpdateManyWithoutCompanyNestedInput
+    Employee?: EmployeeUncheckedUpdateManyWithoutCompanyNestedInput
+    WorkSchedule?: WorkScheduleUncheckedUpdateManyWithoutCompanyNestedInput
+  }
+
+  export type WorkScheduleUpsertWithWhereUniqueWithoutScheduleGroupInput = {
+    where: WorkScheduleWhereUniqueInput
+    update: XOR<WorkScheduleUpdateWithoutScheduleGroupInput, WorkScheduleUncheckedUpdateWithoutScheduleGroupInput>
+    create: XOR<WorkScheduleCreateWithoutScheduleGroupInput, WorkScheduleUncheckedCreateWithoutScheduleGroupInput>
+  }
+
+  export type WorkScheduleUpdateWithWhereUniqueWithoutScheduleGroupInput = {
+    where: WorkScheduleWhereUniqueInput
+    data: XOR<WorkScheduleUpdateWithoutScheduleGroupInput, WorkScheduleUncheckedUpdateWithoutScheduleGroupInput>
+  }
+
+  export type WorkScheduleUpdateManyWithWhereWithoutScheduleGroupInput = {
+    where: WorkScheduleScalarWhereInput
+    data: XOR<WorkScheduleUpdateManyMutationInput, WorkScheduleUncheckedUpdateManyWithoutScheduleGroupInput>
+  }
+
+  export type EmployeeUpsertWithWhereUniqueWithoutScheduleGroupInput = {
+    where: EmployeeWhereUniqueInput
+    update: XOR<EmployeeUpdateWithoutScheduleGroupInput, EmployeeUncheckedUpdateWithoutScheduleGroupInput>
+    create: XOR<EmployeeCreateWithoutScheduleGroupInput, EmployeeUncheckedCreateWithoutScheduleGroupInput>
+  }
+
+  export type EmployeeUpdateWithWhereUniqueWithoutScheduleGroupInput = {
+    where: EmployeeWhereUniqueInput
+    data: XOR<EmployeeUpdateWithoutScheduleGroupInput, EmployeeUncheckedUpdateWithoutScheduleGroupInput>
+  }
+
+  export type EmployeeUpdateManyWithWhereWithoutScheduleGroupInput = {
+    where: EmployeeScalarWhereInput
+    data: XOR<EmployeeUpdateManyMutationInput, EmployeeUncheckedUpdateManyWithoutScheduleGroupInput>
+  }
+
+  export type CompanyCreateWithoutWorkScheduleInput = {
+    companyName: string
+    latitude?: Decimal | DecimalJsLike | number | string | null
+    longitude?: Decimal | DecimalJsLike | number | string | null
+    radius?: number
+    logo?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    owner: UserCreateNestedOneWithoutOwnedCompaniesInput
+    members?: UserCreateNestedManyWithoutCompanyInput
+    Employee?: EmployeeCreateNestedManyWithoutCompanyInput
+    ScheduleGroup?: ScheduleGroupCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyUncheckedCreateWithoutWorkScheduleInput = {
+    id?: number
+    companyName: string
+    ownerUserId: number
+    latitude?: Decimal | DecimalJsLike | number | string | null
+    longitude?: Decimal | DecimalJsLike | number | string | null
+    radius?: number
+    logo?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    members?: UserUncheckedCreateNestedManyWithoutCompanyInput
+    Employee?: EmployeeUncheckedCreateNestedManyWithoutCompanyInput
+    ScheduleGroup?: ScheduleGroupUncheckedCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyCreateOrConnectWithoutWorkScheduleInput = {
+    where: CompanyWhereUniqueInput
+    create: XOR<CompanyCreateWithoutWorkScheduleInput, CompanyUncheckedCreateWithoutWorkScheduleInput>
+  }
+
+  export type ScheduleGroupCreateWithoutWorkSchedulesInput = {
+    nameOfShift: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    company: CompanyCreateNestedOneWithoutScheduleGroupInput
+    employees?: EmployeeCreateNestedManyWithoutScheduleGroupInput
+  }
+
+  export type ScheduleGroupUncheckedCreateWithoutWorkSchedulesInput = {
+    id?: number
+    companyId: number
+    nameOfShift: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    employees?: EmployeeUncheckedCreateNestedManyWithoutScheduleGroupInput
+  }
+
+  export type ScheduleGroupCreateOrConnectWithoutWorkSchedulesInput = {
+    where: ScheduleGroupWhereUniqueInput
+    create: XOR<ScheduleGroupCreateWithoutWorkSchedulesInput, ScheduleGroupUncheckedCreateWithoutWorkSchedulesInput>
+  }
+
+  export type CompanyUpsertWithoutWorkScheduleInput = {
+    update: XOR<CompanyUpdateWithoutWorkScheduleInput, CompanyUncheckedUpdateWithoutWorkScheduleInput>
+    create: XOR<CompanyCreateWithoutWorkScheduleInput, CompanyUncheckedCreateWithoutWorkScheduleInput>
+    where?: CompanyWhereInput
+  }
+
+  export type CompanyUpdateToOneWithWhereWithoutWorkScheduleInput = {
+    where?: CompanyWhereInput
+    data: XOR<CompanyUpdateWithoutWorkScheduleInput, CompanyUncheckedUpdateWithoutWorkScheduleInput>
+  }
+
+  export type CompanyUpdateWithoutWorkScheduleInput = {
+    companyName?: StringFieldUpdateOperationsInput | string
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    radius?: IntFieldUpdateOperationsInput | number
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    owner?: UserUpdateOneRequiredWithoutOwnedCompaniesNestedInput
+    members?: UserUpdateManyWithoutCompanyNestedInput
+    Employee?: EmployeeUpdateManyWithoutCompanyNestedInput
+    ScheduleGroup?: ScheduleGroupUpdateManyWithoutCompanyNestedInput
+  }
+
+  export type CompanyUncheckedUpdateWithoutWorkScheduleInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    companyName?: StringFieldUpdateOperationsInput | string
+    ownerUserId?: IntFieldUpdateOperationsInput | number
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    radius?: IntFieldUpdateOperationsInput | number
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    members?: UserUncheckedUpdateManyWithoutCompanyNestedInput
+    Employee?: EmployeeUncheckedUpdateManyWithoutCompanyNestedInput
+    ScheduleGroup?: ScheduleGroupUncheckedUpdateManyWithoutCompanyNestedInput
+  }
+
+  export type ScheduleGroupUpsertWithoutWorkSchedulesInput = {
+    update: XOR<ScheduleGroupUpdateWithoutWorkSchedulesInput, ScheduleGroupUncheckedUpdateWithoutWorkSchedulesInput>
+    create: XOR<ScheduleGroupCreateWithoutWorkSchedulesInput, ScheduleGroupUncheckedCreateWithoutWorkSchedulesInput>
+    where?: ScheduleGroupWhereInput
+  }
+
+  export type ScheduleGroupUpdateToOneWithWhereWithoutWorkSchedulesInput = {
+    where?: ScheduleGroupWhereInput
+    data: XOR<ScheduleGroupUpdateWithoutWorkSchedulesInput, ScheduleGroupUncheckedUpdateWithoutWorkSchedulesInput>
+  }
+
+  export type ScheduleGroupUpdateWithoutWorkSchedulesInput = {
+    nameOfShift?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    company?: CompanyUpdateOneRequiredWithoutScheduleGroupNestedInput
+    employees?: EmployeeUpdateManyWithoutScheduleGroupNestedInput
+  }
+
+  export type ScheduleGroupUncheckedUpdateWithoutWorkSchedulesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    companyId?: IntFieldUpdateOperationsInput | number
+    nameOfShift?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    employees?: EmployeeUncheckedUpdateManyWithoutScheduleGroupNestedInput
   }
 
   export type CompanyCreateManyOwnerInput = {
@@ -8939,6 +12969,7 @@ export namespace Prisma {
     hireDate: Date | string
     status?: $Enums.EmployeeStatus
     promotionHistory?: string | null
+    scheduleGroupId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -8955,6 +12986,8 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     members?: UserUpdateManyWithoutCompanyNestedInput
     Employee?: EmployeeUpdateManyWithoutCompanyNestedInput
+    ScheduleGroup?: ScheduleGroupUpdateManyWithoutCompanyNestedInput
+    WorkSchedule?: WorkScheduleUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutOwnerInput = {
@@ -8969,6 +13002,8 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     members?: UserUncheckedUpdateManyWithoutCompanyNestedInput
     Employee?: EmployeeUncheckedUpdateManyWithoutCompanyNestedInput
+    ScheduleGroup?: ScheduleGroupUncheckedUpdateManyWithoutCompanyNestedInput
+    WorkSchedule?: WorkScheduleUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateManyWithoutOwnerInput = {
@@ -9021,6 +13056,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     company?: CompanyUpdateOneRequiredWithoutEmployeeNestedInput
+    scheduleGroup?: ScheduleGroupUpdateOneWithoutEmployeesNestedInput
   }
 
   export type EmployeeUncheckedUpdateWithoutUserInput = {
@@ -9039,6 +13075,7 @@ export namespace Prisma {
     hireDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
     promotionHistory?: NullableStringFieldUpdateOperationsInput | string | null
+    scheduleGroupId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -9060,6 +13097,7 @@ export namespace Prisma {
     hireDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
     promotionHistory?: NullableStringFieldUpdateOperationsInput | string | null
+    scheduleGroupId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -9093,6 +13131,28 @@ export namespace Prisma {
     hireDate: Date | string
     status?: $Enums.EmployeeStatus
     promotionHistory?: string | null
+    scheduleGroupId?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+  }
+
+  export type ScheduleGroupCreateManyCompanyInput = {
+    id?: number
+    nameOfShift: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+  }
+
+  export type WorkScheduleCreateManyCompanyInput = {
+    id?: number
+    scheduleGroupId: number
+    dayOfWeek: $Enums.DayOfWeek
+    startTime: string
+    breakStart?: string | null
+    breakEnd?: string | null
+    endTime: string
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -9157,6 +13217,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutEmployeeNestedInput
+    scheduleGroup?: ScheduleGroupUpdateOneWithoutEmployeesNestedInput
   }
 
   export type EmployeeUncheckedUpdateWithoutCompanyInput = {
@@ -9175,6 +13236,7 @@ export namespace Prisma {
     hireDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
     promotionHistory?: NullableStringFieldUpdateOperationsInput | string | null
+    scheduleGroupId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -9183,6 +13245,210 @@ export namespace Prisma {
   export type EmployeeUncheckedUpdateManyWithoutCompanyInput = {
     id?: IntFieldUpdateOperationsInput | number
     userId?: IntFieldUpdateOperationsInput | number
+    employeeCode?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nik?: StringFieldUpdateOperationsInput | string
+    gender?: StringFieldUpdateOperationsInput | string
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: StringFieldUpdateOperationsInput | string
+    department?: StringFieldUpdateOperationsInput | string
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
+    hireDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+    promotionHistory?: NullableStringFieldUpdateOperationsInput | string | null
+    scheduleGroupId?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ScheduleGroupUpdateWithoutCompanyInput = {
+    nameOfShift?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    workSchedules?: WorkScheduleUpdateManyWithoutScheduleGroupNestedInput
+    employees?: EmployeeUpdateManyWithoutScheduleGroupNestedInput
+  }
+
+  export type ScheduleGroupUncheckedUpdateWithoutCompanyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    nameOfShift?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    workSchedules?: WorkScheduleUncheckedUpdateManyWithoutScheduleGroupNestedInput
+    employees?: EmployeeUncheckedUpdateManyWithoutScheduleGroupNestedInput
+  }
+
+  export type ScheduleGroupUncheckedUpdateManyWithoutCompanyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    nameOfShift?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type WorkScheduleUpdateWithoutCompanyInput = {
+    dayOfWeek?: EnumDayOfWeekFieldUpdateOperationsInput | $Enums.DayOfWeek
+    startTime?: StringFieldUpdateOperationsInput | string
+    breakStart?: NullableStringFieldUpdateOperationsInput | string | null
+    breakEnd?: NullableStringFieldUpdateOperationsInput | string | null
+    endTime?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scheduleGroup?: ScheduleGroupUpdateOneRequiredWithoutWorkSchedulesNestedInput
+  }
+
+  export type WorkScheduleUncheckedUpdateWithoutCompanyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    scheduleGroupId?: IntFieldUpdateOperationsInput | number
+    dayOfWeek?: EnumDayOfWeekFieldUpdateOperationsInput | $Enums.DayOfWeek
+    startTime?: StringFieldUpdateOperationsInput | string
+    breakStart?: NullableStringFieldUpdateOperationsInput | string | null
+    breakEnd?: NullableStringFieldUpdateOperationsInput | string | null
+    endTime?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type WorkScheduleUncheckedUpdateManyWithoutCompanyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    scheduleGroupId?: IntFieldUpdateOperationsInput | number
+    dayOfWeek?: EnumDayOfWeekFieldUpdateOperationsInput | $Enums.DayOfWeek
+    startTime?: StringFieldUpdateOperationsInput | string
+    breakStart?: NullableStringFieldUpdateOperationsInput | string | null
+    breakEnd?: NullableStringFieldUpdateOperationsInput | string | null
+    endTime?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type WorkScheduleCreateManyScheduleGroupInput = {
+    id?: number
+    companyId: number
+    dayOfWeek: $Enums.DayOfWeek
+    startTime: string
+    breakStart?: string | null
+    breakEnd?: string | null
+    endTime: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+  }
+
+  export type EmployeeCreateManyScheduleGroupInput = {
+    id?: number
+    userId: number
+    companyId: number
+    employeeCode: string
+    fullName: string
+    dateOfBirth?: Date | string | null
+    nik: string
+    gender: string
+    mobileNumber?: string | null
+    address?: string | null
+    position: string
+    department: string
+    photo?: string | null
+    hireDate: Date | string
+    status?: $Enums.EmployeeStatus
+    promotionHistory?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+  }
+
+  export type WorkScheduleUpdateWithoutScheduleGroupInput = {
+    dayOfWeek?: EnumDayOfWeekFieldUpdateOperationsInput | $Enums.DayOfWeek
+    startTime?: StringFieldUpdateOperationsInput | string
+    breakStart?: NullableStringFieldUpdateOperationsInput | string | null
+    breakEnd?: NullableStringFieldUpdateOperationsInput | string | null
+    endTime?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    company?: CompanyUpdateOneRequiredWithoutWorkScheduleNestedInput
+  }
+
+  export type WorkScheduleUncheckedUpdateWithoutScheduleGroupInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    companyId?: IntFieldUpdateOperationsInput | number
+    dayOfWeek?: EnumDayOfWeekFieldUpdateOperationsInput | $Enums.DayOfWeek
+    startTime?: StringFieldUpdateOperationsInput | string
+    breakStart?: NullableStringFieldUpdateOperationsInput | string | null
+    breakEnd?: NullableStringFieldUpdateOperationsInput | string | null
+    endTime?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type WorkScheduleUncheckedUpdateManyWithoutScheduleGroupInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    companyId?: IntFieldUpdateOperationsInput | number
+    dayOfWeek?: EnumDayOfWeekFieldUpdateOperationsInput | $Enums.DayOfWeek
+    startTime?: StringFieldUpdateOperationsInput | string
+    breakStart?: NullableStringFieldUpdateOperationsInput | string | null
+    breakEnd?: NullableStringFieldUpdateOperationsInput | string | null
+    endTime?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type EmployeeUpdateWithoutScheduleGroupInput = {
+    employeeCode?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nik?: StringFieldUpdateOperationsInput | string
+    gender?: StringFieldUpdateOperationsInput | string
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: StringFieldUpdateOperationsInput | string
+    department?: StringFieldUpdateOperationsInput | string
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
+    hireDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+    promotionHistory?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    user?: UserUpdateOneRequiredWithoutEmployeeNestedInput
+    company?: CompanyUpdateOneRequiredWithoutEmployeeNestedInput
+  }
+
+  export type EmployeeUncheckedUpdateWithoutScheduleGroupInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    userId?: IntFieldUpdateOperationsInput | number
+    companyId?: IntFieldUpdateOperationsInput | number
+    employeeCode?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nik?: StringFieldUpdateOperationsInput | string
+    gender?: StringFieldUpdateOperationsInput | string
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: StringFieldUpdateOperationsInput | string
+    department?: StringFieldUpdateOperationsInput | string
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
+    hireDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+    promotionHistory?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type EmployeeUncheckedUpdateManyWithoutScheduleGroupInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    userId?: IntFieldUpdateOperationsInput | number
+    companyId?: IntFieldUpdateOperationsInput | number
     employeeCode?: StringFieldUpdateOperationsInput | string
     fullName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null

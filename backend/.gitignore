@@ -7,3 +7,5 @@ node_modules
 auth.rest
 company.rest
 employee.rest
+scheduleGroup.rest
+workSchedule.rest

@@ -49,7 +49,7 @@ export async function createEmployee(req: Request, res: Response) {
             department,
             hireDate,
             dateOfBirth,       
-            promotionHistory,  
+            promotionHistory,
         } = req.body;
 
         const photoFile = req.file ? req.file.filename : null;
