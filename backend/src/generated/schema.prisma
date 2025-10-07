@@ -47,9 +47,11 @@ model Company {
   deletedAt   DateTime? @map("deleted_at") @db.Timestamptz(6)
 
   // Relasi ke User (owner)
-  owner    User       @relation("CompanyOwner", fields: [ownerUserId], references: [id])
-  members  User[]
-  Employee Employee[]
+  owner         User            @relation("CompanyOwner", fields: [ownerUserId], references: [id])
+  members       User[]
+  Employee      Employee[]
+  ScheduleGroup ScheduleGroup[]
+  WorkSchedule  WorkSchedule[]
 
   @@map("companies")
 }
@@ -84,7 +86,7 @@ model Employee {
   employeeCode     String         @unique @map("employee_code")
   fullName         String         @map("full_name")
   dateOfBirth      DateTime?      @map("date_of_birth") @db.Date
-  nik              String
+  nik              String         @unique
   gender           String
   mobileNumber     String?        @map("mobile_number")
   address          String?
@@ -94,13 +96,61 @@ model Employee {
   hireDate         DateTime       @map("hire_date") @db.Date
   status           EmployeeStatus @default(ACTIVE)
   promotionHistory String?        @map("promotion_history")
-  createdAt        DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt        DateTime       @updatedAt @map("updated_at") @db.Timestamptz(6)
-  deletedAt        DateTime?      @map("deleted_at") @db.Timestamptz(6)
+  scheduleGroupId  Int?           @map("schedule_group_id")
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
 
   // Relasi
-  user    User    @relation(fields: [userId], references: [id])
-  company Company @relation(fields: [companyId], references: [id])
+  user          User           @relation(fields: [userId], references: [id])
+  company       Company        @relation(fields: [companyId], references: [id])
+  scheduleGroup ScheduleGroup? @relation(fields: [scheduleGroupId], references: [id])
 
   @@map("employees")
+}
+
+model ScheduleGroup {
+  id          Int       @id @default(autoincrement())
+  companyId   Int       @map("company_id")
+  nameOfShift String    @map("name_of_shift")
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt   DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  company       Company        @relation(fields: [companyId], references: [id])
+  workSchedules WorkSchedule[]
+  employees     Employee[]
+
+  @@unique([companyId, nameOfShift])
+  @@map("schedule_groups")
+}
+
+model WorkSchedule {
+  id              Int       @id @default(autoincrement())
+  companyId       Int       @map("company_id")
+  scheduleGroupId Int       @map("schedule_group_id")
+  dayOfWeek       DayOfWeek
+  startTime       String    @map("start_time")
+  breakStart      String?   @map("break_start")
+  breakEnd        String?   @map("break_end")
+  endTime         String    @map("end_time")
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt       DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  company       Company       @relation(fields: [companyId], references: [id])
+  scheduleGroup ScheduleGroup @relation(fields: [scheduleGroupId], references: [id])
+
+  @@map("work_schedules")
+}
+
+enum DayOfWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
 }

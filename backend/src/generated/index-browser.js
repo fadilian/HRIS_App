@@ -171,6 +171,30 @@ exports.Prisma.EmployeeScalarFieldEnum = {
   hireDate: 'hireDate',
   status: 'status',
   promotionHistory: 'promotionHistory',
+  scheduleGroupId: 'scheduleGroupId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+};
+
+exports.Prisma.ScheduleGroupScalarFieldEnum = {
+  id: 'id',
+  companyId: 'companyId',
+  nameOfShift: 'nameOfShift',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+};
+
+exports.Prisma.WorkScheduleScalarFieldEnum = {
+  id: 'id',
+  companyId: 'companyId',
+  scheduleGroupId: 'scheduleGroupId',
+  dayOfWeek: 'dayOfWeek',
+  startTime: 'startTime',
+  breakStart: 'breakStart',
+  breakEnd: 'breakEnd',
+  endTime: 'endTime',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   deletedAt: 'deletedAt'
@@ -201,11 +225,23 @@ exports.EmployeeStatus = exports.$Enums.EmployeeStatus = {
   RESIGNED: 'RESIGNED'
 };
 
+exports.DayOfWeek = exports.$Enums.DayOfWeek = {
+  MONDAY: 'MONDAY',
+  TUESDAY: 'TUESDAY',
+  WEDNESDAY: 'WEDNESDAY',
+  THURSDAY: 'THURSDAY',
+  FRIDAY: 'FRIDAY',
+  SATURDAY: 'SATURDAY',
+  SUNDAY: 'SUNDAY'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Company: 'Company',
   UserToken: 'UserToken',
-  Employee: 'Employee'
+  Employee: 'Employee',
+  ScheduleGroup: 'ScheduleGroup',
+  WorkSchedule: 'WorkSchedule'
 };
 
 /**
