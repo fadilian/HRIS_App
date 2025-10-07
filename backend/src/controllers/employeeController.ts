@@ -50,6 +50,7 @@ export async function createEmployee(req: Request, res: Response) {
             hireDate,
             dateOfBirth,       
             promotionHistory,
+            scheduleGroupId,
         } = req.body;
 
         const photoFile = req.file ? req.file.filename : null;
@@ -94,6 +95,23 @@ export async function createEmployee(req: Request, res: Response) {
             });
         }
 
+        // Validasi scheduleGroupId jika diisi
+        if (scheduleGroupId) {
+            const scheduleGroup = await prisma.scheduleGroup.findFirst({
+                where: { 
+                    id: Number(scheduleGroupId), 
+                    companyId,
+                    deletedAt: null 
+                }
+            });
+
+            if (!scheduleGroup) {
+                return res.status(404).json({ 
+                    message: "Schedule Group tidak ditemukan atau bukan milik company Anda" 
+                });
+            }
+        }
+
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const result = await prisma.$transaction(async (tx) => {
@@ -124,6 +142,7 @@ export async function createEmployee(req: Request, res: Response) {
                     hireDate: new Date(hireDate),
                     dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : null,
                     promotionHistory: promotionHistory || null,
+                    scheduleGroupId: scheduleGroupId ? Number(scheduleGroupId) : null,
                     status: "ACTIVE",   // set otomatis Active
                     photo: photoFile,
                 },
@@ -148,11 +167,19 @@ export async function getEmployeeProfile(req: Request, res: Response) {
         const userId = (req as any).user.id;
 
         const employee = await prisma.employee.findFirst({
-        where: { userId, deletedAt: null },
-        include: {
-            company: true,
-            user: { select: { id: true, name: true, email: true, role: true } },
-        },
+            where: { userId, deletedAt: null },
+            include: {
+                company: true,
+                user: { select: { id: true, name: true, email: true, role: true } },
+                scheduleGroup: { // include scheduleGroup
+                    include: {
+                        workSchedules: {
+                            where: { deletedAt: null },
+                            orderBy: { dayOfWeek: 'asc' }
+                        }
+                    }
+                }
+            },
         });
 
         if (!employee) {
@@ -225,7 +252,10 @@ export async function getEmployees(req: Request, res: Response) {
                 { company: { companyName: { contains: search, mode: 'insensitive' } } },
                 
                 // Data user (email untuk kontak)
-                { user: { email: { contains: search, mode: 'insensitive' } } }
+                { user: { email: { contains: search, mode: 'insensitive' } } },
+
+                // Data schedule group
+                { scheduleGroup: { nameOfShift: { contains: search, mode: 'insensitive' } } }
             ];
         }
 
@@ -259,6 +289,12 @@ export async function getEmployees(req: Request, res: Response) {
                         role: true 
                     } 
                 },
+                scheduleGroup: { // include scheduleGroup
+                    select: {
+                        id: true,
+                        nameOfShift: true
+                    }
+                },
             },
             orderBy: { [finalSortBy]: sortOrder },
             skip: (Number(page) - 1) * Number(limit),
@@ -290,51 +326,67 @@ export async function getEmployeeById(req: Request, res: Response) {
         const employeeId = Number(req.params.id);
 
         const user = await prisma.user.findFirst({
-        where: { id: userId, deletedAt: null },
-        include: { company: true, ownedCompanies: true },
+            where: { id: userId, deletedAt: null },
+            include: { company: true, ownedCompanies: true },
         });
 
         if (!user) {
-        return res.status(404).json({ message: "User not found" });
+            return res.status(404).json({ message: "User not found" });
         }
 
         let employee;
 
         if (user.role === "SUPERADMIN") {
-        employee = await prisma.employee.findFirst({
-            where: { id: employeeId, deletedAt: null },
-            include: {
-            company: true,
-            user: { select: { id: true, name: true, email: true, role: true } },
-            },
-        });
-        } else if (user.role === "ADMIN") {
-        let companyId: number | null = null;
-        if (user.ownedCompanies.length > 0) {
-            companyId = user.ownedCompanies[0].id;
-        } else if (user.companyId) {
-            companyId = user.companyId;
-        }
-
-        if (!companyId) {
-            return res.status(400).json({ 
-            message: "Admin tidak terkait dengan perusahaan manapun" 
+            employee = await prisma.employee.findFirst({
+                where: { id: employeeId, deletedAt: null },
+                include: {
+                    company: true,
+                    user: { select: { id: true, name: true, email: true, role: true } },
+                    scheduleGroup: { // include scheduleGroup dengan workSchedules
+                        include: {
+                            workSchedules: {
+                                where: { deletedAt: null },
+                                orderBy: { dayOfWeek: 'asc' }
+                            }
+                        }
+                    }
+                },
             });
-        }
+        } else if (user.role === "ADMIN") {
+            let companyId: number | null = null;
+            if (user.ownedCompanies.length > 0) {
+                companyId = user.ownedCompanies[0].id;
+            } else if (user.companyId) {
+                companyId = user.companyId;
+            }
 
-        employee = await prisma.employee.findFirst({
-            where: { id: employeeId, companyId, deletedAt: null },
-            include: {
-            company: true,
-            user: { select: { id: true, name: true, email: true, role: true } },
-            },
-        });
+            if (!companyId) {
+                return res.status(400).json({ 
+                message: "Admin tidak terkait dengan perusahaan manapun" 
+                });
+            }
+
+            employee = await prisma.employee.findFirst({
+                where: { id: employeeId, companyId, deletedAt: null },
+                include: {
+                    company: true,
+                    user: { select: { id: true, name: true, email: true, role: true } },
+                    scheduleGroup: { // include scheduleGroup dengan workSchedules
+                        include: {
+                            workSchedules: {
+                                where: { deletedAt: null },
+                                orderBy: { dayOfWeek: 'asc' }
+                            }
+                        }
+                    }
+                },
+            });
         } else {
-        return res.status(403).json({ message: "Unauthorized" });
+            return res.status(403).json({ message: "Unauthorized" });
         }
 
         if (!employee) {
-        return res.status(404).json({ message: "Employee not found" });
+            return res.status(404).json({ message: "Employee not found" });
         }
 
         res.json({ message: "Success", data: employee });
@@ -404,6 +456,23 @@ export async function updateEmployee(req: Request, res: Response) {
             }
         }
 
+        // Validasi scheduleGroupId jika diisi
+        if (data.scheduleGroupId) {
+            const scheduleGroup = await prisma.scheduleGroup.findFirst({
+                where: { 
+                    id: Number(data.scheduleGroupId),
+                    companyId: employee.companyId,
+                    deletedAt: null 
+                },
+            });
+
+            if (!scheduleGroup) {
+                return res.status(400).json({ 
+                    message: "Schedule group tidak ditemukan atau tidak sesuai dengan company" 
+                });
+            }
+        }
+
         let updateUserData: any = {};
         let updateEmployeeData: any = {};
 
@@ -427,8 +496,14 @@ export async function updateEmployee(req: Request, res: Response) {
                 ...(data.dateOfBirth && { dateOfBirth: new Date(data.dateOfBirth) }),
                 ...(data.status && { status: data.status }),
                 ...(data.promotionHistory && { promotionHistory: data.promotionHistory }),
+                ...(data.scheduleGroupId && { scheduleGroupId: Number(data.scheduleGroupId) }),
                 ...(file && { photo: file.filename }),
             };
+
+            // Handle null scheduleGroupId (untuk menghapus relasi)
+            if (data.scheduleGroupId === '' || data.scheduleGroupId === null) {
+                updateEmployeeData.scheduleGroupId = null;
+            }
         } 
         
         // EMPLOYEE
@@ -448,7 +523,8 @@ export async function updateEmployee(req: Request, res: Response) {
             };
 
             if (data.name || data.email || data.nik || data.gender || 
-                data.position || data.department || data.status || data.promotionHistory) {
+                data.position || data.department || data.status || 
+                data.promotionHistory || data.scheduleGroupId) { // Tambah scheduleGroupId
                 return res.status(403).json({ 
                     message: "Forbidden: You cannot update these fields" 
                 });
@@ -490,7 +566,13 @@ export async function updateEmployee(req: Request, res: Response) {
                 data: updateEmployeeData,
                 include: { 
                     user: { select: { id: true, name: true, email: true, role: true } },
-                    company: true 
+                    company: true,
+                    scheduleGroup: { // include scheduleGroup
+                        select: {
+                            id: true,
+                            nameOfShift: true
+                        }
+                    }
                 },
             });
 
@@ -610,22 +692,22 @@ export async function restoreEmployee(req: Request, res: Response) {
         const currentUser = (req as any).user;
 
         if (currentUser.role !== "SUPERADMIN") {
-        return res.status(403).json({ 
-            message: "Unauthorized. Only SUPERADMIN can restore employees" 
-        });
+            return res.status(403).json({ 
+                message: "Unauthorized. Only SUPERADMIN can restore employees" 
+            });
         }
 
         const employee = await prisma.employee.findUnique({
-        where: { id: Number(id) },
-        include: { user: true },
+            where: { id: Number(id) },
+            include: { user: true },
         });
 
         if (!employee) {
-        return res.status(404).json({ message: "Employee not found" });
+            return res.status(404).json({ message: "Employee not found" });
         }
 
         if (!employee.deletedAt) {
-        return res.status(400).json({ message: "Employee is not deleted" });
+            return res.status(400).json({ message: "Employee is not deleted" });
         }
 
         await prisma.$transaction(async (tx) => {
@@ -641,8 +723,8 @@ export async function restoreEmployee(req: Request, res: Response) {
         });
 
         res.status(200).json({ 
-        message: "Employee restored successfully",
-        restoredAt: new Date()
+            message: "Employee restored successfully",
+            restoredAt: new Date()
         });
     } catch (err) {
         console.error("Error restoreEmployee:", err);
@@ -656,8 +738,8 @@ export async function getDeletedEmployees(req: Request, res: Response) {
         const userId = (req as any).user.id;
 
         const user = await prisma.user.findFirst({
-        where: { id: userId, deletedAt: null },
-        include: { company: true, ownedCompanies: true },
+            where: { id: userId, deletedAt: null },
+            include: { company: true, ownedCompanies: true },
         });
 
         if (!user) {
@@ -666,39 +748,51 @@ export async function getDeletedEmployees(req: Request, res: Response) {
 
         let employees;
         if (user.role === "SUPERADMIN") {
-        employees = await prisma.employee.findMany({
-            where: { deletedAt: { not: null } },
-            include: {
-            company: true,
-            user: { select: { id: true, name: true, email: true, role: true } },
-            },
-            orderBy: { deletedAt: "desc" },
-        });
-        } else if (user.role === "ADMIN") {
-        let companyId: number | null = null;
-        if (user.ownedCompanies.length > 0) {
-            companyId = user.ownedCompanies[0].id;
-        } else if (user.companyId) {
-            companyId = user.companyId;
-        }
-
-        if (!companyId) {
-            return res.status(400).json({ 
-            message: "Admin tidak terkait dengan perusahaan manapun" 
+            employees = await prisma.employee.findMany({
+                where: { deletedAt: { not: null } },
+                include: {
+                    company: true,
+                    user: { select: { id: true, name: true, email: true, role: true } },
+                    scheduleGroup: { // include scheduleGroup
+                        select: {
+                            id: true,
+                            nameOfShift: true
+                        }
+                    }
+                },
+                orderBy: { deletedAt: "desc" },
             });
-        }
+        } else if (user.role === "ADMIN") {
+            let companyId: number | null = null;
+            if (user.ownedCompanies.length > 0) {
+                companyId = user.ownedCompanies[0].id;
+            } else if (user.companyId) {
+                companyId = user.companyId;
+            }
 
-        employees = await prisma.employee.findMany({
-            where: { 
-            companyId, 
-            deletedAt: { not: null }
-            },
-            include: {
-            company: true,
-            user: { select: { id: true, name: true, email: true, role: true } },
-            },
-            orderBy: { deletedAt: "desc" },
-        });
+            if (!companyId) {
+                return res.status(400).json({ 
+                message: "Admin tidak terkait dengan perusahaan manapun" 
+                });
+            }
+
+            employees = await prisma.employee.findMany({
+                where: { 
+                    companyId, 
+                    deletedAt: { not: null }
+                },
+                include: {
+                    company: true,
+                    user: { select: { id: true, name: true, email: true, role: true } },
+                    scheduleGroup: { // include scheduleGroup
+                        select: {
+                            id: true,
+                            nameOfShift: true
+                        }
+                    }
+                },
+                orderBy: { deletedAt: "desc" },
+            });
         } else {
         return res.status(403).json({ message: "Unauthorized" });
         }
@@ -736,7 +830,16 @@ export async function exportEmployeesCsv(req: Request, res: Response) {
             // superadmin >> semua employees
             employees = await prisma.employee.findMany({
                 where: { deletedAt: null },
-                include: { company: true, user: { select: { email: true } } },
+                include: { 
+                    company: true, 
+                    user: { select: { email: true } },
+                    scheduleGroup: { // include scheduleGroup
+                        select: {
+                            id: true,
+                            nameOfShift: true
+                        }
+                    },
+                },
                 orderBy: { createdAt: "desc" },
             });
             fileName = "employees-all.csv";
@@ -759,7 +862,16 @@ export async function exportEmployeesCsv(req: Request, res: Response) {
 
             employees = await prisma.employee.findMany({
                 where: { companyId, deletedAt: null },
-                include: { company: true, user: { select: { email: true } } },
+                include: { 
+                    company: true, 
+                    user: { select: { email: true } },
+                    scheduleGroup: { // include scheduleGroup
+                        select: {
+                            id: true,
+                            nameOfShift: true
+                        }
+                    },
+                },
                 orderBy: { createdAt: "desc" },
             });
 
@@ -791,6 +903,8 @@ export async function exportEmployeesCsv(req: Request, res: Response) {
             { label: "Hire Date", value: (row: any) => row.hireDate.toISOString().split("T")[0] },
             { label: "Status", value: "status" },
             { label: "Promotion History", value: "promotionHistory" },
+            { label: "Schedule Group ID", value: (row: any) => row.scheduleGroup?.id || "" },
+            { label: "Schedule Group Name", value: (row: any) => row.scheduleGroup?.nameOfShift || "" },
             { label: "Company ID", value: "company.id" },
             { label: "Company Name", value: "company.companyName" },
         ];
@@ -808,6 +922,7 @@ export async function exportEmployeesCsv(req: Request, res: Response) {
     }
 }
 
+// import data employee dari file csv
 export async function importEmployeesCsv(req: Request, res: Response) {
     let filePath: string | null = null;
     
@@ -889,6 +1004,7 @@ export async function importEmployeesCsv(req: Request, res: Response) {
                 hireDate,
                 dateOfBirth,
                 promotionHistory,
+                scheduleGroupId,
             } = row;
 
             // Validasi field required
@@ -901,6 +1017,23 @@ export async function importEmployeesCsv(req: Request, res: Response) {
             }
 
             try {
+                // Validasi scheduleGroupId jika diisi
+                if (scheduleGroupId) {
+                    const scheduleGroup = await prisma.scheduleGroup.findFirst({
+                        where: { 
+                            id: Number(scheduleGroupId), 
+                            companyId,
+                            deletedAt: null 
+                        }
+                    });
+
+                    if (!scheduleGroup) {
+                        console.log(`Skipping row ${processedCount}: Schedule Group ID ${scheduleGroupId} tidak ditemukan`);
+                        skippedCount++;
+                        continue;
+                    }
+                }
+
                 // Gunakan transaction individual untuk setiap employee
                 const result = await prisma.$transaction(async (tx) => {
                     // Cek apakah email sudah ada
@@ -946,6 +1079,7 @@ export async function importEmployeesCsv(req: Request, res: Response) {
                             hireDate: hireDate ? new Date(hireDate) : new Date(),
                             dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : null,
                             promotionHistory: promotionHistory ? promotionHistory.trim() : null,
+                            scheduleGroupId: scheduleGroupId ? Number(scheduleGroupId) : null, // tambah scheduleGroup
                             status: "ACTIVE",
                         },
                     });

@@ -132,7 +132,6 @@ export async function loginEmployee(req: Request, res: Response) {
 }
 
 
-
 export async function profile(req: Request, res: Response) {
     try {
         const userId = (req as any).user.id; // ambil dari JWT
@@ -332,3 +331,161 @@ export const resetPassword = async (req: Request, res: Response) => {
         res.status(500).json({ status: false, message: "Something went wrong" });
     }
 };
+
+// Ubah Password bagi admin/superadmin
+export async function changePasswordAdmin(req: Request, res: Response) {
+    const { currentPassword, newPassword, confirmPassword } = req.body;
+
+    try {
+        const currentUser = (req as any).user;
+
+        // Validasi role - hanya ADMIN dan SUPERADMIN yang boleh akses
+        if (currentUser.role !== "ADMIN" && currentUser.role !== "SUPERADMIN") {
+            return res.status(403).json({ 
+                message: "Forbidden: Only admin and superadmin can access this endpoint" 
+            });
+        }
+
+        // Validasi input
+        if (!currentPassword || !newPassword || !confirmPassword) {
+            return res.status(400).json({ 
+                message: "Current password, new password, and confirm password are required" 
+            });
+        }
+
+        if (newPassword !== confirmPassword) {
+            return res.status(400).json({ 
+                message: "New password and confirm password do not match" 
+            });
+        }
+
+        if (newPassword.length < 6) {
+            return res.status(400).json({ 
+                message: "New password must be at least 6 characters long" 
+            });
+        }
+
+        // Dapatkan data user lengkap
+        const user = await prisma.user.findUnique({
+            where: { 
+                id: currentUser.id,
+                deletedAt: null 
+            }
+        });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Verifikasi password lama
+        const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password);
+        if (!isCurrentPasswordValid) {
+            return res.status(401).json({ 
+                message: "Current password is incorrect" 
+            });
+        }
+
+        // Validasi password baru tidak boleh sama dengan password lama
+        const isSameAsOldPassword = await bcrypt.compare(newPassword, user.password);
+        if (isSameAsOldPassword) {
+            return res.status(400).json({ 
+                message: "New password cannot be the same as current password" 
+            });
+        }
+
+        // Hash password baru
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        // Update password
+        await prisma.user.update({
+            where: { id: user.id },
+            data: { password: hashedPassword }
+        });
+
+        res.status(200).json({ 
+            message: "Password changed successfully" 
+        });
+
+    } catch (err: any) {
+        console.error("Error changePasswordAdmin:", err);
+        res.status(500).json({ message: "Error changing password" });
+    }
+}
+
+// employee ubah passwordnya sendiri
+export async function changePasswordEmployee(req: Request, res: Response) {
+    const { currentPassword, newPassword, confirmPassword } = req.body;
+
+    try {
+        const currentUser = (req as any).user;
+
+        // Validasi input
+        if (!currentPassword || !newPassword || !confirmPassword) {
+            return res.status(400).json({ 
+                message: "Current password, new password, and confirm password are required" 
+            });
+        }
+
+        if (newPassword !== confirmPassword) {
+            return res.status(400).json({ 
+                message: "New password and confirm password do not match" 
+            });
+        }
+
+        if (newPassword.length < 6) {
+            return res.status(400).json({ 
+                message: "New password must be at least 6 characters long" 
+            });
+        }
+
+        // Dapatkan data user lengkap
+        const user = await prisma.user.findUnique({
+            where: { 
+                id: currentUser.id,
+                deletedAt: null 
+            },
+            include: {
+                Employee: {
+                    where: { deletedAt: null }
+                }
+            }
+        });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Verifikasi password lama
+        const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password);
+        if (!isCurrentPasswordValid) {
+            return res.status(401).json({ 
+                message: "Current password is incorrect" 
+            });
+        }
+
+        // Validasi password baru tidak boleh sama dengan password lama
+        const isSameAsOldPassword = await bcrypt.compare(newPassword, user.password);
+        if (isSameAsOldPassword) {
+            return res.status(400).json({ 
+                message: "New password cannot be the same as current password" 
+            });
+        }
+
+        // Hash password baru
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        // Update password
+        await prisma.user.update({
+            where: { id: user.id },
+            data: { password: hashedPassword }
+        });
+
+        res.status(200).json({ 
+            message: "Password changed successfully" 
+        });
+
+    } catch (err: any) {
+        console.error("Error changePassword:", err);
+        res.status(500).json({ message: "Error changing password" });
+    }
+}
