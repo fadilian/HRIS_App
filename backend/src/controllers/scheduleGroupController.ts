@@ -143,3 +143,206 @@ export async function getAllScheduleGroups(req: Request, res: Response) {
         res.status(500).json({ message: "Terjadi kesalahan saat mengambil semua data shift" });
     }
 }
+
+// Update Schedule Group (Shift) - admin & superadmin
+export async function updateScheduleGroup(req: Request, res: Response) {
+    try {
+        const userId = (req as any).user.id;
+        const { id } = req.params;
+        const { nameOfShift } = req.body;
+
+        // Validasi ID
+        if (!id || isNaN(Number(id))) {
+            return res.status(400).json({
+                message: "ID schedule group tidak valid",
+            });
+        }
+
+        const scheduleGroupId = Number(id);
+
+        // Validasi input
+        if (!nameOfShift) {
+            return res.status(400).json({
+                message: "Nama shift wajib diisi",
+            });
+        }
+
+        // Cek user login
+        const user = await prisma.user.findFirst({
+            where: { id: userId, deletedAt: null },
+            include: { company: true, ownedCompanies: true },
+        });
+
+        if (!user || (user.role !== "ADMIN" && user.role !== "SUPERADMIN")) {
+            return res.status(403).json({ message: "Unauthorized" });
+        }
+
+        // Ambil companyId dari admin login
+        let companyId: number | null = null;
+        if (user.ownedCompanies.length > 0) {
+            companyId = user.ownedCompanies[0].id;
+        } else if (user.companyId) {
+            companyId = user.companyId;
+        }
+
+        if (!companyId) {
+            return res.status(400).json({
+                message: "User tidak terhubung dengan company manapun",
+            });
+        }
+
+        // Cek apakah schedule group ada dan milik company login
+        const existingScheduleGroup = await prisma.scheduleGroup.findFirst({
+            where: {
+                id: scheduleGroupId,
+                companyId,
+                deletedAt: null,
+            },
+        });
+
+        if (!existingScheduleGroup) {
+            return res.status(404).json({
+                message: "Schedule group tidak ditemukan atau bukan milik company Anda",
+            });
+        }
+
+        // Cek duplikat nama shift (kecuali diri sendiri)
+        const duplicate = await prisma.scheduleGroup.findFirst({
+            where: {
+                companyId,
+                nameOfShift,
+                deletedAt: null,
+                id: { not: scheduleGroupId },
+            },
+        });
+
+        if (duplicate) {
+            return res.status(409).json({
+                message: `Shift "${nameOfShift}" sudah ada di perusahaan ini`,
+            });
+        }
+
+        // Update schedule group
+        const updatedScheduleGroup = await prisma.scheduleGroup.update({
+            where: { id: scheduleGroupId },
+            data: { nameOfShift },
+            include: {
+                company: { select: { id: true, companyName: true } },
+                workSchedules: {
+                    where: { deletedAt: null },
+                },
+            },
+        });
+
+        res.status(200).json({
+            message: "Shift berhasil diupdate",
+            data: updatedScheduleGroup,
+        });
+    } catch (err: any) {
+        console.error("Error updateScheduleGroup:", err);
+        res.status(500).json({
+            message:
+                err.message || "Terjadi kesalahan saat mengupdate shift",
+        });
+    }
+}
+
+// delete schedule group (soft delete) - admin & superadmin
+export async function deleteScheduleGroup(req: Request, res: Response) {
+    try {
+        const userId = (req as any).user.id;
+        const { id } = req.params;
+
+        // Validasi ID
+        if (!id || isNaN(Number(id))) {
+            return res.status(400).json({
+                message: "ID schedule group tidak valid",
+            });
+        }
+
+        const scheduleGroupId = Number(id);
+
+        // Cek user login
+        const user = await prisma.user.findFirst({
+            where: { id: userId, deletedAt: null },
+            include: { company: true, ownedCompanies: true },
+        });
+
+        if (!user || (user.role !== "ADMIN" && user.role !== "SUPERADMIN")) {
+            return res.status(403).json({ message: "Unauthorized" });
+        }
+
+        // Ambil companyId dari admin login
+        let companyId: number | null = null;
+        if (user.ownedCompanies.length > 0) {
+            companyId = user.ownedCompanies[0].id;
+        } else if (user.companyId) {
+            companyId = user.companyId;
+        }
+
+        if (!companyId) {
+            return res.status(400).json({
+                message: "User tidak terhubung dengan company manapun",
+            });
+        }
+
+        // Cek apakah schedule group ada dan milik company login
+        const existingScheduleGroup = await prisma.scheduleGroup.findFirst({
+            where: {
+                id: scheduleGroupId,
+                companyId,
+                deletedAt: null,
+            },
+        });
+
+        if (!existingScheduleGroup) {
+            return res.status(404).json({
+                message: "Schedule group tidak ditemukan atau bukan milik company Anda",
+            });
+        }
+
+        // Cek apakah ada employee yang masih menggunakan schedule group ini
+        const employeesUsingSchedule = await prisma.employee.findFirst({
+            where: {
+                scheduleGroupId,
+                deletedAt: null,
+            },
+        });
+
+        if (employeesUsingSchedule) {
+            return res.status(400).json({
+                message: "Tidak dapat menghapus shift karena masih ada employee yang menggunakannya",
+            });
+        }
+
+        // Cek apakah ada work schedule yang terkait
+        const relatedWorkSchedules = await prisma.workSchedule.findFirst({
+            where: {
+                scheduleGroupId,
+                deletedAt: null,
+            },
+        });
+
+        if (relatedWorkSchedules) {
+            return res.status(400).json({
+                message: "Tidak dapat menghapus shift karena masih ada jadwal kerja yang terkait. Hapus jadwal kerja terlebih dahulu",
+            });
+        }
+
+        // Soft delete schedule group
+        await prisma.scheduleGroup.update({
+            where: { id: scheduleGroupId },
+            data: { deletedAt: new Date() },
+        });
+
+        res.status(200).json({
+            message: "Shift berhasil dihapus",
+        });
+    } catch (err: any) {
+        console.error("Error deleteScheduleGroup:", err);
+        res.status(500).json({
+            message:
+                err.message || "Terjadi kesalahan saat menghapus shift",
+        });
+    }
+}

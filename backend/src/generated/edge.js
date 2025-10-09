@@ -226,7 +226,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "D:\\Magang\\HRIS_App\\backend\\src\\generated",
+      "value": "C:\\Users\\LENOVO\\git-hris\\HRIS_App\\backend\\src\\generated",
       "fromEnvVar": null
     },
     "config": {
@@ -240,7 +240,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "D:\\Magang\\HRIS_App\\backend\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Users\\LENOVO\\git-hris\\HRIS_App\\backend\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {

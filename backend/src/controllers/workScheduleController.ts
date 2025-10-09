@@ -185,3 +185,194 @@ export async function getAllWorkSchedules(req: Request, res: Response) {
         res.status(500).json({ message: "Terjadi kesalahan saat mengambil semua data" });
     }
 }
+
+// update work schedule - admin & superadmin
+export async function updateWorkSchedule(req: Request, res: Response) {
+    try {
+        const userId = (req as any).user.id;
+        const { id } = req.params;
+        const {
+            dayOfWeek,
+            startTime,
+            breakStart,
+            breakEnd,
+            endTime,
+        } = req.body;
+
+        // Validasi ID
+        if (!id || isNaN(Number(id))) {
+            return res.status(400).json({
+                message: "ID work schedule tidak valid",
+            });
+        }
+
+        const workScheduleId = Number(id);
+
+        // Ambil user login dan company
+        const user = await prisma.user.findFirst({
+            where: { id: userId, deletedAt: null },
+            include: { company: true, ownedCompanies: true },
+        });
+
+        if (!user || (user.role !== "ADMIN" && user.role !== "SUPERADMIN")) {
+            return res.status(403).json({ message: "Unauthorized" });
+        }
+
+        // Ambil companyId admin login
+        let companyId: number | null = null;
+        if (user.ownedCompanies.length > 0) {
+            companyId = user.ownedCompanies[0].id;
+        } else if (user.companyId) {
+            companyId = user.companyId;
+        }
+
+        if (!companyId) {
+            return res.status(400).json({
+                message: "User tidak terhubung dengan company manapun",
+            });
+        }
+
+        // Cek apakah work schedule ada dan milik company login
+        const existingSchedule = await prisma.workSchedule.findFirst({
+            where: {
+                id: workScheduleId,
+                companyId,
+                deletedAt: null,
+            },
+        });
+
+        if (!existingSchedule) {
+            return res.status(404).json({
+                message: "Work schedule tidak ditemukan atau bukan milik company Anda",
+            });
+        }
+
+        // Jika dayOfWeek diubah, cek duplikat
+        if (dayOfWeek && dayOfWeek !== existingSchedule.dayOfWeek) {
+            const duplicate = await prisma.workSchedule.findFirst({
+                where: {
+                    companyId,
+                    scheduleGroupId: existingSchedule.scheduleGroupId,
+                    dayOfWeek,
+                    deletedAt: null,
+                    id: { not: workScheduleId },
+                },
+            });
+
+            if (duplicate) {
+                return res.status(409).json({
+                    message: `Jadwal untuk hari ${dayOfWeek} sudah ada di shift ini`,
+                });
+            }
+        }
+
+        // Siapkan data yang akan diupdate
+        const updateData: any = {};
+        if (dayOfWeek !== undefined) updateData.dayOfWeek = dayOfWeek;
+        if (startTime !== undefined) updateData.startTime = startTime;
+        if (breakStart !== undefined) updateData.breakStart = breakStart;
+        if (breakEnd !== undefined) updateData.breakEnd = breakEnd;
+        if (endTime !== undefined) updateData.endTime = endTime;
+
+        // Validasi minimal ada satu field yang diupdate
+        if (Object.keys(updateData).length === 0) {
+            return res.status(400).json({
+                message: "Tidak ada data yang akan diupdate",
+            });
+        }
+
+        // Update work schedule
+        const updatedSchedule = await prisma.workSchedule.update({
+            where: { id: workScheduleId },
+            data: updateData,
+            include: {
+                scheduleGroup: {
+                    select: { id: true, nameOfShift: true },
+                },
+            },
+        });
+
+        res.status(200).json({
+            message: "Work schedule berhasil diupdate",
+            data: updatedSchedule,
+        });
+    } catch (err: any) {
+        console.error("Error updateWorkSchedule:", err);
+        res.status(500).json({
+            message:
+                err.message || "Terjadi kesalahan saat mengupdate work schedule",
+        });
+    }
+}
+
+// delete work schedule (soft delete) - admin & superadmin
+export async function deleteWorkSchedule(req: Request, res: Response) {
+    try {
+        const userId = (req as any).user.id;
+        const { id } = req.params;
+
+        // Validasi ID
+        if (!id || isNaN(Number(id))) {
+            return res.status(400).json({
+                message: "ID work schedule tidak valid",
+            });
+        }
+
+        const workScheduleId = Number(id);
+
+        // Ambil user login dan company
+        const user = await prisma.user.findFirst({
+            where: { id: userId, deletedAt: null },
+            include: { company: true, ownedCompanies: true },
+        });
+
+        if (!user || (user.role !== "ADMIN" && user.role !== "SUPERADMIN")) {
+            return res.status(403).json({ message: "Unauthorized" });
+        }
+
+        // Ambil companyId admin login
+        let companyId: number | null = null;
+        if (user.ownedCompanies.length > 0) {
+            companyId = user.ownedCompanies[0].id;
+        } else if (user.companyId) {
+            companyId = user.companyId;
+        }
+
+        if (!companyId) {
+            return res.status(400).json({
+                message: "User tidak terhubung dengan company manapun",
+            });
+        }
+
+        // Cek apakah work schedule ada dan milik company login
+        const existingSchedule = await prisma.workSchedule.findFirst({
+            where: {
+                id: workScheduleId,
+                companyId,
+                deletedAt: null,
+            },
+        });
+
+        if (!existingSchedule) {
+            return res.status(404).json({
+                message: "Work schedule tidak ditemukan atau bukan milik company Anda",
+            });
+        }
+
+        // Soft delete work schedule
+        await prisma.workSchedule.update({
+            where: { id: workScheduleId },
+            data: { deletedAt: new Date() },
+        });
+
+        res.status(200).json({
+            message: "Work schedule berhasil dihapus",
+        });
+    } catch (err: any) {
+        console.error("Error deleteWorkSchedule:", err);
+        res.status(500).json({
+            message:
+                err.message || "Terjadi kesalahan saat menghapus work schedule",
+        });
+    }
+}
