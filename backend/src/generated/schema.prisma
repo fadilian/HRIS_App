@@ -17,7 +17,7 @@ datasource db {
 model User {
   id              Int       @id @default(autoincrement())
   name            String?
-  email           String    @unique
+  email           String
   password        String
   role            Role      @default(ADMIN)
   companyId       Int?
@@ -31,6 +31,7 @@ model User {
   tokens         UserToken[] // relasi ke tabel UserToken
   Employee       Employee[]
 
+  @@unique([companyId, email])
   @@map("users")
 }
 
@@ -86,7 +87,7 @@ model Employee {
   employeeCode     String         @unique @map("employee_code")
   fullName         String         @map("full_name")
   dateOfBirth      DateTime?      @map("date_of_birth") @db.Date
-  nik              String         @unique
+  nik              String
   gender           String
   mobileNumber     String?        @map("mobile_number")
   address          String?
@@ -107,6 +108,7 @@ model Employee {
   company       Company        @relation(fields: [companyId], references: [id])
   scheduleGroup ScheduleGroup? @relation(fields: [scheduleGroupId], references: [id])
 
+  @@unique([companyId, nik])
   @@map("employees")
 }
 
