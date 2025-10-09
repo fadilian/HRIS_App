@@ -56,9 +56,9 @@ export async function createEmployee(req: Request, res: Response) {
         const photoFile = req.file ? req.file.filename : null;
 
         // Validasi input required
-        if (!name || !email || !password || !fullName) {
+        if (!name || !email || !password || !fullName || !nik) {
             return res.status(400).json({ 
-                message: "Name, email, password, dan fullName wajib diisi" 
+                message: "Name, email, password, fullName, dan nik wajib diisi" 
             });
         }
 
@@ -84,15 +84,36 @@ export async function createEmployee(req: Request, res: Response) {
             });
         }
 
-        // Cek email sudah ada atau belum
+        // Cek email sudah ada atau belum pada company yang sama
         const existingUser = await prisma.user.findFirst({
-            where: { email, deletedAt: null },
+            where: { 
+                email: email.trim().toLowerCase(),
+                companyId: companyId, 
+                deletedAt: null 
+            },
         });
 
         if (existingUser) {
             return res.status(409).json({ 
                 message: "Email sudah terdaftar" 
             });
+        }
+
+        // Cek nik sudah ada atau belum pada company yang sama
+        if (nik) {
+            const existingEmployeeWithNIK = await prisma.employee.findFirst({
+                where: { 
+                    nik: nik.trim(),
+                    companyId: companyId,
+                    deletedAt: null 
+                },
+            });
+
+            if (existingEmployeeWithNIK) {
+                return res.status(409).json({ 
+                    message: "NIK sudah terdaftar untuk employee lain" 
+                });
+            }
         }
 
         // Validasi scheduleGroupId jika diisi
@@ -940,12 +961,7 @@ export async function importEmployeesCsv(req: Request, res: Response) {
 
         // cari companyId
         let companyId: number | null = null;
-        if (user.role === "SUPERADMIN") {
-            companyId = req.body.companyId ? Number(req.body.companyId) : null;
-            if (!companyId) {
-                return res.status(400).json({ message: "SUPERADMIN harus menentukan companyId" });
-            }
-        } else if (user.ownedCompanies.length > 0) {
+        if (user.ownedCompanies.length > 0) {
             companyId = user.ownedCompanies[0].id;
         } else if (user.companyId) {
             companyId = user.companyId;
@@ -1008,9 +1024,9 @@ export async function importEmployeesCsv(req: Request, res: Response) {
             } = row;
 
             // Validasi field required
-            if (!name || !email || !fullName) {
+            if (!name || !email || !fullName || !nik) {
                 console.log(`Skipping row ${processedCount}: Missing required fields`, {
-                    name, email, fullName
+                    name, email, fullName, nik
                 });
                 skippedCount++;
                 continue;
@@ -1039,7 +1055,8 @@ export async function importEmployeesCsv(req: Request, res: Response) {
                     // Cek apakah email sudah ada
                     const existing = await tx.user.findFirst({
                         where: { 
-                            email: email.trim().toLowerCase(), 
+                            email: email.trim().toLowerCase(),
+                            companyId: companyId, 
                             deletedAt: null 
                         },
                     });
@@ -1048,6 +1065,23 @@ export async function importEmployeesCsv(req: Request, res: Response) {
                         console.log(`Skipping row ${processedCount}: Email already exists - ${email}`);
                         skippedCount++;
                         return null;
+                    }
+
+                    // cek apakah nik sudah ada (jika nik diisi)
+                    if (nik) {
+                        const existingNIK = await tx.employee.findFirst({
+                            where: { 
+                                nik: nik.trim(),
+                                companyId: companyId,
+                                deletedAt: null 
+                            },
+                        });
+                        
+                        if (existingNIK) {
+                            console.log(`Skipping row ${processedCount}: NIK already exists - ${nik}`);
+                            skippedCount++;
+                            return null;
+                        }
                     }
 
                     const hashedPassword = await bcrypt.hash(password || "12345678", 10);

@@ -9139,11 +9139,12 @@ export namespace Prisma {
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
     id?: number
-    email?: string
+    companyId_email?: UserCompanyIdEmailCompoundUniqueInput
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
     name?: StringNullableFilter<"User"> | string | null
+    email?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
     role?: EnumRoleFilter<"User"> | $Enums.Role
     companyId?: IntNullableFilter<"User"> | number | null
@@ -9155,7 +9156,7 @@ export namespace Prisma {
     ownedCompanies?: CompanyListRelationFilter
     tokens?: UserTokenListRelationFilter
     Employee?: EmployeeListRelationFilter
-  }, "id" | "email">
+  }, "id" | "companyId_email">
 
   export type UserOrderByWithAggregationInput = {
     id?: SortOrder
@@ -9400,7 +9401,7 @@ export namespace Prisma {
   export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
     id?: number
     employeeCode?: string
-    nik?: string
+    companyId_nik?: EmployeeCompanyIdNikCompoundUniqueInput
     AND?: EmployeeWhereInput | EmployeeWhereInput[]
     OR?: EmployeeWhereInput[]
     NOT?: EmployeeWhereInput | EmployeeWhereInput[]
@@ -9408,6 +9409,7 @@ export namespace Prisma {
     companyId?: IntFilter<"Employee"> | number
     fullName?: StringFilter<"Employee"> | string
     dateOfBirth?: DateTimeNullableFilter<"Employee"> | Date | string | null
+    nik?: StringFilter<"Employee"> | string
     gender?: StringFilter<"Employee"> | string
     mobileNumber?: StringNullableFilter<"Employee"> | string | null
     address?: StringNullableFilter<"Employee"> | string | null
@@ -9424,7 +9426,7 @@ export namespace Prisma {
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
     scheduleGroup?: XOR<ScheduleGroupNullableScalarRelationFilter, ScheduleGroupWhereInput> | null
-  }, "id" | "employeeCode" | "nik">
+  }, "id" | "employeeCode" | "companyId_nik">
 
   export type EmployeeOrderByWithAggregationInput = {
     id?: SortOrder
@@ -10329,6 +10331,11 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type UserCompanyIdEmailCompoundUniqueInput = {
+    companyId: number
+    email: string
+  }
+
   export type UserCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
@@ -10650,6 +10657,11 @@ export namespace Prisma {
   export type ScheduleGroupNullableScalarRelationFilter = {
     is?: ScheduleGroupWhereInput | null
     isNot?: ScheduleGroupWhereInput | null
+  }
+
+  export type EmployeeCompanyIdNikCompoundUniqueInput = {
+    companyId: number
+    nik: string
   }
 
   export type EmployeeCountOrderByAggregateInput = {
