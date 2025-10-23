@@ -10426,6 +10426,26 @@ export namespace Prisma {
      */
     where: LeaveRequestWhereUniqueInput
   }
+  export type UserWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    companyId_email?: UserCompanyIdEmailCompoundUniqueInput
+    AND?: UserWhereInput | UserWhereInput[]
+    OR?: UserWhereInput[]
+    NOT?: UserWhereInput | UserWhereInput[]
+    name?: StringNullableFilter<"User"> | string | null
+    email?: StringFilter<"User"> | string
+    password?: StringFilter<"User"> | string
+    role?: EnumRoleFilter<"User"> | $Enums.Role
+    companyId?: IntNullableFilter<"User"> | number | null
+    emailVerifiedAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    createdAt?: DateTimeFilter<"User"> | Date | string
+    updatedAt?: DateTimeFilter<"User"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    company?: XOR<CompanyNullableScalarRelationFilter, CompanyWhereInput> | null
+    ownedCompanies?: CompanyListRelationFilter
+    tokens?: UserTokenListRelationFilter
+    Employee?: EmployeeListRelationFilter
+  }, "id" | "companyId_email">
 
   /**
    * LeaveRequest deleteMany
@@ -13500,6 +13520,35 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
+  export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    employeeCode?: string
+    companyId_nik?: EmployeeCompanyIdNikCompoundUniqueInput
+    AND?: EmployeeWhereInput | EmployeeWhereInput[]
+    OR?: EmployeeWhereInput[]
+    NOT?: EmployeeWhereInput | EmployeeWhereInput[]
+    userId?: IntFilter<"Employee"> | number
+    companyId?: IntFilter<"Employee"> | number
+    fullName?: StringFilter<"Employee"> | string
+    dateOfBirth?: DateTimeNullableFilter<"Employee"> | Date | string | null
+    nik?: StringFilter<"Employee"> | string
+    gender?: StringFilter<"Employee"> | string
+    mobileNumber?: StringNullableFilter<"Employee"> | string | null
+    address?: StringNullableFilter<"Employee"> | string | null
+    position?: StringFilter<"Employee"> | string
+    department?: StringFilter<"Employee"> | string
+    photo?: StringNullableFilter<"Employee"> | string | null
+    hireDate?: DateTimeFilter<"Employee"> | Date | string
+    status?: EnumEmployeeStatusFilter<"Employee"> | $Enums.EmployeeStatus
+    promotionHistory?: StringNullableFilter<"Employee"> | string | null
+    scheduleGroupId?: IntNullableFilter<"Employee"> | number | null
+    createdAt?: DateTimeFilter<"Employee"> | Date | string
+    updatedAt?: DateTimeFilter<"Employee"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"Employee"> | Date | string | null
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+    scheduleGroup?: XOR<ScheduleGroupNullableScalarRelationFilter, ScheduleGroupWhereInput> | null
+  }, "id" | "employeeCode" | "companyId_nik">
 
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
@@ -14289,6 +14338,12 @@ export namespace Prisma {
   }
 
   export type LeaveTypeCountOrderByAggregateInput = {
+  export type UserCompanyIdEmailCompoundUniqueInput = {
+    companyId: number
+    email: string
+  }
+
+  export type UserCountOrderByAggregateInput = {
     id?: SortOrder
     companyId?: SortOrder
     name?: SortOrder
@@ -14710,6 +14765,32 @@ export namespace Prisma {
     update?: WorkScheduleUpdateWithWhereUniqueWithoutCompanyInput | WorkScheduleUpdateWithWhereUniqueWithoutCompanyInput[]
     updateMany?: WorkScheduleUpdateManyWithWhereWithoutCompanyInput | WorkScheduleUpdateManyWithWhereWithoutCompanyInput[]
     deleteMany?: WorkScheduleScalarWhereInput | WorkScheduleScalarWhereInput[]
+  export type EmployeeCompanyIdNikCompoundUniqueInput = {
+    companyId: number
+    nik: string
+  }
+
+  export type EmployeeCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    companyId?: SortOrder
+    employeeCode?: SortOrder
+    fullName?: SortOrder
+    dateOfBirth?: SortOrder
+    nik?: SortOrder
+    gender?: SortOrder
+    mobileNumber?: SortOrder
+    address?: SortOrder
+    position?: SortOrder
+    department?: SortOrder
+    photo?: SortOrder
+    hireDate?: SortOrder
+    status?: SortOrder
+    promotionHistory?: SortOrder
+    scheduleGroupId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrder
   }
 
   export type LeaveTypeUpdateManyWithoutCompanyNestedInput = {

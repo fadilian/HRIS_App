@@ -17,7 +17,7 @@ datasource db {
 model User {
   id              Int       @id @default(autoincrement())
   name            String?
-  email           String    @unique
+  email           String
   password        String
   role            Role      @default(ADMIN)
   companyId       Int?
@@ -32,6 +32,7 @@ model User {
   Employee       Employee[]
   approvedLeaves LeaveRequest[] // relasi untuk approver
 
+  @@unique([companyId, email])
   @@map("users")
 }
 
@@ -88,7 +89,7 @@ model Employee {
   employeeCode     String         @unique @map("employee_code")
   fullName         String         @map("full_name")
   dateOfBirth      DateTime?      @map("date_of_birth") @db.Date
-  nik              String         @unique
+  nik              String
   gender           String
   mobileNumber     String?        @map("mobile_number")
   address          String?
@@ -110,6 +111,7 @@ model Employee {
   scheduleGroup ScheduleGroup? @relation(fields: [scheduleGroupId], references: [id])
   leaveRequests LeaveRequest[] // relasi ke LeaveRequest
 
+  @@unique([companyId, nik])
   @@map("employees")
 }
 

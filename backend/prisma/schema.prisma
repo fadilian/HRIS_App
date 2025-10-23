@@ -17,7 +17,7 @@ datasource db {
 model User {
   id              Int       @id @default(autoincrement())
   name            String?
-  email           String    @unique
+  email           String    
   password        String
   role            Role      @default(ADMIN)
   companyId       Int?      
@@ -33,6 +33,7 @@ model User {
   approvedLeaves  LeaveRequest[] // relasi untuk approver
 
   @@map("users")
+  @@unique([companyId, email])
 }
 
 model Company {
@@ -100,6 +101,23 @@ model Employee {
   status          EmployeeStatus @default(ACTIVE)
   promotionHistory String?       @map("promotion_history")
   scheduleGroupId Int?           @map("schedule_group_id")
+  id           Int      @id @default(autoincrement())
+  userId       Int      @map("user_id")
+  companyId    Int      @map("company_id")
+  employeeCode String   @unique @map("employee_code")
+  fullName     String   @map("full_name")
+  dateOfBirth  DateTime? @map("date_of_birth") @db.Date
+  nik          String   
+  gender       String
+  mobileNumber String?  @map("mobile_number")
+  address      String?
+  position     String
+  department   String
+  photo        String?  @db.VarChar(255) // hanya simpan nama file
+  hireDate     DateTime @map("hire_date") @db.Date
+  status       EmployeeStatus @default(ACTIVE)
+  promotionHistory String?   @map("promotion_history")
+  scheduleGroupId Int?     @map("schedule_group_id")
 
   createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
@@ -112,6 +130,7 @@ model Employee {
   leaveRequests LeaveRequest[]  // relasi ke LeaveRequest
 
   @@map("employees")
+  @@unique([companyId, nik])
 }
 
 model ScheduleGroup {
