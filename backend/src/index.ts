@@ -7,6 +7,8 @@ import companyRoutes from "./routes/companyRoutes";
 import employeeRoutes from "./routes/employeeRoutes";
 import scheduleGroupRoutes from "./routes/scheduleGroupRoutes";
 import workSchedule from "./routes/workScheduleRoutes";
+import leaveTypeRoutes from "./routes/leaveTypeRoutes";
+import leaveRequestRoutes from "./routes/leaveRequestRoutes";
 
 dotenv.config();
 // console.log("✅ Loaded JWT_SECRET:", process.env.JWT_SECRET);
@@ -33,6 +35,8 @@ app.use("/api/company", companyRoutes);
 app.use("/api/employee", employeeRoutes);
 app.use("/api/schedule-group", scheduleGroupRoutes);
 app.use("/api/work-schedule", workSchedule);
+app.use("/api/leave-types", leaveTypeRoutes);
+app.use("/api/leave-requests", leaveRequestRoutes);
 
 // route cek waktu sekarang (wib)
 app.get("/time", (req, res) => {

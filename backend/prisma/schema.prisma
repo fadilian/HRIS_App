@@ -29,7 +29,8 @@ model User {
   company         Company?  @relation(fields: [companyId], references: [id])
   ownedCompanies  Company[] @relation("CompanyOwner") // admin sebagai pemilik company
   tokens          UserToken[]  // relasi ke tabel UserToken
-  Employee Employee[]
+  Employee        Employee[]
+  approvedLeaves  LeaveRequest[] // relasi untuk approver
 
   @@map("users")
 }
@@ -47,11 +48,12 @@ model Company {
   deletedAt   DateTime? @map("deleted_at") @db.Timestamptz(6)
 
   // Relasi ke User (owner)
-  owner   User @relation("CompanyOwner", fields: [ownerUserId], references: [id])
-  members User[]
-  Employee Employee[]
-  ScheduleGroup ScheduleGroup[]
-  WorkSchedule WorkSchedule[]
+  owner          User            @relation("CompanyOwner", fields: [ownerUserId], references: [id])
+  members        User[]
+  Employee       Employee[]
+  ScheduleGroup  ScheduleGroup[]
+  WorkSchedule   WorkSchedule[]
+  leaveTypes     LeaveType[]     // relasi ke LeaveType
 
   @@map("companies")
   
@@ -81,32 +83,33 @@ enum EmployeeStatus {
 }
 
 model Employee {
-  id           Int      @id @default(autoincrement())
-  userId       Int      @map("user_id")
-  companyId    Int      @map("company_id")
-  employeeCode String   @unique @map("employee_code")
-  fullName     String   @map("full_name")
-  dateOfBirth  DateTime? @map("date_of_birth") @db.Date
-  nik          String   @unique
-  gender       String
-  mobileNumber String?  @map("mobile_number")
-  address      String?
-  position     String
-  department   String
-  photo        String?  @db.VarChar(255) // hanya simpan nama file
-  hireDate     DateTime @map("hire_date") @db.Date
-  status       EmployeeStatus @default(ACTIVE)
-  promotionHistory String?   @map("promotion_history")
-  scheduleGroupId Int?     @map("schedule_group_id")
+  id              Int            @id @default(autoincrement())
+  userId          Int            @map("user_id")
+  companyId       Int            @map("company_id")
+  employeeCode    String         @unique @map("employee_code")
+  fullName        String         @map("full_name")
+  dateOfBirth     DateTime?      @map("date_of_birth") @db.Date
+  nik             String         @unique
+  gender          String
+  mobileNumber    String?        @map("mobile_number")
+  address         String?
+  position        String
+  department      String
+  photo           String?        @db.VarChar(255) // hanya simpan nama file
+  hireDate        DateTime       @map("hire_date") @db.Date
+  status          EmployeeStatus @default(ACTIVE)
+  promotionHistory String?       @map("promotion_history")
+  scheduleGroupId Int?           @map("schedule_group_id")
 
   createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
   deletedAt    DateTime? @map("deleted_at") @db.Timestamptz(6)
 
   // Relasi
-  user    User    @relation(fields: [userId], references: [id])
-  company Company @relation(fields: [companyId], references: [id])
-  scheduleGroup ScheduleGroup? @relation(fields: [scheduleGroupId], references: [id])
+  user          User            @relation(fields: [userId], references: [id])
+  company       Company         @relation(fields: [companyId], references: [id])
+  scheduleGroup ScheduleGroup?  @relation(fields: [scheduleGroupId], references: [id])
+  leaveRequests LeaveRequest[]  // relasi ke LeaveRequest
 
   @@map("employees")
 }
@@ -154,4 +157,53 @@ enum DayOfWeek {
   FRIDAY
   SATURDAY
   SUNDAY
+}
+
+model LeaveRequest {
+  id              Int          @id @default(autoincrement())
+  employeeId      Int          @map("employee_id")
+  leaveTypeId     Int          @map("leave_type_id")
+  startDate       DateTime     @map("start_date") @db.Date
+  endDate         DateTime     @map("end_date") @db.Date
+  totalDays       Int          @map("total_days")
+  reason          String       @db.Text
+  status          LeaveStatus  @default(PENDING)
+  approvedBy      Int?         @map("approved_by")
+  approvedAt      DateTime?    @map("approved_at") @db.Timestamptz(6)
+  rejectionReason String?      @map("rejection_reason") @db.Text
+  attachment      String?      @db.VarChar(255)
+  createdAt       DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime     @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt       DateTime?    @map("deleted_at") @db.Timestamptz(6)
+
+  employee        Employee     @relation(fields: [employeeId], references: [id])
+  leaveType       LeaveType    @relation(fields: [leaveTypeId], references: [id])
+  approver        User?        @relation(fields: [approvedBy], references: [id])
+
+  @@map("leave_requests")
+}
+
+model LeaveType {
+  id           Int      @id @default(autoincrement())
+  companyId    Int      @map("company_id")
+  name         String
+  maxDays      Int      @map("max_days")
+  description  String?  @db.Text
+  isPaid       Boolean  @default(true) @map("is_paid")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt    DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  company       Company        @relation(fields: [companyId], references: [id])
+  leaveRequests LeaveRequest[]
+
+  @@map("leave_types")
+  @@unique([companyId, name])
+}
+
+enum LeaveStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
 }
