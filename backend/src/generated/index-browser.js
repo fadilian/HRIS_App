@@ -200,6 +200,36 @@ exports.Prisma.WorkScheduleScalarFieldEnum = {
   deletedAt: 'deletedAt'
 };
 
+exports.Prisma.LeaveRequestScalarFieldEnum = {
+  id: 'id',
+  employeeId: 'employeeId',
+  leaveTypeId: 'leaveTypeId',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  totalDays: 'totalDays',
+  reason: 'reason',
+  status: 'status',
+  approvedBy: 'approvedBy',
+  approvedAt: 'approvedAt',
+  rejectionReason: 'rejectionReason',
+  attachment: 'attachment',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+};
+
+exports.Prisma.LeaveTypeScalarFieldEnum = {
+  id: 'id',
+  companyId: 'companyId',
+  name: 'name',
+  maxDays: 'maxDays',
+  description: 'description',
+  isPaid: 'isPaid',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -235,13 +265,22 @@ exports.DayOfWeek = exports.$Enums.DayOfWeek = {
   SUNDAY: 'SUNDAY'
 };
 
+exports.LeaveStatus = exports.$Enums.LeaveStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  CANCELLED: 'CANCELLED'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Company: 'Company',
   UserToken: 'UserToken',
   Employee: 'Employee',
   ScheduleGroup: 'ScheduleGroup',
-  WorkSchedule: 'WorkSchedule'
+  WorkSchedule: 'WorkSchedule',
+  LeaveRequest: 'LeaveRequest',
+  LeaveType: 'LeaveType'
 };
 
 /**
