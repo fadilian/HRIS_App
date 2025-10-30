@@ -9,3 +9,5 @@ company.rest
 employee.rest
 scheduleGroup.rest
 workSchedule.rest
+leaveType.rest
+leaveRequest.rest
