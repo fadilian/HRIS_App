@@ -35,17 +35,42 @@ export async function createLeaveType(req: Request, res: Response) {
             });
         }
 
-        // Cek duplikat nama leave type
+        // Cek duplikat nama leave type - INCLUDE SOFT DELETED RECORDS
         const existing = await prisma.leaveType.findFirst({
-            where: { companyId, name, deletedAt: null },
+            where: { 
+                companyId, 
+                name,
+                // Hapus deletedAt: null untuk mencari semua record
+            },
         });
 
-        if (existing) {
+        if (existing && existing.deletedAt === null) {
             return res.status(409).json({
                 message: `Tipe cuti "${name}" sudah ada di perusahaan ini`,
             });
         }
 
+        // Jika ada record yang sudah di-soft delete dengan nama yang sama,
+        // update record tersebut (auto-restore)
+        if (existing && existing.deletedAt !== null) {
+            const leaveType = await prisma.leaveType.update({
+                where: { id: existing.id },
+                data: {
+                    maxDays: Number(maxDays),
+                    description,
+                    isPaid: isPaid !== undefined ? Boolean(isPaid) : true,
+                    deletedAt: null, // Reactivate the record
+                    updatedAt: new Date(),
+                },
+            });
+
+            return res.status(201).json({
+                message: "Tipe cuti berhasil dibuat (reactivated)",
+                data: leaveType,
+            });
+        }
+
+        // Buat baru jika tidak ada record sama sekali
         const leaveType = await prisma.leaveType.create({
             data: {
                 companyId,

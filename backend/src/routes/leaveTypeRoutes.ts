@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.post("/create-leave-type", authMiddleware, createLeaveType);
 router.get("/show/leave-types", authMiddleware, getLeaveTypes);
-router.put("/update-leave-type/:id", authMiddleware, updateLeaveType);
+router.patch("/update-leave-type/:id", authMiddleware, updateLeaveType);
 router.delete("/delete-leave-type/:id", authMiddleware, deleteLeaveType);
 
 export default router;

@@ -35,18 +35,38 @@ export async function createScheduleGroup(req: Request, res: Response) {
             });
         }
 
-        // cek apakah shift sudah ada di company yang sama
+        // cek apakah shift sudah ada di company yang sama - INCLUDE SOFT DELETED
         const existingShift = await prisma.scheduleGroup.findFirst({
-            where: { companyId, nameOfShift, deletedAt: null },
+            where: { 
+                companyId, 
+                nameOfShift,
+            },
         });
 
-        if (existingShift) {
+        if (existingShift && existingShift.deletedAt === null) {
             return res.status(409).json({
                 message: `Shift "${nameOfShift}" sudah ada di perusahaan ini`,
             });
         }
 
-        // buat shift baru
+        // Jika ada record yang sudah di-soft delete dengan nama yang sama,
+        // update record tersebut (auto-restore)
+        if (existingShift && existingShift.deletedAt !== null) {
+            const scheduleGroup = await prisma.scheduleGroup.update({
+                where: { id: existingShift.id },
+                data: {
+                    deletedAt: null, // Reactivate the record
+                    updatedAt: new Date(),
+                },
+            });
+
+            return res.status(201).json({
+                message: "Shift berhasil dibuat (reactivated)",
+                data: scheduleGroup,
+            });
+        }
+
+        // buat shift baru jika tidak ada record sama sekali
         const scheduleGroup = await prisma.scheduleGroup.create({
             data: {
                 companyId,
@@ -58,9 +78,19 @@ export async function createScheduleGroup(req: Request, res: Response) {
             message: "Shift berhasil dibuat",
             data: scheduleGroup,
         });
-    } catch (err) {
+    } catch (err: any) {
         console.error("Error createScheduleGroup:", err);
-        res.status(500).json({ message: "Terjadi kesalahan saat membuat shift" });
+        
+        // Handle unique constraint error
+        if (err.code === 'P2002') {
+            return res.status(409).json({
+                message: `Shift "${req.body.nameOfShift}" sudah ada di perusahaan ini`,
+            });
+        }
+        
+        res.status(500).json({ 
+            message: err.message || "Terjadi kesalahan saat membuat shift" 
+        });
     }
 }
 

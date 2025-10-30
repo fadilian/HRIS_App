@@ -8,28 +8,39 @@ import csv from "csv-parser";
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
-// Helper: Generate Employee Code
-async function generateEmployeeCode(companyId: number, date: Date) {
+
+// Helper: Generate Employee Code - FIXED VERSION
+async function generateEmployeeCode(companyId: number, date: Date, tx?: any) {
+    const prismaClient = tx || prisma;
+    
     const day = String(date.getDate()).padStart(2, "0");
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const year = String(date.getFullYear()).slice(-2);
     const datePart = `${day}${month}${year}`;
 
-    const startOfDay = new Date(date);
-    startOfDay.setHours(0, 0, 0, 0);
-    const endOfDay = new Date(date);
-    endOfDay.setHours(23, 59, 59, 999);
-
-    const countToday = await prisma.employee.count({
+    // ✅ Cari employee code terakhir untuk hari ini (termasuk soft-deleted)
+    const lastEmployee = await prismaClient.employee.findFirst({
         where: {
-        companyId,
-        createdAt: { gte: startOfDay, lte: endOfDay },
-        deletedAt: null,
+            companyId,
+            employeeCode: {
+                startsWith: `EMP-C${companyId}-${datePart}`
+            }
         },
+        orderBy: {
+            employeeCode: 'desc'
+        }
     });
 
-    const sequence = String(countToday + 1).padStart(4, "0");
-    return `EMP-C${companyId}-${datePart}${sequence}`;
+    let sequence = 1;
+    if (lastEmployee) {
+        // Extract sequence dari employee code terakhir
+        const lastCode = lastEmployee.employeeCode;
+        const lastSequence = lastCode.slice(-4); // Ambil 4 digit terakhir
+        sequence = parseInt(lastSequence, 10) + 1;
+    }
+
+    const sequenceStr = String(sequence).padStart(4, "0");
+    return `EMP-C${companyId}-${datePart}${sequenceStr}`;
 }
 
 // Create Employee
@@ -84,36 +95,33 @@ export async function createEmployee(req: Request, res: Response) {
             });
         }
 
-        // Cek email sudah ada atau belum pada company yang sama
+        // Cek email sudah ada atau belum pada company yang sama - INCLUDE SOFT DELETED
         const existingUser = await prisma.user.findFirst({
             where: { 
                 email: email.trim().toLowerCase(),
-                companyId: companyId, 
-                deletedAt: null 
+                companyId: companyId,
             },
         });
 
-        if (existingUser) {
+        // Cek nik sudah ada atau belum pada company yang sama - INCLUDE SOFT DELETED
+        const existingEmployeeWithNIK = await prisma.employee.findFirst({
+            where: { 
+                nik: nik.trim(),
+                companyId: companyId,
+            },
+        });
+
+        // Handle existing active data
+        if (existingUser && existingUser.deletedAt === null) {
             return res.status(409).json({ 
                 message: "Email sudah terdaftar" 
             });
         }
 
-        // Cek nik sudah ada atau belum pada company yang sama
-        if (nik) {
-            const existingEmployeeWithNIK = await prisma.employee.findFirst({
-                where: { 
-                    nik: nik.trim(),
-                    companyId: companyId,
-                    deletedAt: null 
-                },
+        if (existingEmployeeWithNIK && existingEmployeeWithNIK.deletedAt === null) {
+            return res.status(409).json({ 
+                message: "NIK sudah terdaftar untuk employee lain" 
             });
-
-            if (existingEmployeeWithNIK) {
-                return res.status(409).json({ 
-                    message: "NIK sudah terdaftar untuk employee lain" 
-                });
-            }
         }
 
         // Validasi scheduleGroupId jika diisi
@@ -135,6 +143,102 @@ export async function createEmployee(req: Request, res: Response) {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
+        // Jika ada data soft deleted, restore mereka
+        if ((existingUser && existingUser.deletedAt !== null) || (existingEmployeeWithNIK && existingEmployeeWithNIK.deletedAt !== null)) {
+            const result = await prisma.$transaction(async (tx) => {
+                let userToUse;
+                let employeeToUse;
+
+                // Restore atau create user
+                if (existingUser && existingUser.deletedAt !== null) {
+                    userToUse = await tx.user.update({
+                        where: { id: existingUser.id },
+                        data: {
+                            name,
+                            email,
+                            password: hashedPassword,
+                            role: "EMPLOYEE",
+                            companyId,
+                            deletedAt: null,
+                            updatedAt: new Date(),
+                        },
+                    });
+                } else {
+                    userToUse = await tx.user.create({
+                        data: {
+                            name,
+                            email,
+                            password: hashedPassword,
+                            role: "EMPLOYEE",
+                            companyId,
+                        },
+                    });
+                }
+
+                // Restore atau create employee
+                if (existingEmployeeWithNIK && existingEmployeeWithNIK.deletedAt !== null) {
+                    // Generate employee code baru dalam transaction
+                    const employeeCode = await generateEmployeeCode(companyId!, new Date(), tx);
+                    
+                    employeeToUse = await tx.employee.update({
+                        where: { id: existingEmployeeWithNIK.id },
+                        data: {
+                            userId: userToUse.id,
+                            companyId,
+                            employeeCode,
+                            fullName,
+                            nik,
+                            gender,
+                            mobileNumber,
+                            address,
+                            position,
+                            department,
+                            hireDate: new Date(hireDate),
+                            dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : null,
+                            promotionHistory: promotionHistory || null,
+                            scheduleGroupId: scheduleGroupId ? Number(scheduleGroupId) : null,
+                            status: "ACTIVE",
+                            photo: photoFile,
+                            deletedAt: null,
+                            updatedAt: new Date(),
+                        },
+                    });
+                } else {
+                    // Generate employee code baru dalam transaction
+                    const employeeCode = await generateEmployeeCode(companyId!, new Date(), tx);
+                    
+                    employeeToUse = await tx.employee.create({
+                        data: {
+                            userId: userToUse.id,
+                            companyId,
+                            employeeCode,
+                            fullName,
+                            nik,
+                            gender,
+                            mobileNumber,
+                            address,
+                            position,
+                            department,
+                            hireDate: new Date(hireDate),
+                            dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : null,
+                            promotionHistory: promotionHistory || null,
+                            scheduleGroupId: scheduleGroupId ? Number(scheduleGroupId) : null,
+                            status: "ACTIVE",
+                            photo: photoFile,
+                        },
+                    });
+                }
+
+                return { newUser: userToUse, employee: employeeToUse };
+            });
+
+            return res.status(201).json({ 
+                message: "Employee created successfully (auto-restored)", 
+                data: result 
+            });
+        }
+
+        // Create new employee (no existing soft deleted data found)
         const result = await prisma.$transaction(async (tx) => {
             const newUser = await tx.user.create({
                 data: {
@@ -146,7 +250,8 @@ export async function createEmployee(req: Request, res: Response) {
                 },
             });
 
-            const employeeCode = await generateEmployeeCode(companyId!, new Date());
+            // Generate employee code baru dalam transaction
+            const employeeCode = await generateEmployeeCode(companyId!, new Date(), tx);
 
             const employee = await tx.employee.create({
                 data: {
@@ -164,7 +269,7 @@ export async function createEmployee(req: Request, res: Response) {
                     dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : null,
                     promotionHistory: promotionHistory || null,
                     scheduleGroupId: scheduleGroupId ? Number(scheduleGroupId) : null,
-                    status: "ACTIVE",   // set otomatis Active
+                    status: "ACTIVE",
                     photo: photoFile,
                 },
             });
@@ -176,9 +281,32 @@ export async function createEmployee(req: Request, res: Response) {
             message: "Employee created successfully", 
             data: result 
         });
-    } catch (err) {
+    } catch (err: any) {
         console.error("Error createEmployee:", err);
-        res.status(500).json({ message: "Error creating employee" });
+        
+        // Handle unique constraint error dari database
+        if (err.code === 'P2002') {
+            const target = err.meta?.target;
+            if (target && target.includes('email')) {
+                return res.status(409).json({ 
+                    message: "Email sudah terdaftar" 
+                });
+            }
+            if (target && target.includes('nik')) {
+                return res.status(409).json({ 
+                    message: "NIK sudah terdaftar untuk employee lain" 
+                });
+            }
+            if (target && target.includes('employee_code')) {
+                return res.status(409).json({ 
+                    message: "Employee code conflict. Please try again." 
+                });
+            }
+        }
+        
+        res.status(500).json({ 
+            message: err.message || "Error creating employee" 
+        });
     }
 }
 
@@ -996,11 +1124,14 @@ export async function importEmployeesCsv(req: Request, res: Response) {
             return res.status(400).json({ message: "File CSV kosong atau format tidak sesuai" });
         }
 
-        // Process data tanpa transaction, atau gunakan individual transactions
-        const createdEmployees = [];
+        const results = {
+            created: [] as any[],
+            restored: [] as any[],
+            skipped: [] as any[],
+            errors: [] as any[]
+        };
+
         let processedCount = 0;
-        let successCount = 0;
-        let skippedCount = 0;
 
         for (const row of employeesData) {
             processedCount++;
@@ -1028,7 +1159,11 @@ export async function importEmployeesCsv(req: Request, res: Response) {
                 console.log(`Skipping row ${processedCount}: Missing required fields`, {
                     name, email, fullName, nik
                 });
-                skippedCount++;
+                results.skipped.push({
+                    row: processedCount,
+                    data: row,
+                    reason: "Missing required fields (name, email, fullName, nik)"
+                });
                 continue;
             }
 
@@ -1045,100 +1180,249 @@ export async function importEmployeesCsv(req: Request, res: Response) {
 
                     if (!scheduleGroup) {
                         console.log(`Skipping row ${processedCount}: Schedule Group ID ${scheduleGroupId} tidak ditemukan`);
-                        skippedCount++;
+                        results.skipped.push({
+                            row: processedCount,
+                            data: row,
+                            reason: `Schedule Group ID ${scheduleGroupId} tidak ditemukan`
+                        });
                         continue;
                     }
                 }
 
+                // Cek existing data - INCLUDE SOFT DELETED
+                const existingUser = await prisma.user.findFirst({
+                    where: { 
+                        email: email.trim().toLowerCase(),
+                        companyId: companyId,
+                    },
+                });
+
+                const existingEmployee = await prisma.employee.findFirst({
+                    where: { 
+                        nik: nik.trim(),
+                        companyId: companyId,
+                    },
+                });
+
+                // Skip jika kedua data (user dan employee) sudah aktif dan terhubung dengan benar
+                if (existingUser && existingUser.deletedAt === null && 
+                    existingEmployee && existingEmployee.deletedAt === null &&
+                    existingUser.id === existingEmployee.userId) {
+                    console.log(`Skipping row ${processedCount}: Data already exists and active - ${email}`);
+                    results.skipped.push({
+                        row: processedCount,
+                        data: row,
+                        reason: `Data already exists and active - ${email}`
+                    });
+                    continue;
+                }
+
+                // Handle existing active data conflicts
+                if (existingUser && existingUser.deletedAt === null && existingEmployee && existingEmployee.deletedAt === null) {
+                    if (existingUser.id !== existingEmployee.userId) {
+                        console.log(`Skipping row ${processedCount}: Data conflict - User and Employee records don't match`);
+                        results.skipped.push({
+                            row: processedCount,
+                            data: row,
+                            reason: "Data conflict - User and Employee records don't match"
+                        });
+                        continue;
+                    }
+                }
+
+                if (existingUser && existingUser.deletedAt === null && (!existingEmployee || existingEmployee.deletedAt !== null)) {
+                    console.log(`Skipping row ${processedCount}: Email already exists - ${email}`);
+                    results.skipped.push({
+                        row: processedCount,
+                        data: row,
+                        reason: `Email already exists - ${email}`
+                    });
+                    continue;
+                }
+
+                if (existingEmployee && existingEmployee.deletedAt === null && (!existingUser || existingUser.deletedAt !== null)) {
+                    console.log(`Skipping row ${processedCount}: NIK already exists - ${nik}`);
+                    results.skipped.push({
+                        row: processedCount,
+                        data: row,
+                        reason: `NIK already exists - ${nik}`
+                    });
+                    continue;
+                }
+
+                const hashedPassword = await bcrypt.hash(password || "12345678", 10);
+
                 // Gunakan transaction individual untuk setiap employee
                 const result = await prisma.$transaction(async (tx) => {
-                    // Cek apakah email sudah ada
-                    const existing = await tx.user.findFirst({
-                        where: { 
-                            email: email.trim().toLowerCase(),
-                            companyId: companyId, 
-                            deletedAt: null 
-                        },
-                    });
-                    
-                    if (existing) {
-                        console.log(`Skipping row ${processedCount}: Email already exists - ${email}`);
-                        skippedCount++;
+                    let userToUse;
+                    let employeeToUse;
+
+                    // Handle user - restore atau create
+                    if (existingUser && existingUser.deletedAt !== null) {
+                        // Restore user
+                        userToUse = await tx.user.update({
+                            where: { id: existingUser.id },
+                            data: {
+                                name: name.trim(),
+                                email: email.trim().toLowerCase(),
+                                password: hashedPassword,
+                                role: "EMPLOYEE",
+                                companyId,
+                                deletedAt: null,
+                                updatedAt: new Date(),
+                            },
+                        });
+                        console.log(`Restored user: ${userToUse.email}`);
+                    } else if (!existingUser) {
+                        // Create new user
+                        userToUse = await tx.user.create({
+                            data: {
+                                name: name.trim(),
+                                email: email.trim().toLowerCase(),
+                                password: hashedPassword,
+                                role: "EMPLOYEE",
+                                companyId,
+                            },
+                        });
+                        console.log(`Created new user: ${userToUse.email}`);
+                    } else {
+                        // Use existing active user
+                        userToUse = existingUser;
+                        console.log(`Using existing active user: ${userToUse.email}`);
+                    }
+
+                    // Handle employee - restore atau create
+                    if (existingEmployee && existingEmployee.deletedAt !== null) {
+                        // Restore employee
+                        const employeeCode = await generateEmployeeCode(companyId!, new Date());
+                        
+                        employeeToUse = await tx.employee.update({
+                            where: { id: existingEmployee.id },
+                            data: {
+                                userId: userToUse.id,
+                                companyId,
+                                employeeCode,
+                                fullName: fullName.trim(),
+                                nik: nik ? nik.trim() : null,
+                                gender: gender ? gender.trim().toUpperCase() : null,
+                                mobileNumber: mobileNumber ? mobileNumber.trim() : null,
+                                address: address ? address.trim() : null,
+                                position: position ? position.trim() : null,
+                                department: department ? department.trim() : null,
+                                hireDate: hireDate ? new Date(hireDate) : new Date(),
+                                dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : null,
+                                promotionHistory: promotionHistory ? promotionHistory.trim() : null,
+                                scheduleGroupId: scheduleGroupId ? Number(scheduleGroupId) : null,
+                                status: "ACTIVE",
+                                deletedAt: null,
+                                updatedAt: new Date(),
+                            },
+                        });
+                        console.log(`Restored employee: ${employeeToUse.fullName}`);
+                        
+                        results.restored.push({
+                            row: processedCount,
+                            user: userToUse,
+                            employee: employeeToUse,
+                            action: "restored"
+                        });
+                    } else if (!existingEmployee) {
+                        // Create new employee
+                        const employeeCode = await generateEmployeeCode(companyId!, new Date());
+                        
+                        employeeToUse = await tx.employee.create({
+                            data: {
+                                userId: userToUse.id,
+                                companyId,
+                                employeeCode,
+                                fullName: fullName.trim(),
+                                nik: nik ? nik.trim() : null,
+                                gender: gender ? gender.trim().toUpperCase() : null,
+                                mobileNumber: mobileNumber ? mobileNumber.trim() : null,
+                                address: address ? address.trim() : null,
+                                position: position ? position.trim() : null,
+                                department: department ? department.trim() : null,
+                                hireDate: hireDate ? new Date(hireDate) : new Date(),
+                                dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : null,
+                                promotionHistory: promotionHistory ? promotionHistory.trim() : null,
+                                scheduleGroupId: scheduleGroupId ? Number(scheduleGroupId) : null,
+                                status: "ACTIVE",
+                            },
+                        });
+                        console.log(`Created new employee: ${employeeToUse.fullName}`);
+                        
+                        results.created.push({
+                            row: processedCount,
+                            user: userToUse,
+                            employee: employeeToUse,
+                            action: "created"
+                        });
+                    } else {
+                        // Skip jika employee sudah aktif, jangan update
+                        console.log(`Skipping row ${processedCount}: Employee already active - ${existingEmployee.nik}`);
                         return null;
                     }
 
-                    // cek apakah nik sudah ada (jika nik diisi)
-                    if (nik) {
-                        const existingNIK = await tx.employee.findFirst({
-                            where: { 
-                                nik: nik.trim(),
-                                companyId: companyId,
-                                deletedAt: null 
-                            },
-                        });
-                        
-                        if (existingNIK) {
-                            console.log(`Skipping row ${processedCount}: NIK already exists - ${nik}`);
-                            skippedCount++;
-                            return null;
-                        }
-                    }
-
-                    const hashedPassword = await bcrypt.hash(password || "12345678", 10);
-
-                    const newUser = await tx.user.create({
-                        data: {
-                            name: name.trim(),
-                            email: email.trim().toLowerCase(),
-                            password: hashedPassword,
-                            role: "EMPLOYEE",
-                            companyId,
-                        },
-                    });
-
-                    const employeeCode = await generateEmployeeCode(companyId!, new Date());
-
-                    const employee = await tx.employee.create({
-                        data: {
-                            userId: newUser.id,
-                            companyId,
-                            employeeCode,
-                            fullName: fullName.trim(),
-                            nik: nik ? nik.trim() : null,
-                            gender: gender ? gender.trim().toUpperCase() : null,
-                            mobileNumber: mobileNumber ? mobileNumber.trim() : null,
-                            address: address ? address.trim() : null,
-                            position: position ? position.trim() : null,
-                            department: department ? department.trim() : null,
-                            hireDate: hireDate ? new Date(hireDate) : new Date(),
-                            dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : null,
-                            promotionHistory: promotionHistory ? promotionHistory.trim() : null,
-                            scheduleGroupId: scheduleGroupId ? Number(scheduleGroupId) : null, // tambah scheduleGroup
-                            status: "ACTIVE",
-                        },
-                    });
-
-                    return employee;
+                    return { user: userToUse, employee: employeeToUse };
                 });
 
-                if (result) {
-                    createdEmployees.push(result);
-                    successCount++;
-                    console.log(`Successfully created employee: ${result.fullName}`);
+                // Jika result null, berarti row di-skip dalam transaction
+                if (!result) {
+                    results.skipped.push({
+                        row: processedCount,
+                        data: row,
+                        reason: `Employee already active - ${nik}`
+                    });
+                    console.log(`Row ${processedCount} skipped: Employee already active`);
+                    continue;
                 }
 
-            } catch (error) {
-                console.error(`Error creating employee for row ${processedCount}:`, error);
-                skippedCount++;
+                console.log(`Successfully processed employee: ${fullName}`);
+
+            } catch (error: any) {
+                console.error(`Error processing row ${processedCount}:`, error);
+                
+                // Handle unique constraint errors
+                if (error.code === 'P2002') {
+                    results.skipped.push({
+                        row: processedCount,
+                        data: row,
+                        reason: `Database constraint error: ${error.meta?.target || 'unknown'}`
+                    });
+                } else {
+                    results.errors.push({
+                        row: processedCount,
+                        data: row,
+                        reason: error.message || "Unknown error"
+                    });
+                }
                 continue;
             }
         }
 
-        console.log(`Summary - Processed: ${processedCount}, Success: ${successCount}, Skipped: ${skippedCount}`);
+        console.log(`Import Summary:`, {
+            processed: processedCount,
+            created: results.created.length,
+            restored: results.restored.length,
+            skipped: results.skipped.length,
+            errors: results.errors.length
+        });
 
         res.status(201).json({
-            message: `Berhasil import ${successCount} employee, skipped: ${skippedCount}`,
-            data: createdEmployees,
+            message: `Import selesai. Diproses: ${processedCount}, Berhasil dibuat: ${results.created.length}, Direstore/diupdate: ${results.restored.length}, Dilewati: ${results.skipped.length}, Error: ${results.errors.length}`,
+            summary: {
+                totalProcessed: processedCount,
+                created: results.created.length,
+                restored: results.restored.length,
+                skipped: results.skipped.length,
+                errors: results.errors.length
+            },
+            details: {
+                created: results.created,
+                restored: results.restored,
+                skipped: results.skipped,
+                errors: results.errors
+            }
         });
 
     } catch (err) {
