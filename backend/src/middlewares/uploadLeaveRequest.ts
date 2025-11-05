@@ -2,12 +2,10 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 
-// Folder penyimpanan
-const uploadDir = path.join(__dirname, "../uploads/leaveAttachments");
 
-// Pastikan folder ada
+const uploadDir = "public/uploads/leaveAttachments";
 if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
+    fs.mkdirSync(uploadDir, { recursive: true });
 }
 
 // Konfigurasi penyimpanan
