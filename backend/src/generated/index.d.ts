@@ -53,6 +53,11 @@ export type LeaveRequest = $Result.DefaultSelection<Prisma.$LeaveRequestPayload>
  * 
  */
 export type LeaveType = $Result.DefaultSelection<Prisma.$LeaveTypePayload>
+/**
+ * Model Attendance
+ * 
+ */
+export type Attendance = $Result.DefaultSelection<Prisma.$AttendancePayload>
 
 /**
  * Enums
@@ -97,6 +102,41 @@ export const LeaveStatus: {
 
 export type LeaveStatus = (typeof LeaveStatus)[keyof typeof LeaveStatus]
 
+
+export const WorkType: {
+  WFO: 'WFO',
+  WFA: 'WFA',
+  HYBRID: 'HYBRID'
+};
+
+export type WorkType = (typeof WorkType)[keyof typeof WorkType]
+
+
+export const LocationStatus: {
+  INSIDE: 'INSIDE',
+  OUTSIDE: 'OUTSIDE'
+};
+
+export type LocationStatus = (typeof LocationStatus)[keyof typeof LocationStatus]
+
+
+export const AttendanceStatus: {
+  ONTIME: 'ONTIME',
+  LATE: 'LATE',
+  ALPHA: 'ALPHA'
+};
+
+export type AttendanceStatus = (typeof AttendanceStatus)[keyof typeof AttendanceStatus]
+
+
+export const ApprovalStatus: {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+};
+
+export type ApprovalStatus = (typeof ApprovalStatus)[keyof typeof ApprovalStatus]
+
 }
 
 export type Role = $Enums.Role
@@ -114,6 +154,22 @@ export const DayOfWeek: typeof $Enums.DayOfWeek
 export type LeaveStatus = $Enums.LeaveStatus
 
 export const LeaveStatus: typeof $Enums.LeaveStatus
+
+export type WorkType = $Enums.WorkType
+
+export const WorkType: typeof $Enums.WorkType
+
+export type LocationStatus = $Enums.LocationStatus
+
+export const LocationStatus: typeof $Enums.LocationStatus
+
+export type AttendanceStatus = $Enums.AttendanceStatus
+
+export const AttendanceStatus: typeof $Enums.AttendanceStatus
+
+export type ApprovalStatus = $Enums.ApprovalStatus
+
+export const ApprovalStatus: typeof $Enums.ApprovalStatus
 
 /**
  * ##  Prisma Client ʲˢ
@@ -312,6 +368,16 @@ export class PrismaClient<
     * ```
     */
   get leaveType(): Prisma.LeaveTypeDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.attendance`: Exposes CRUD operations for the **Attendance** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Attendances
+    * const attendances = await prisma.attendance.findMany()
+    * ```
+    */
+  get attendance(): Prisma.AttendanceDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -759,7 +825,8 @@ export namespace Prisma {
     ScheduleGroup: 'ScheduleGroup',
     WorkSchedule: 'WorkSchedule',
     LeaveRequest: 'LeaveRequest',
-    LeaveType: 'LeaveType'
+    LeaveType: 'LeaveType',
+    Attendance: 'Attendance'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -778,7 +845,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "company" | "userToken" | "employee" | "scheduleGroup" | "workSchedule" | "leaveRequest" | "leaveType"
+      modelProps: "user" | "company" | "userToken" | "employee" | "scheduleGroup" | "workSchedule" | "leaveRequest" | "leaveType" | "attendance"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1374,6 +1441,80 @@ export namespace Prisma {
           }
         }
       }
+      Attendance: {
+        payload: Prisma.$AttendancePayload<ExtArgs>
+        fields: Prisma.AttendanceFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AttendanceFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AttendancePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AttendanceFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AttendancePayload>
+          }
+          findFirst: {
+            args: Prisma.AttendanceFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AttendancePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AttendanceFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AttendancePayload>
+          }
+          findMany: {
+            args: Prisma.AttendanceFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AttendancePayload>[]
+          }
+          create: {
+            args: Prisma.AttendanceCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AttendancePayload>
+          }
+          createMany: {
+            args: Prisma.AttendanceCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AttendanceCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AttendancePayload>[]
+          }
+          delete: {
+            args: Prisma.AttendanceDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AttendancePayload>
+          }
+          update: {
+            args: Prisma.AttendanceUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AttendancePayload>
+          }
+          deleteMany: {
+            args: Prisma.AttendanceDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AttendanceUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AttendanceUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AttendancePayload>[]
+          }
+          upsert: {
+            args: Prisma.AttendanceUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AttendancePayload>
+          }
+          aggregate: {
+            args: Prisma.AttendanceAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAttendance>
+          }
+          groupBy: {
+            args: Prisma.AttendanceGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AttendanceGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AttendanceCountArgs<ExtArgs>
+            result: $Utils.Optional<AttendanceCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1478,6 +1619,7 @@ export namespace Prisma {
     workSchedule?: WorkScheduleOmit
     leaveRequest?: LeaveRequestOmit
     leaveType?: LeaveTypeOmit
+    attendance?: AttendanceOmit
   }
 
   /* Types for Logging */
@@ -1684,10 +1826,12 @@ export namespace Prisma {
 
   export type EmployeeCountOutputType = {
     leaveRequests: number
+    Attendance: number
   }
 
   export type EmployeeCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     leaveRequests?: boolean | EmployeeCountOutputTypeCountLeaveRequestsArgs
+    Attendance?: boolean | EmployeeCountOutputTypeCountAttendanceArgs
   }
 
   // Custom InputTypes
@@ -1706,6 +1850,13 @@ export namespace Prisma {
    */
   export type EmployeeCountOutputTypeCountLeaveRequestsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: LeaveRequestWhereInput
+  }
+
+  /**
+   * EmployeeCountOutputType without action
+   */
+  export type EmployeeCountOutputTypeCountAttendanceArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AttendanceWhereInput
   }
 
 
@@ -1746,6 +1897,37 @@ export namespace Prisma {
    */
   export type ScheduleGroupCountOutputTypeCountEmployeesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: EmployeeWhereInput
+  }
+
+
+  /**
+   * Count Type WorkScheduleCountOutputType
+   */
+
+  export type WorkScheduleCountOutputType = {
+    Attendance: number
+  }
+
+  export type WorkScheduleCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    Attendance?: boolean | WorkScheduleCountOutputTypeCountAttendanceArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * WorkScheduleCountOutputType without action
+   */
+  export type WorkScheduleCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkScheduleCountOutputType
+     */
+    select?: WorkScheduleCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * WorkScheduleCountOutputType without action
+   */
+  export type WorkScheduleCountOutputTypeCountAttendanceArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AttendanceWhereInput
   }
 
 
@@ -5823,6 +6005,7 @@ export namespace Prisma {
     company?: boolean | CompanyDefaultArgs<ExtArgs>
     scheduleGroup?: boolean | Employee$scheduleGroupArgs<ExtArgs>
     leaveRequests?: boolean | Employee$leaveRequestsArgs<ExtArgs>
+    Attendance?: boolean | Employee$AttendanceArgs<ExtArgs>
     _count?: boolean | EmployeeCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["employee"]>
 
@@ -5907,6 +6090,7 @@ export namespace Prisma {
     company?: boolean | CompanyDefaultArgs<ExtArgs>
     scheduleGroup?: boolean | Employee$scheduleGroupArgs<ExtArgs>
     leaveRequests?: boolean | Employee$leaveRequestsArgs<ExtArgs>
+    Attendance?: boolean | Employee$AttendanceArgs<ExtArgs>
     _count?: boolean | EmployeeCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type EmployeeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5927,6 +6111,7 @@ export namespace Prisma {
       company: Prisma.$CompanyPayload<ExtArgs>
       scheduleGroup: Prisma.$ScheduleGroupPayload<ExtArgs> | null
       leaveRequests: Prisma.$LeaveRequestPayload<ExtArgs>[]
+      Attendance: Prisma.$AttendancePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -6347,6 +6532,7 @@ export namespace Prisma {
     company<T extends CompanyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CompanyDefaultArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     scheduleGroup<T extends Employee$scheduleGroupArgs<ExtArgs> = {}>(args?: Subset<T, Employee$scheduleGroupArgs<ExtArgs>>): Prisma__ScheduleGroupClient<$Result.GetResult<Prisma.$ScheduleGroupPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     leaveRequests<T extends Employee$leaveRequestsArgs<ExtArgs> = {}>(args?: Subset<T, Employee$leaveRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LeaveRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    Attendance<T extends Employee$AttendanceArgs<ExtArgs> = {}>(args?: Subset<T, Employee$AttendanceArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6832,6 +7018,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: LeaveRequestScalarFieldEnum | LeaveRequestScalarFieldEnum[]
+  }
+
+  /**
+   * Employee.Attendance
+   */
+  export type Employee$AttendanceArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Attendance
+     */
+    select?: AttendanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Attendance
+     */
+    omit?: AttendanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttendanceInclude<ExtArgs> | null
+    where?: AttendanceWhereInput
+    orderBy?: AttendanceOrderByWithRelationInput | AttendanceOrderByWithRelationInput[]
+    cursor?: AttendanceWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AttendanceScalarFieldEnum | AttendanceScalarFieldEnum[]
   }
 
   /**
@@ -8276,6 +8486,8 @@ export namespace Prisma {
     deletedAt?: boolean
     company?: boolean | CompanyDefaultArgs<ExtArgs>
     scheduleGroup?: boolean | ScheduleGroupDefaultArgs<ExtArgs>
+    Attendance?: boolean | WorkSchedule$AttendanceArgs<ExtArgs>
+    _count?: boolean | WorkScheduleCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["workSchedule"]>
 
   export type WorkScheduleSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -8328,6 +8540,8 @@ export namespace Prisma {
   export type WorkScheduleInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     company?: boolean | CompanyDefaultArgs<ExtArgs>
     scheduleGroup?: boolean | ScheduleGroupDefaultArgs<ExtArgs>
+    Attendance?: boolean | WorkSchedule$AttendanceArgs<ExtArgs>
+    _count?: boolean | WorkScheduleCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type WorkScheduleIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     company?: boolean | CompanyDefaultArgs<ExtArgs>
@@ -8343,6 +8557,7 @@ export namespace Prisma {
     objects: {
       company: Prisma.$CompanyPayload<ExtArgs>
       scheduleGroup: Prisma.$ScheduleGroupPayload<ExtArgs>
+      Attendance: Prisma.$AttendancePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -8752,6 +8967,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     company<T extends CompanyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CompanyDefaultArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     scheduleGroup<T extends ScheduleGroupDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ScheduleGroupDefaultArgs<ExtArgs>>): Prisma__ScheduleGroupClient<$Result.GetResult<Prisma.$ScheduleGroupPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    Attendance<T extends WorkSchedule$AttendanceArgs<ExtArgs> = {}>(args?: Subset<T, WorkSchedule$AttendanceArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9185,6 +9401,30 @@ export namespace Prisma {
      * Limit how many WorkSchedules to delete.
      */
     limit?: number
+  }
+
+  /**
+   * WorkSchedule.Attendance
+   */
+  export type WorkSchedule$AttendanceArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Attendance
+     */
+    select?: AttendanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Attendance
+     */
+    omit?: AttendanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttendanceInclude<ExtArgs> | null
+    where?: AttendanceWhereInput
+    orderBy?: AttendanceOrderByWithRelationInput | AttendanceOrderByWithRelationInput[]
+    cursor?: AttendanceWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AttendanceScalarFieldEnum | AttendanceScalarFieldEnum[]
   }
 
   /**
@@ -11662,6 +11902,1284 @@ export namespace Prisma {
 
 
   /**
+   * Model Attendance
+   */
+
+  export type AggregateAttendance = {
+    _count: AttendanceCountAggregateOutputType | null
+    _avg: AttendanceAvgAggregateOutputType | null
+    _sum: AttendanceSumAggregateOutputType | null
+    _min: AttendanceMinAggregateOutputType | null
+    _max: AttendanceMaxAggregateOutputType | null
+  }
+
+  export type AttendanceAvgAggregateOutputType = {
+    id: number | null
+    employeeId: number | null
+    workScheduleId: number | null
+    latitude: Decimal | null
+    longitude: Decimal | null
+  }
+
+  export type AttendanceSumAggregateOutputType = {
+    id: number | null
+    employeeId: number | null
+    workScheduleId: number | null
+    latitude: Decimal | null
+    longitude: Decimal | null
+  }
+
+  export type AttendanceMinAggregateOutputType = {
+    id: number | null
+    employeeId: number | null
+    workScheduleId: number | null
+    date: Date | null
+    checkInTime: Date | null
+    checkOutTime: Date | null
+    workType: $Enums.WorkType | null
+    latitude: Decimal | null
+    longitude: Decimal | null
+    proof: string | null
+    locationStatus: $Enums.LocationStatus | null
+    attendanceStatus: $Enums.AttendanceStatus | null
+    approvalStatus: $Enums.ApprovalStatus | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    deletedAt: Date | null
+  }
+
+  export type AttendanceMaxAggregateOutputType = {
+    id: number | null
+    employeeId: number | null
+    workScheduleId: number | null
+    date: Date | null
+    checkInTime: Date | null
+    checkOutTime: Date | null
+    workType: $Enums.WorkType | null
+    latitude: Decimal | null
+    longitude: Decimal | null
+    proof: string | null
+    locationStatus: $Enums.LocationStatus | null
+    attendanceStatus: $Enums.AttendanceStatus | null
+    approvalStatus: $Enums.ApprovalStatus | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    deletedAt: Date | null
+  }
+
+  export type AttendanceCountAggregateOutputType = {
+    id: number
+    employeeId: number
+    workScheduleId: number
+    date: number
+    checkInTime: number
+    checkOutTime: number
+    workType: number
+    latitude: number
+    longitude: number
+    proof: number
+    locationStatus: number
+    attendanceStatus: number
+    approvalStatus: number
+    createdAt: number
+    updatedAt: number
+    deletedAt: number
+    _all: number
+  }
+
+
+  export type AttendanceAvgAggregateInputType = {
+    id?: true
+    employeeId?: true
+    workScheduleId?: true
+    latitude?: true
+    longitude?: true
+  }
+
+  export type AttendanceSumAggregateInputType = {
+    id?: true
+    employeeId?: true
+    workScheduleId?: true
+    latitude?: true
+    longitude?: true
+  }
+
+  export type AttendanceMinAggregateInputType = {
+    id?: true
+    employeeId?: true
+    workScheduleId?: true
+    date?: true
+    checkInTime?: true
+    checkOutTime?: true
+    workType?: true
+    latitude?: true
+    longitude?: true
+    proof?: true
+    locationStatus?: true
+    attendanceStatus?: true
+    approvalStatus?: true
+    createdAt?: true
+    updatedAt?: true
+    deletedAt?: true
+  }
+
+  export type AttendanceMaxAggregateInputType = {
+    id?: true
+    employeeId?: true
+    workScheduleId?: true
+    date?: true
+    checkInTime?: true
+    checkOutTime?: true
+    workType?: true
+    latitude?: true
+    longitude?: true
+    proof?: true
+    locationStatus?: true
+    attendanceStatus?: true
+    approvalStatus?: true
+    createdAt?: true
+    updatedAt?: true
+    deletedAt?: true
+  }
+
+  export type AttendanceCountAggregateInputType = {
+    id?: true
+    employeeId?: true
+    workScheduleId?: true
+    date?: true
+    checkInTime?: true
+    checkOutTime?: true
+    workType?: true
+    latitude?: true
+    longitude?: true
+    proof?: true
+    locationStatus?: true
+    attendanceStatus?: true
+    approvalStatus?: true
+    createdAt?: true
+    updatedAt?: true
+    deletedAt?: true
+    _all?: true
+  }
+
+  export type AttendanceAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Attendance to aggregate.
+     */
+    where?: AttendanceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Attendances to fetch.
+     */
+    orderBy?: AttendanceOrderByWithRelationInput | AttendanceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AttendanceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Attendances from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Attendances.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Attendances
+    **/
+    _count?: true | AttendanceCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: AttendanceAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: AttendanceSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AttendanceMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AttendanceMaxAggregateInputType
+  }
+
+  export type GetAttendanceAggregateType<T extends AttendanceAggregateArgs> = {
+        [P in keyof T & keyof AggregateAttendance]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAttendance[P]>
+      : GetScalarType<T[P], AggregateAttendance[P]>
+  }
+
+
+
+
+  export type AttendanceGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AttendanceWhereInput
+    orderBy?: AttendanceOrderByWithAggregationInput | AttendanceOrderByWithAggregationInput[]
+    by: AttendanceScalarFieldEnum[] | AttendanceScalarFieldEnum
+    having?: AttendanceScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AttendanceCountAggregateInputType | true
+    _avg?: AttendanceAvgAggregateInputType
+    _sum?: AttendanceSumAggregateInputType
+    _min?: AttendanceMinAggregateInputType
+    _max?: AttendanceMaxAggregateInputType
+  }
+
+  export type AttendanceGroupByOutputType = {
+    id: number
+    employeeId: number
+    workScheduleId: number | null
+    date: Date
+    checkInTime: Date | null
+    checkOutTime: Date | null
+    workType: $Enums.WorkType
+    latitude: Decimal | null
+    longitude: Decimal | null
+    proof: string | null
+    locationStatus: $Enums.LocationStatus | null
+    attendanceStatus: $Enums.AttendanceStatus | null
+    approvalStatus: $Enums.ApprovalStatus
+    createdAt: Date
+    updatedAt: Date
+    deletedAt: Date | null
+    _count: AttendanceCountAggregateOutputType | null
+    _avg: AttendanceAvgAggregateOutputType | null
+    _sum: AttendanceSumAggregateOutputType | null
+    _min: AttendanceMinAggregateOutputType | null
+    _max: AttendanceMaxAggregateOutputType | null
+  }
+
+  type GetAttendanceGroupByPayload<T extends AttendanceGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AttendanceGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AttendanceGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AttendanceGroupByOutputType[P]>
+            : GetScalarType<T[P], AttendanceGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AttendanceSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    employeeId?: boolean
+    workScheduleId?: boolean
+    date?: boolean
+    checkInTime?: boolean
+    checkOutTime?: boolean
+    workType?: boolean
+    latitude?: boolean
+    longitude?: boolean
+    proof?: boolean
+    locationStatus?: boolean
+    attendanceStatus?: boolean
+    approvalStatus?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    deletedAt?: boolean
+    employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+    workSchedule?: boolean | Attendance$workScheduleArgs<ExtArgs>
+  }, ExtArgs["result"]["attendance"]>
+
+  export type AttendanceSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    employeeId?: boolean
+    workScheduleId?: boolean
+    date?: boolean
+    checkInTime?: boolean
+    checkOutTime?: boolean
+    workType?: boolean
+    latitude?: boolean
+    longitude?: boolean
+    proof?: boolean
+    locationStatus?: boolean
+    attendanceStatus?: boolean
+    approvalStatus?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    deletedAt?: boolean
+    employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+    workSchedule?: boolean | Attendance$workScheduleArgs<ExtArgs>
+  }, ExtArgs["result"]["attendance"]>
+
+  export type AttendanceSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    employeeId?: boolean
+    workScheduleId?: boolean
+    date?: boolean
+    checkInTime?: boolean
+    checkOutTime?: boolean
+    workType?: boolean
+    latitude?: boolean
+    longitude?: boolean
+    proof?: boolean
+    locationStatus?: boolean
+    attendanceStatus?: boolean
+    approvalStatus?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    deletedAt?: boolean
+    employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+    workSchedule?: boolean | Attendance$workScheduleArgs<ExtArgs>
+  }, ExtArgs["result"]["attendance"]>
+
+  export type AttendanceSelectScalar = {
+    id?: boolean
+    employeeId?: boolean
+    workScheduleId?: boolean
+    date?: boolean
+    checkInTime?: boolean
+    checkOutTime?: boolean
+    workType?: boolean
+    latitude?: boolean
+    longitude?: boolean
+    proof?: boolean
+    locationStatus?: boolean
+    attendanceStatus?: boolean
+    approvalStatus?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    deletedAt?: boolean
+  }
+
+  export type AttendanceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "employeeId" | "workScheduleId" | "date" | "checkInTime" | "checkOutTime" | "workType" | "latitude" | "longitude" | "proof" | "locationStatus" | "attendanceStatus" | "approvalStatus" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["attendance"]>
+  export type AttendanceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+    workSchedule?: boolean | Attendance$workScheduleArgs<ExtArgs>
+  }
+  export type AttendanceIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+    workSchedule?: boolean | Attendance$workScheduleArgs<ExtArgs>
+  }
+  export type AttendanceIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    employee?: boolean | EmployeeDefaultArgs<ExtArgs>
+    workSchedule?: boolean | Attendance$workScheduleArgs<ExtArgs>
+  }
+
+  export type $AttendancePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Attendance"
+    objects: {
+      employee: Prisma.$EmployeePayload<ExtArgs>
+      workSchedule: Prisma.$WorkSchedulePayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      employeeId: number
+      workScheduleId: number | null
+      date: Date
+      checkInTime: Date | null
+      checkOutTime: Date | null
+      workType: $Enums.WorkType
+      latitude: Prisma.Decimal | null
+      longitude: Prisma.Decimal | null
+      proof: string | null
+      locationStatus: $Enums.LocationStatus | null
+      attendanceStatus: $Enums.AttendanceStatus | null
+      approvalStatus: $Enums.ApprovalStatus
+      createdAt: Date
+      updatedAt: Date
+      deletedAt: Date | null
+    }, ExtArgs["result"]["attendance"]>
+    composites: {}
+  }
+
+  type AttendanceGetPayload<S extends boolean | null | undefined | AttendanceDefaultArgs> = $Result.GetResult<Prisma.$AttendancePayload, S>
+
+  type AttendanceCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AttendanceFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AttendanceCountAggregateInputType | true
+    }
+
+  export interface AttendanceDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Attendance'], meta: { name: 'Attendance' } }
+    /**
+     * Find zero or one Attendance that matches the filter.
+     * @param {AttendanceFindUniqueArgs} args - Arguments to find a Attendance
+     * @example
+     * // Get one Attendance
+     * const attendance = await prisma.attendance.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AttendanceFindUniqueArgs>(args: SelectSubset<T, AttendanceFindUniqueArgs<ExtArgs>>): Prisma__AttendanceClient<$Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Attendance that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AttendanceFindUniqueOrThrowArgs} args - Arguments to find a Attendance
+     * @example
+     * // Get one Attendance
+     * const attendance = await prisma.attendance.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AttendanceFindUniqueOrThrowArgs>(args: SelectSubset<T, AttendanceFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AttendanceClient<$Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Attendance that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AttendanceFindFirstArgs} args - Arguments to find a Attendance
+     * @example
+     * // Get one Attendance
+     * const attendance = await prisma.attendance.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AttendanceFindFirstArgs>(args?: SelectSubset<T, AttendanceFindFirstArgs<ExtArgs>>): Prisma__AttendanceClient<$Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Attendance that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AttendanceFindFirstOrThrowArgs} args - Arguments to find a Attendance
+     * @example
+     * // Get one Attendance
+     * const attendance = await prisma.attendance.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AttendanceFindFirstOrThrowArgs>(args?: SelectSubset<T, AttendanceFindFirstOrThrowArgs<ExtArgs>>): Prisma__AttendanceClient<$Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Attendances that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AttendanceFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Attendances
+     * const attendances = await prisma.attendance.findMany()
+     * 
+     * // Get first 10 Attendances
+     * const attendances = await prisma.attendance.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const attendanceWithIdOnly = await prisma.attendance.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AttendanceFindManyArgs>(args?: SelectSubset<T, AttendanceFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Attendance.
+     * @param {AttendanceCreateArgs} args - Arguments to create a Attendance.
+     * @example
+     * // Create one Attendance
+     * const Attendance = await prisma.attendance.create({
+     *   data: {
+     *     // ... data to create a Attendance
+     *   }
+     * })
+     * 
+     */
+    create<T extends AttendanceCreateArgs>(args: SelectSubset<T, AttendanceCreateArgs<ExtArgs>>): Prisma__AttendanceClient<$Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Attendances.
+     * @param {AttendanceCreateManyArgs} args - Arguments to create many Attendances.
+     * @example
+     * // Create many Attendances
+     * const attendance = await prisma.attendance.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AttendanceCreateManyArgs>(args?: SelectSubset<T, AttendanceCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Attendances and returns the data saved in the database.
+     * @param {AttendanceCreateManyAndReturnArgs} args - Arguments to create many Attendances.
+     * @example
+     * // Create many Attendances
+     * const attendance = await prisma.attendance.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Attendances and only return the `id`
+     * const attendanceWithIdOnly = await prisma.attendance.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AttendanceCreateManyAndReturnArgs>(args?: SelectSubset<T, AttendanceCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Attendance.
+     * @param {AttendanceDeleteArgs} args - Arguments to delete one Attendance.
+     * @example
+     * // Delete one Attendance
+     * const Attendance = await prisma.attendance.delete({
+     *   where: {
+     *     // ... filter to delete one Attendance
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AttendanceDeleteArgs>(args: SelectSubset<T, AttendanceDeleteArgs<ExtArgs>>): Prisma__AttendanceClient<$Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Attendance.
+     * @param {AttendanceUpdateArgs} args - Arguments to update one Attendance.
+     * @example
+     * // Update one Attendance
+     * const attendance = await prisma.attendance.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AttendanceUpdateArgs>(args: SelectSubset<T, AttendanceUpdateArgs<ExtArgs>>): Prisma__AttendanceClient<$Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Attendances.
+     * @param {AttendanceDeleteManyArgs} args - Arguments to filter Attendances to delete.
+     * @example
+     * // Delete a few Attendances
+     * const { count } = await prisma.attendance.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AttendanceDeleteManyArgs>(args?: SelectSubset<T, AttendanceDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Attendances.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AttendanceUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Attendances
+     * const attendance = await prisma.attendance.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AttendanceUpdateManyArgs>(args: SelectSubset<T, AttendanceUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Attendances and returns the data updated in the database.
+     * @param {AttendanceUpdateManyAndReturnArgs} args - Arguments to update many Attendances.
+     * @example
+     * // Update many Attendances
+     * const attendance = await prisma.attendance.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Attendances and only return the `id`
+     * const attendanceWithIdOnly = await prisma.attendance.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AttendanceUpdateManyAndReturnArgs>(args: SelectSubset<T, AttendanceUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Attendance.
+     * @param {AttendanceUpsertArgs} args - Arguments to update or create a Attendance.
+     * @example
+     * // Update or create a Attendance
+     * const attendance = await prisma.attendance.upsert({
+     *   create: {
+     *     // ... data to create a Attendance
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Attendance we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AttendanceUpsertArgs>(args: SelectSubset<T, AttendanceUpsertArgs<ExtArgs>>): Prisma__AttendanceClient<$Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Attendances.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AttendanceCountArgs} args - Arguments to filter Attendances to count.
+     * @example
+     * // Count the number of Attendances
+     * const count = await prisma.attendance.count({
+     *   where: {
+     *     // ... the filter for the Attendances we want to count
+     *   }
+     * })
+    **/
+    count<T extends AttendanceCountArgs>(
+      args?: Subset<T, AttendanceCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AttendanceCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Attendance.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AttendanceAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AttendanceAggregateArgs>(args: Subset<T, AttendanceAggregateArgs>): Prisma.PrismaPromise<GetAttendanceAggregateType<T>>
+
+    /**
+     * Group by Attendance.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AttendanceGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AttendanceGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AttendanceGroupByArgs['orderBy'] }
+        : { orderBy?: AttendanceGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AttendanceGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAttendanceGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Attendance model
+   */
+  readonly fields: AttendanceFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Attendance.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AttendanceClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    employee<T extends EmployeeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, EmployeeDefaultArgs<ExtArgs>>): Prisma__EmployeeClient<$Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    workSchedule<T extends Attendance$workScheduleArgs<ExtArgs> = {}>(args?: Subset<T, Attendance$workScheduleArgs<ExtArgs>>): Prisma__WorkScheduleClient<$Result.GetResult<Prisma.$WorkSchedulePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Attendance model
+   */
+  interface AttendanceFieldRefs {
+    readonly id: FieldRef<"Attendance", 'Int'>
+    readonly employeeId: FieldRef<"Attendance", 'Int'>
+    readonly workScheduleId: FieldRef<"Attendance", 'Int'>
+    readonly date: FieldRef<"Attendance", 'DateTime'>
+    readonly checkInTime: FieldRef<"Attendance", 'DateTime'>
+    readonly checkOutTime: FieldRef<"Attendance", 'DateTime'>
+    readonly workType: FieldRef<"Attendance", 'WorkType'>
+    readonly latitude: FieldRef<"Attendance", 'Decimal'>
+    readonly longitude: FieldRef<"Attendance", 'Decimal'>
+    readonly proof: FieldRef<"Attendance", 'String'>
+    readonly locationStatus: FieldRef<"Attendance", 'LocationStatus'>
+    readonly attendanceStatus: FieldRef<"Attendance", 'AttendanceStatus'>
+    readonly approvalStatus: FieldRef<"Attendance", 'ApprovalStatus'>
+    readonly createdAt: FieldRef<"Attendance", 'DateTime'>
+    readonly updatedAt: FieldRef<"Attendance", 'DateTime'>
+    readonly deletedAt: FieldRef<"Attendance", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Attendance findUnique
+   */
+  export type AttendanceFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Attendance
+     */
+    select?: AttendanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Attendance
+     */
+    omit?: AttendanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttendanceInclude<ExtArgs> | null
+    /**
+     * Filter, which Attendance to fetch.
+     */
+    where: AttendanceWhereUniqueInput
+  }
+
+  /**
+   * Attendance findUniqueOrThrow
+   */
+  export type AttendanceFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Attendance
+     */
+    select?: AttendanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Attendance
+     */
+    omit?: AttendanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttendanceInclude<ExtArgs> | null
+    /**
+     * Filter, which Attendance to fetch.
+     */
+    where: AttendanceWhereUniqueInput
+  }
+
+  /**
+   * Attendance findFirst
+   */
+  export type AttendanceFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Attendance
+     */
+    select?: AttendanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Attendance
+     */
+    omit?: AttendanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttendanceInclude<ExtArgs> | null
+    /**
+     * Filter, which Attendance to fetch.
+     */
+    where?: AttendanceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Attendances to fetch.
+     */
+    orderBy?: AttendanceOrderByWithRelationInput | AttendanceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Attendances.
+     */
+    cursor?: AttendanceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Attendances from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Attendances.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Attendances.
+     */
+    distinct?: AttendanceScalarFieldEnum | AttendanceScalarFieldEnum[]
+  }
+
+  /**
+   * Attendance findFirstOrThrow
+   */
+  export type AttendanceFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Attendance
+     */
+    select?: AttendanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Attendance
+     */
+    omit?: AttendanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttendanceInclude<ExtArgs> | null
+    /**
+     * Filter, which Attendance to fetch.
+     */
+    where?: AttendanceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Attendances to fetch.
+     */
+    orderBy?: AttendanceOrderByWithRelationInput | AttendanceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Attendances.
+     */
+    cursor?: AttendanceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Attendances from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Attendances.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Attendances.
+     */
+    distinct?: AttendanceScalarFieldEnum | AttendanceScalarFieldEnum[]
+  }
+
+  /**
+   * Attendance findMany
+   */
+  export type AttendanceFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Attendance
+     */
+    select?: AttendanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Attendance
+     */
+    omit?: AttendanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttendanceInclude<ExtArgs> | null
+    /**
+     * Filter, which Attendances to fetch.
+     */
+    where?: AttendanceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Attendances to fetch.
+     */
+    orderBy?: AttendanceOrderByWithRelationInput | AttendanceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Attendances.
+     */
+    cursor?: AttendanceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Attendances from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Attendances.
+     */
+    skip?: number
+    distinct?: AttendanceScalarFieldEnum | AttendanceScalarFieldEnum[]
+  }
+
+  /**
+   * Attendance create
+   */
+  export type AttendanceCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Attendance
+     */
+    select?: AttendanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Attendance
+     */
+    omit?: AttendanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttendanceInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Attendance.
+     */
+    data: XOR<AttendanceCreateInput, AttendanceUncheckedCreateInput>
+  }
+
+  /**
+   * Attendance createMany
+   */
+  export type AttendanceCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Attendances.
+     */
+    data: AttendanceCreateManyInput | AttendanceCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Attendance createManyAndReturn
+   */
+  export type AttendanceCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Attendance
+     */
+    select?: AttendanceSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Attendance
+     */
+    omit?: AttendanceOmit<ExtArgs> | null
+    /**
+     * The data used to create many Attendances.
+     */
+    data: AttendanceCreateManyInput | AttendanceCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttendanceIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Attendance update
+   */
+  export type AttendanceUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Attendance
+     */
+    select?: AttendanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Attendance
+     */
+    omit?: AttendanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttendanceInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Attendance.
+     */
+    data: XOR<AttendanceUpdateInput, AttendanceUncheckedUpdateInput>
+    /**
+     * Choose, which Attendance to update.
+     */
+    where: AttendanceWhereUniqueInput
+  }
+
+  /**
+   * Attendance updateMany
+   */
+  export type AttendanceUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Attendances.
+     */
+    data: XOR<AttendanceUpdateManyMutationInput, AttendanceUncheckedUpdateManyInput>
+    /**
+     * Filter which Attendances to update
+     */
+    where?: AttendanceWhereInput
+    /**
+     * Limit how many Attendances to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Attendance updateManyAndReturn
+   */
+  export type AttendanceUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Attendance
+     */
+    select?: AttendanceSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Attendance
+     */
+    omit?: AttendanceOmit<ExtArgs> | null
+    /**
+     * The data used to update Attendances.
+     */
+    data: XOR<AttendanceUpdateManyMutationInput, AttendanceUncheckedUpdateManyInput>
+    /**
+     * Filter which Attendances to update
+     */
+    where?: AttendanceWhereInput
+    /**
+     * Limit how many Attendances to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttendanceIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Attendance upsert
+   */
+  export type AttendanceUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Attendance
+     */
+    select?: AttendanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Attendance
+     */
+    omit?: AttendanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttendanceInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Attendance to update in case it exists.
+     */
+    where: AttendanceWhereUniqueInput
+    /**
+     * In case the Attendance found by the `where` argument doesn't exist, create a new Attendance with this data.
+     */
+    create: XOR<AttendanceCreateInput, AttendanceUncheckedCreateInput>
+    /**
+     * In case the Attendance was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AttendanceUpdateInput, AttendanceUncheckedUpdateInput>
+  }
+
+  /**
+   * Attendance delete
+   */
+  export type AttendanceDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Attendance
+     */
+    select?: AttendanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Attendance
+     */
+    omit?: AttendanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttendanceInclude<ExtArgs> | null
+    /**
+     * Filter which Attendance to delete.
+     */
+    where: AttendanceWhereUniqueInput
+  }
+
+  /**
+   * Attendance deleteMany
+   */
+  export type AttendanceDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Attendances to delete
+     */
+    where?: AttendanceWhereInput
+    /**
+     * Limit how many Attendances to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Attendance.workSchedule
+   */
+  export type Attendance$workScheduleArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkSchedule
+     */
+    select?: WorkScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkSchedule
+     */
+    omit?: WorkScheduleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkScheduleInclude<ExtArgs> | null
+    where?: WorkScheduleWhereInput
+  }
+
+  /**
+   * Attendance without action
+   */
+  export type AttendanceDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Attendance
+     */
+    select?: AttendanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Attendance
+     */
+    omit?: AttendanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttendanceInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -11809,6 +13327,28 @@ export namespace Prisma {
   export type LeaveTypeScalarFieldEnum = (typeof LeaveTypeScalarFieldEnum)[keyof typeof LeaveTypeScalarFieldEnum]
 
 
+  export const AttendanceScalarFieldEnum: {
+    id: 'id',
+    employeeId: 'employeeId',
+    workScheduleId: 'workScheduleId',
+    date: 'date',
+    checkInTime: 'checkInTime',
+    checkOutTime: 'checkOutTime',
+    workType: 'workType',
+    latitude: 'latitude',
+    longitude: 'longitude',
+    proof: 'proof',
+    locationStatus: 'locationStatus',
+    attendanceStatus: 'attendanceStatus',
+    approvalStatus: 'approvalStatus',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    deletedAt: 'deletedAt'
+  };
+
+  export type AttendanceScalarFieldEnum = (typeof AttendanceScalarFieldEnum)[keyof typeof AttendanceScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -11954,6 +13494,62 @@ export namespace Prisma {
    * Reference to a field of type 'Boolean'
    */
   export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+  /**
+   * Reference to a field of type 'WorkType'
+   */
+  export type EnumWorkTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkType'>
+    
+
+
+  /**
+   * Reference to a field of type 'WorkType[]'
+   */
+  export type ListEnumWorkTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'LocationStatus'
+   */
+  export type EnumLocationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LocationStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'LocationStatus[]'
+   */
+  export type ListEnumLocationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LocationStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'AttendanceStatus'
+   */
+  export type EnumAttendanceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AttendanceStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'AttendanceStatus[]'
+   */
+  export type ListEnumAttendanceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AttendanceStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ApprovalStatus'
+   */
+  export type EnumApprovalStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ApprovalStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'ApprovalStatus[]'
+   */
+  export type ListEnumApprovalStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ApprovalStatus[]'>
     
 
 
@@ -12251,6 +13847,7 @@ export namespace Prisma {
     company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
     scheduleGroup?: XOR<ScheduleGroupNullableScalarRelationFilter, ScheduleGroupWhereInput> | null
     leaveRequests?: LeaveRequestListRelationFilter
+    Attendance?: AttendanceListRelationFilter
   }
 
   export type EmployeeOrderByWithRelationInput = {
@@ -12278,6 +13875,7 @@ export namespace Prisma {
     company?: CompanyOrderByWithRelationInput
     scheduleGroup?: ScheduleGroupOrderByWithRelationInput
     leaveRequests?: LeaveRequestOrderByRelationAggregateInput
+    Attendance?: AttendanceOrderByRelationAggregateInput
   }
 
   export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
@@ -12309,6 +13907,7 @@ export namespace Prisma {
     company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
     scheduleGroup?: XOR<ScheduleGroupNullableScalarRelationFilter, ScheduleGroupWhereInput> | null
     leaveRequests?: LeaveRequestListRelationFilter
+    Attendance?: AttendanceListRelationFilter
   }, "id" | "employeeCode" | "companyId_nik">
 
   export type EmployeeOrderByWithAggregationInput = {
@@ -12451,6 +14050,7 @@ export namespace Prisma {
     deletedAt?: DateTimeNullableFilter<"WorkSchedule"> | Date | string | null
     company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
     scheduleGroup?: XOR<ScheduleGroupScalarRelationFilter, ScheduleGroupWhereInput>
+    Attendance?: AttendanceListRelationFilter
   }
 
   export type WorkScheduleOrderByWithRelationInput = {
@@ -12467,6 +14067,7 @@ export namespace Prisma {
     deletedAt?: SortOrderInput | SortOrder
     company?: CompanyOrderByWithRelationInput
     scheduleGroup?: ScheduleGroupOrderByWithRelationInput
+    Attendance?: AttendanceOrderByRelationAggregateInput
   }
 
   export type WorkScheduleWhereUniqueInput = Prisma.AtLeast<{
@@ -12486,6 +14087,7 @@ export namespace Prisma {
     deletedAt?: DateTimeNullableFilter<"WorkSchedule"> | Date | string | null
     company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
     scheduleGroup?: XOR<ScheduleGroupScalarRelationFilter, ScheduleGroupWhereInput>
+    Attendance?: AttendanceListRelationFilter
   }, "id">
 
   export type WorkScheduleOrderByWithAggregationInput = {
@@ -12716,6 +14318,122 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"LeaveType"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"LeaveType"> | Date | string
     deletedAt?: DateTimeNullableWithAggregatesFilter<"LeaveType"> | Date | string | null
+  }
+
+  export type AttendanceWhereInput = {
+    AND?: AttendanceWhereInput | AttendanceWhereInput[]
+    OR?: AttendanceWhereInput[]
+    NOT?: AttendanceWhereInput | AttendanceWhereInput[]
+    id?: IntFilter<"Attendance"> | number
+    employeeId?: IntFilter<"Attendance"> | number
+    workScheduleId?: IntNullableFilter<"Attendance"> | number | null
+    date?: DateTimeFilter<"Attendance"> | Date | string
+    checkInTime?: DateTimeNullableFilter<"Attendance"> | Date | string | null
+    checkOutTime?: DateTimeNullableFilter<"Attendance"> | Date | string | null
+    workType?: EnumWorkTypeFilter<"Attendance"> | $Enums.WorkType
+    latitude?: DecimalNullableFilter<"Attendance"> | Decimal | DecimalJsLike | number | string | null
+    longitude?: DecimalNullableFilter<"Attendance"> | Decimal | DecimalJsLike | number | string | null
+    proof?: StringNullableFilter<"Attendance"> | string | null
+    locationStatus?: EnumLocationStatusNullableFilter<"Attendance"> | $Enums.LocationStatus | null
+    attendanceStatus?: EnumAttendanceStatusNullableFilter<"Attendance"> | $Enums.AttendanceStatus | null
+    approvalStatus?: EnumApprovalStatusFilter<"Attendance"> | $Enums.ApprovalStatus
+    createdAt?: DateTimeFilter<"Attendance"> | Date | string
+    updatedAt?: DateTimeFilter<"Attendance"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"Attendance"> | Date | string | null
+    employee?: XOR<EmployeeScalarRelationFilter, EmployeeWhereInput>
+    workSchedule?: XOR<WorkScheduleNullableScalarRelationFilter, WorkScheduleWhereInput> | null
+  }
+
+  export type AttendanceOrderByWithRelationInput = {
+    id?: SortOrder
+    employeeId?: SortOrder
+    workScheduleId?: SortOrderInput | SortOrder
+    date?: SortOrder
+    checkInTime?: SortOrderInput | SortOrder
+    checkOutTime?: SortOrderInput | SortOrder
+    workType?: SortOrder
+    latitude?: SortOrderInput | SortOrder
+    longitude?: SortOrderInput | SortOrder
+    proof?: SortOrderInput | SortOrder
+    locationStatus?: SortOrderInput | SortOrder
+    attendanceStatus?: SortOrderInput | SortOrder
+    approvalStatus?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
+    employee?: EmployeeOrderByWithRelationInput
+    workSchedule?: WorkScheduleOrderByWithRelationInput
+  }
+
+  export type AttendanceWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    employeeId_date?: AttendanceEmployeeIdDateCompoundUniqueInput
+    AND?: AttendanceWhereInput | AttendanceWhereInput[]
+    OR?: AttendanceWhereInput[]
+    NOT?: AttendanceWhereInput | AttendanceWhereInput[]
+    employeeId?: IntFilter<"Attendance"> | number
+    workScheduleId?: IntNullableFilter<"Attendance"> | number | null
+    date?: DateTimeFilter<"Attendance"> | Date | string
+    checkInTime?: DateTimeNullableFilter<"Attendance"> | Date | string | null
+    checkOutTime?: DateTimeNullableFilter<"Attendance"> | Date | string | null
+    workType?: EnumWorkTypeFilter<"Attendance"> | $Enums.WorkType
+    latitude?: DecimalNullableFilter<"Attendance"> | Decimal | DecimalJsLike | number | string | null
+    longitude?: DecimalNullableFilter<"Attendance"> | Decimal | DecimalJsLike | number | string | null
+    proof?: StringNullableFilter<"Attendance"> | string | null
+    locationStatus?: EnumLocationStatusNullableFilter<"Attendance"> | $Enums.LocationStatus | null
+    attendanceStatus?: EnumAttendanceStatusNullableFilter<"Attendance"> | $Enums.AttendanceStatus | null
+    approvalStatus?: EnumApprovalStatusFilter<"Attendance"> | $Enums.ApprovalStatus
+    createdAt?: DateTimeFilter<"Attendance"> | Date | string
+    updatedAt?: DateTimeFilter<"Attendance"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"Attendance"> | Date | string | null
+    employee?: XOR<EmployeeScalarRelationFilter, EmployeeWhereInput>
+    workSchedule?: XOR<WorkScheduleNullableScalarRelationFilter, WorkScheduleWhereInput> | null
+  }, "id" | "employeeId_date">
+
+  export type AttendanceOrderByWithAggregationInput = {
+    id?: SortOrder
+    employeeId?: SortOrder
+    workScheduleId?: SortOrderInput | SortOrder
+    date?: SortOrder
+    checkInTime?: SortOrderInput | SortOrder
+    checkOutTime?: SortOrderInput | SortOrder
+    workType?: SortOrder
+    latitude?: SortOrderInput | SortOrder
+    longitude?: SortOrderInput | SortOrder
+    proof?: SortOrderInput | SortOrder
+    locationStatus?: SortOrderInput | SortOrder
+    attendanceStatus?: SortOrderInput | SortOrder
+    approvalStatus?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
+    _count?: AttendanceCountOrderByAggregateInput
+    _avg?: AttendanceAvgOrderByAggregateInput
+    _max?: AttendanceMaxOrderByAggregateInput
+    _min?: AttendanceMinOrderByAggregateInput
+    _sum?: AttendanceSumOrderByAggregateInput
+  }
+
+  export type AttendanceScalarWhereWithAggregatesInput = {
+    AND?: AttendanceScalarWhereWithAggregatesInput | AttendanceScalarWhereWithAggregatesInput[]
+    OR?: AttendanceScalarWhereWithAggregatesInput[]
+    NOT?: AttendanceScalarWhereWithAggregatesInput | AttendanceScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"Attendance"> | number
+    employeeId?: IntWithAggregatesFilter<"Attendance"> | number
+    workScheduleId?: IntNullableWithAggregatesFilter<"Attendance"> | number | null
+    date?: DateTimeWithAggregatesFilter<"Attendance"> | Date | string
+    checkInTime?: DateTimeNullableWithAggregatesFilter<"Attendance"> | Date | string | null
+    checkOutTime?: DateTimeNullableWithAggregatesFilter<"Attendance"> | Date | string | null
+    workType?: EnumWorkTypeWithAggregatesFilter<"Attendance"> | $Enums.WorkType
+    latitude?: DecimalNullableWithAggregatesFilter<"Attendance"> | Decimal | DecimalJsLike | number | string | null
+    longitude?: DecimalNullableWithAggregatesFilter<"Attendance"> | Decimal | DecimalJsLike | number | string | null
+    proof?: StringNullableWithAggregatesFilter<"Attendance"> | string | null
+    locationStatus?: EnumLocationStatusNullableWithAggregatesFilter<"Attendance"> | $Enums.LocationStatus | null
+    attendanceStatus?: EnumAttendanceStatusNullableWithAggregatesFilter<"Attendance"> | $Enums.AttendanceStatus | null
+    approvalStatus?: EnumApprovalStatusWithAggregatesFilter<"Attendance"> | $Enums.ApprovalStatus
+    createdAt?: DateTimeWithAggregatesFilter<"Attendance"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Attendance"> | Date | string
+    deletedAt?: DateTimeNullableWithAggregatesFilter<"Attendance"> | Date | string | null
   }
 
   export type UserCreateInput = {
@@ -13001,6 +14719,7 @@ export namespace Prisma {
     company: CompanyCreateNestedOneWithoutEmployeeInput
     scheduleGroup?: ScheduleGroupCreateNestedOneWithoutEmployeesInput
     leaveRequests?: LeaveRequestCreateNestedManyWithoutEmployeeInput
+    Attendance?: AttendanceCreateNestedManyWithoutEmployeeInput
   }
 
   export type EmployeeUncheckedCreateInput = {
@@ -13025,6 +14744,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     leaveRequests?: LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+    Attendance?: AttendanceUncheckedCreateNestedManyWithoutEmployeeInput
   }
 
   export type EmployeeUpdateInput = {
@@ -13048,6 +14768,7 @@ export namespace Prisma {
     company?: CompanyUpdateOneRequiredWithoutEmployeeNestedInput
     scheduleGroup?: ScheduleGroupUpdateOneWithoutEmployeesNestedInput
     leaveRequests?: LeaveRequestUpdateManyWithoutEmployeeNestedInput
+    Attendance?: AttendanceUpdateManyWithoutEmployeeNestedInput
   }
 
   export type EmployeeUncheckedUpdateInput = {
@@ -13072,6 +14793,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     leaveRequests?: LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+    Attendance?: AttendanceUncheckedUpdateManyWithoutEmployeeNestedInput
   }
 
   export type EmployeeCreateManyInput = {
@@ -13217,6 +14939,7 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     company: CompanyCreateNestedOneWithoutWorkScheduleInput
     scheduleGroup: ScheduleGroupCreateNestedOneWithoutWorkSchedulesInput
+    Attendance?: AttendanceCreateNestedManyWithoutWorkScheduleInput
   }
 
   export type WorkScheduleUncheckedCreateInput = {
@@ -13231,6 +14954,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    Attendance?: AttendanceUncheckedCreateNestedManyWithoutWorkScheduleInput
   }
 
   export type WorkScheduleUpdateInput = {
@@ -13244,6 +14968,7 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     company?: CompanyUpdateOneRequiredWithoutWorkScheduleNestedInput
     scheduleGroup?: ScheduleGroupUpdateOneRequiredWithoutWorkSchedulesNestedInput
+    Attendance?: AttendanceUpdateManyWithoutWorkScheduleNestedInput
   }
 
   export type WorkScheduleUncheckedUpdateInput = {
@@ -13258,6 +14983,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Attendance?: AttendanceUncheckedUpdateManyWithoutWorkScheduleNestedInput
   }
 
   export type WorkScheduleCreateManyInput = {
@@ -13498,6 +15224,134 @@ export namespace Prisma {
     maxDays?: IntFieldUpdateOperationsInput | number
     description?: NullableStringFieldUpdateOperationsInput | string | null
     isPaid?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type AttendanceCreateInput = {
+    date: Date | string
+    checkInTime?: Date | string | null
+    checkOutTime?: Date | string | null
+    workType: $Enums.WorkType
+    latitude?: Decimal | DecimalJsLike | number | string | null
+    longitude?: Decimal | DecimalJsLike | number | string | null
+    proof?: string | null
+    locationStatus?: $Enums.LocationStatus | null
+    attendanceStatus?: $Enums.AttendanceStatus | null
+    approvalStatus?: $Enums.ApprovalStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    employee: EmployeeCreateNestedOneWithoutAttendanceInput
+    workSchedule?: WorkScheduleCreateNestedOneWithoutAttendanceInput
+  }
+
+  export type AttendanceUncheckedCreateInput = {
+    id?: number
+    employeeId: number
+    workScheduleId?: number | null
+    date: Date | string
+    checkInTime?: Date | string | null
+    checkOutTime?: Date | string | null
+    workType: $Enums.WorkType
+    latitude?: Decimal | DecimalJsLike | number | string | null
+    longitude?: Decimal | DecimalJsLike | number | string | null
+    proof?: string | null
+    locationStatus?: $Enums.LocationStatus | null
+    attendanceStatus?: $Enums.AttendanceStatus | null
+    approvalStatus?: $Enums.ApprovalStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+  }
+
+  export type AttendanceUpdateInput = {
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkInTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    checkOutTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    workType?: EnumWorkTypeFieldUpdateOperationsInput | $Enums.WorkType
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    proof?: NullableStringFieldUpdateOperationsInput | string | null
+    locationStatus?: NullableEnumLocationStatusFieldUpdateOperationsInput | $Enums.LocationStatus | null
+    attendanceStatus?: NullableEnumAttendanceStatusFieldUpdateOperationsInput | $Enums.AttendanceStatus | null
+    approvalStatus?: EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    employee?: EmployeeUpdateOneRequiredWithoutAttendanceNestedInput
+    workSchedule?: WorkScheduleUpdateOneWithoutAttendanceNestedInput
+  }
+
+  export type AttendanceUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    employeeId?: IntFieldUpdateOperationsInput | number
+    workScheduleId?: NullableIntFieldUpdateOperationsInput | number | null
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkInTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    checkOutTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    workType?: EnumWorkTypeFieldUpdateOperationsInput | $Enums.WorkType
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    proof?: NullableStringFieldUpdateOperationsInput | string | null
+    locationStatus?: NullableEnumLocationStatusFieldUpdateOperationsInput | $Enums.LocationStatus | null
+    attendanceStatus?: NullableEnumAttendanceStatusFieldUpdateOperationsInput | $Enums.AttendanceStatus | null
+    approvalStatus?: EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type AttendanceCreateManyInput = {
+    id?: number
+    employeeId: number
+    workScheduleId?: number | null
+    date: Date | string
+    checkInTime?: Date | string | null
+    checkOutTime?: Date | string | null
+    workType: $Enums.WorkType
+    latitude?: Decimal | DecimalJsLike | number | string | null
+    longitude?: Decimal | DecimalJsLike | number | string | null
+    proof?: string | null
+    locationStatus?: $Enums.LocationStatus | null
+    attendanceStatus?: $Enums.AttendanceStatus | null
+    approvalStatus?: $Enums.ApprovalStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+  }
+
+  export type AttendanceUpdateManyMutationInput = {
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkInTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    checkOutTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    workType?: EnumWorkTypeFieldUpdateOperationsInput | $Enums.WorkType
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    proof?: NullableStringFieldUpdateOperationsInput | string | null
+    locationStatus?: NullableEnumLocationStatusFieldUpdateOperationsInput | $Enums.LocationStatus | null
+    attendanceStatus?: NullableEnumAttendanceStatusFieldUpdateOperationsInput | $Enums.AttendanceStatus | null
+    approvalStatus?: EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type AttendanceUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    employeeId?: IntFieldUpdateOperationsInput | number
+    workScheduleId?: NullableIntFieldUpdateOperationsInput | number | null
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkInTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    checkOutTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    workType?: EnumWorkTypeFieldUpdateOperationsInput | $Enums.WorkType
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    proof?: NullableStringFieldUpdateOperationsInput | string | null
+    locationStatus?: NullableEnumLocationStatusFieldUpdateOperationsInput | $Enums.LocationStatus | null
+    attendanceStatus?: NullableEnumAttendanceStatusFieldUpdateOperationsInput | $Enums.AttendanceStatus | null
+    approvalStatus?: EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -13972,6 +15826,16 @@ export namespace Prisma {
     isNot?: ScheduleGroupWhereInput | null
   }
 
+  export type AttendanceListRelationFilter = {
+    every?: AttendanceWhereInput
+    some?: AttendanceWhereInput
+    none?: AttendanceWhereInput
+  }
+
+  export type AttendanceOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type EmployeeCompanyIdNikCompoundUniqueInput = {
     companyId: number
     nik: string
@@ -14354,6 +16218,157 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type EnumWorkTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.WorkType | EnumWorkTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.WorkType[] | ListEnumWorkTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WorkType[] | ListEnumWorkTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumWorkTypeFilter<$PrismaModel> | $Enums.WorkType
+  }
+
+  export type EnumLocationStatusNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.LocationStatus | EnumLocationStatusFieldRefInput<$PrismaModel> | null
+    in?: $Enums.LocationStatus[] | ListEnumLocationStatusFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.LocationStatus[] | ListEnumLocationStatusFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumLocationStatusNullableFilter<$PrismaModel> | $Enums.LocationStatus | null
+  }
+
+  export type EnumAttendanceStatusNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.AttendanceStatus | EnumAttendanceStatusFieldRefInput<$PrismaModel> | null
+    in?: $Enums.AttendanceStatus[] | ListEnumAttendanceStatusFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.AttendanceStatus[] | ListEnumAttendanceStatusFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumAttendanceStatusNullableFilter<$PrismaModel> | $Enums.AttendanceStatus | null
+  }
+
+  export type EnumApprovalStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ApprovalStatus | EnumApprovalStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ApprovalStatus[] | ListEnumApprovalStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ApprovalStatus[] | ListEnumApprovalStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumApprovalStatusFilter<$PrismaModel> | $Enums.ApprovalStatus
+  }
+
+  export type WorkScheduleNullableScalarRelationFilter = {
+    is?: WorkScheduleWhereInput | null
+    isNot?: WorkScheduleWhereInput | null
+  }
+
+  export type AttendanceEmployeeIdDateCompoundUniqueInput = {
+    employeeId: number
+    date: Date | string
+  }
+
+  export type AttendanceCountOrderByAggregateInput = {
+    id?: SortOrder
+    employeeId?: SortOrder
+    workScheduleId?: SortOrder
+    date?: SortOrder
+    checkInTime?: SortOrder
+    checkOutTime?: SortOrder
+    workType?: SortOrder
+    latitude?: SortOrder
+    longitude?: SortOrder
+    proof?: SortOrder
+    locationStatus?: SortOrder
+    attendanceStatus?: SortOrder
+    approvalStatus?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrder
+  }
+
+  export type AttendanceAvgOrderByAggregateInput = {
+    id?: SortOrder
+    employeeId?: SortOrder
+    workScheduleId?: SortOrder
+    latitude?: SortOrder
+    longitude?: SortOrder
+  }
+
+  export type AttendanceMaxOrderByAggregateInput = {
+    id?: SortOrder
+    employeeId?: SortOrder
+    workScheduleId?: SortOrder
+    date?: SortOrder
+    checkInTime?: SortOrder
+    checkOutTime?: SortOrder
+    workType?: SortOrder
+    latitude?: SortOrder
+    longitude?: SortOrder
+    proof?: SortOrder
+    locationStatus?: SortOrder
+    attendanceStatus?: SortOrder
+    approvalStatus?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrder
+  }
+
+  export type AttendanceMinOrderByAggregateInput = {
+    id?: SortOrder
+    employeeId?: SortOrder
+    workScheduleId?: SortOrder
+    date?: SortOrder
+    checkInTime?: SortOrder
+    checkOutTime?: SortOrder
+    workType?: SortOrder
+    latitude?: SortOrder
+    longitude?: SortOrder
+    proof?: SortOrder
+    locationStatus?: SortOrder
+    attendanceStatus?: SortOrder
+    approvalStatus?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrder
+  }
+
+  export type AttendanceSumOrderByAggregateInput = {
+    id?: SortOrder
+    employeeId?: SortOrder
+    workScheduleId?: SortOrder
+    latitude?: SortOrder
+    longitude?: SortOrder
+  }
+
+  export type EnumWorkTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.WorkType | EnumWorkTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.WorkType[] | ListEnumWorkTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WorkType[] | ListEnumWorkTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumWorkTypeWithAggregatesFilter<$PrismaModel> | $Enums.WorkType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumWorkTypeFilter<$PrismaModel>
+    _max?: NestedEnumWorkTypeFilter<$PrismaModel>
+  }
+
+  export type EnumLocationStatusNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.LocationStatus | EnumLocationStatusFieldRefInput<$PrismaModel> | null
+    in?: $Enums.LocationStatus[] | ListEnumLocationStatusFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.LocationStatus[] | ListEnumLocationStatusFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumLocationStatusNullableWithAggregatesFilter<$PrismaModel> | $Enums.LocationStatus | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumLocationStatusNullableFilter<$PrismaModel>
+    _max?: NestedEnumLocationStatusNullableFilter<$PrismaModel>
+  }
+
+  export type EnumAttendanceStatusNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AttendanceStatus | EnumAttendanceStatusFieldRefInput<$PrismaModel> | null
+    in?: $Enums.AttendanceStatus[] | ListEnumAttendanceStatusFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.AttendanceStatus[] | ListEnumAttendanceStatusFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumAttendanceStatusNullableWithAggregatesFilter<$PrismaModel> | $Enums.AttendanceStatus | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumAttendanceStatusNullableFilter<$PrismaModel>
+    _max?: NestedEnumAttendanceStatusNullableFilter<$PrismaModel>
+  }
+
+  export type EnumApprovalStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ApprovalStatus | EnumApprovalStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ApprovalStatus[] | ListEnumApprovalStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ApprovalStatus[] | ListEnumApprovalStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumApprovalStatusWithAggregatesFilter<$PrismaModel> | $Enums.ApprovalStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumApprovalStatusFilter<$PrismaModel>
+    _max?: NestedEnumApprovalStatusFilter<$PrismaModel>
   }
 
   export type CompanyCreateNestedOneWithoutMembersInput = {
@@ -14847,11 +16862,25 @@ export namespace Prisma {
     connect?: LeaveRequestWhereUniqueInput | LeaveRequestWhereUniqueInput[]
   }
 
+  export type AttendanceCreateNestedManyWithoutEmployeeInput = {
+    create?: XOR<AttendanceCreateWithoutEmployeeInput, AttendanceUncheckedCreateWithoutEmployeeInput> | AttendanceCreateWithoutEmployeeInput[] | AttendanceUncheckedCreateWithoutEmployeeInput[]
+    connectOrCreate?: AttendanceCreateOrConnectWithoutEmployeeInput | AttendanceCreateOrConnectWithoutEmployeeInput[]
+    createMany?: AttendanceCreateManyEmployeeInputEnvelope
+    connect?: AttendanceWhereUniqueInput | AttendanceWhereUniqueInput[]
+  }
+
   export type LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput = {
     create?: XOR<LeaveRequestCreateWithoutEmployeeInput, LeaveRequestUncheckedCreateWithoutEmployeeInput> | LeaveRequestCreateWithoutEmployeeInput[] | LeaveRequestUncheckedCreateWithoutEmployeeInput[]
     connectOrCreate?: LeaveRequestCreateOrConnectWithoutEmployeeInput | LeaveRequestCreateOrConnectWithoutEmployeeInput[]
     createMany?: LeaveRequestCreateManyEmployeeInputEnvelope
     connect?: LeaveRequestWhereUniqueInput | LeaveRequestWhereUniqueInput[]
+  }
+
+  export type AttendanceUncheckedCreateNestedManyWithoutEmployeeInput = {
+    create?: XOR<AttendanceCreateWithoutEmployeeInput, AttendanceUncheckedCreateWithoutEmployeeInput> | AttendanceCreateWithoutEmployeeInput[] | AttendanceUncheckedCreateWithoutEmployeeInput[]
+    connectOrCreate?: AttendanceCreateOrConnectWithoutEmployeeInput | AttendanceCreateOrConnectWithoutEmployeeInput[]
+    createMany?: AttendanceCreateManyEmployeeInputEnvelope
+    connect?: AttendanceWhereUniqueInput | AttendanceWhereUniqueInput[]
   }
 
   export type EnumEmployeeStatusFieldUpdateOperationsInput = {
@@ -14898,6 +16927,20 @@ export namespace Prisma {
     deleteMany?: LeaveRequestScalarWhereInput | LeaveRequestScalarWhereInput[]
   }
 
+  export type AttendanceUpdateManyWithoutEmployeeNestedInput = {
+    create?: XOR<AttendanceCreateWithoutEmployeeInput, AttendanceUncheckedCreateWithoutEmployeeInput> | AttendanceCreateWithoutEmployeeInput[] | AttendanceUncheckedCreateWithoutEmployeeInput[]
+    connectOrCreate?: AttendanceCreateOrConnectWithoutEmployeeInput | AttendanceCreateOrConnectWithoutEmployeeInput[]
+    upsert?: AttendanceUpsertWithWhereUniqueWithoutEmployeeInput | AttendanceUpsertWithWhereUniqueWithoutEmployeeInput[]
+    createMany?: AttendanceCreateManyEmployeeInputEnvelope
+    set?: AttendanceWhereUniqueInput | AttendanceWhereUniqueInput[]
+    disconnect?: AttendanceWhereUniqueInput | AttendanceWhereUniqueInput[]
+    delete?: AttendanceWhereUniqueInput | AttendanceWhereUniqueInput[]
+    connect?: AttendanceWhereUniqueInput | AttendanceWhereUniqueInput[]
+    update?: AttendanceUpdateWithWhereUniqueWithoutEmployeeInput | AttendanceUpdateWithWhereUniqueWithoutEmployeeInput[]
+    updateMany?: AttendanceUpdateManyWithWhereWithoutEmployeeInput | AttendanceUpdateManyWithWhereWithoutEmployeeInput[]
+    deleteMany?: AttendanceScalarWhereInput | AttendanceScalarWhereInput[]
+  }
+
   export type LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput = {
     create?: XOR<LeaveRequestCreateWithoutEmployeeInput, LeaveRequestUncheckedCreateWithoutEmployeeInput> | LeaveRequestCreateWithoutEmployeeInput[] | LeaveRequestUncheckedCreateWithoutEmployeeInput[]
     connectOrCreate?: LeaveRequestCreateOrConnectWithoutEmployeeInput | LeaveRequestCreateOrConnectWithoutEmployeeInput[]
@@ -14910,6 +16953,20 @@ export namespace Prisma {
     update?: LeaveRequestUpdateWithWhereUniqueWithoutEmployeeInput | LeaveRequestUpdateWithWhereUniqueWithoutEmployeeInput[]
     updateMany?: LeaveRequestUpdateManyWithWhereWithoutEmployeeInput | LeaveRequestUpdateManyWithWhereWithoutEmployeeInput[]
     deleteMany?: LeaveRequestScalarWhereInput | LeaveRequestScalarWhereInput[]
+  }
+
+  export type AttendanceUncheckedUpdateManyWithoutEmployeeNestedInput = {
+    create?: XOR<AttendanceCreateWithoutEmployeeInput, AttendanceUncheckedCreateWithoutEmployeeInput> | AttendanceCreateWithoutEmployeeInput[] | AttendanceUncheckedCreateWithoutEmployeeInput[]
+    connectOrCreate?: AttendanceCreateOrConnectWithoutEmployeeInput | AttendanceCreateOrConnectWithoutEmployeeInput[]
+    upsert?: AttendanceUpsertWithWhereUniqueWithoutEmployeeInput | AttendanceUpsertWithWhereUniqueWithoutEmployeeInput[]
+    createMany?: AttendanceCreateManyEmployeeInputEnvelope
+    set?: AttendanceWhereUniqueInput | AttendanceWhereUniqueInput[]
+    disconnect?: AttendanceWhereUniqueInput | AttendanceWhereUniqueInput[]
+    delete?: AttendanceWhereUniqueInput | AttendanceWhereUniqueInput[]
+    connect?: AttendanceWhereUniqueInput | AttendanceWhereUniqueInput[]
+    update?: AttendanceUpdateWithWhereUniqueWithoutEmployeeInput | AttendanceUpdateWithWhereUniqueWithoutEmployeeInput[]
+    updateMany?: AttendanceUpdateManyWithWhereWithoutEmployeeInput | AttendanceUpdateManyWithWhereWithoutEmployeeInput[]
+    deleteMany?: AttendanceScalarWhereInput | AttendanceScalarWhereInput[]
   }
 
   export type CompanyCreateNestedOneWithoutScheduleGroupInput = {
@@ -15022,6 +17079,20 @@ export namespace Prisma {
     connect?: ScheduleGroupWhereUniqueInput
   }
 
+  export type AttendanceCreateNestedManyWithoutWorkScheduleInput = {
+    create?: XOR<AttendanceCreateWithoutWorkScheduleInput, AttendanceUncheckedCreateWithoutWorkScheduleInput> | AttendanceCreateWithoutWorkScheduleInput[] | AttendanceUncheckedCreateWithoutWorkScheduleInput[]
+    connectOrCreate?: AttendanceCreateOrConnectWithoutWorkScheduleInput | AttendanceCreateOrConnectWithoutWorkScheduleInput[]
+    createMany?: AttendanceCreateManyWorkScheduleInputEnvelope
+    connect?: AttendanceWhereUniqueInput | AttendanceWhereUniqueInput[]
+  }
+
+  export type AttendanceUncheckedCreateNestedManyWithoutWorkScheduleInput = {
+    create?: XOR<AttendanceCreateWithoutWorkScheduleInput, AttendanceUncheckedCreateWithoutWorkScheduleInput> | AttendanceCreateWithoutWorkScheduleInput[] | AttendanceUncheckedCreateWithoutWorkScheduleInput[]
+    connectOrCreate?: AttendanceCreateOrConnectWithoutWorkScheduleInput | AttendanceCreateOrConnectWithoutWorkScheduleInput[]
+    createMany?: AttendanceCreateManyWorkScheduleInputEnvelope
+    connect?: AttendanceWhereUniqueInput | AttendanceWhereUniqueInput[]
+  }
+
   export type EnumDayOfWeekFieldUpdateOperationsInput = {
     set?: $Enums.DayOfWeek
   }
@@ -15040,6 +17111,34 @@ export namespace Prisma {
     upsert?: ScheduleGroupUpsertWithoutWorkSchedulesInput
     connect?: ScheduleGroupWhereUniqueInput
     update?: XOR<XOR<ScheduleGroupUpdateToOneWithWhereWithoutWorkSchedulesInput, ScheduleGroupUpdateWithoutWorkSchedulesInput>, ScheduleGroupUncheckedUpdateWithoutWorkSchedulesInput>
+  }
+
+  export type AttendanceUpdateManyWithoutWorkScheduleNestedInput = {
+    create?: XOR<AttendanceCreateWithoutWorkScheduleInput, AttendanceUncheckedCreateWithoutWorkScheduleInput> | AttendanceCreateWithoutWorkScheduleInput[] | AttendanceUncheckedCreateWithoutWorkScheduleInput[]
+    connectOrCreate?: AttendanceCreateOrConnectWithoutWorkScheduleInput | AttendanceCreateOrConnectWithoutWorkScheduleInput[]
+    upsert?: AttendanceUpsertWithWhereUniqueWithoutWorkScheduleInput | AttendanceUpsertWithWhereUniqueWithoutWorkScheduleInput[]
+    createMany?: AttendanceCreateManyWorkScheduleInputEnvelope
+    set?: AttendanceWhereUniqueInput | AttendanceWhereUniqueInput[]
+    disconnect?: AttendanceWhereUniqueInput | AttendanceWhereUniqueInput[]
+    delete?: AttendanceWhereUniqueInput | AttendanceWhereUniqueInput[]
+    connect?: AttendanceWhereUniqueInput | AttendanceWhereUniqueInput[]
+    update?: AttendanceUpdateWithWhereUniqueWithoutWorkScheduleInput | AttendanceUpdateWithWhereUniqueWithoutWorkScheduleInput[]
+    updateMany?: AttendanceUpdateManyWithWhereWithoutWorkScheduleInput | AttendanceUpdateManyWithWhereWithoutWorkScheduleInput[]
+    deleteMany?: AttendanceScalarWhereInput | AttendanceScalarWhereInput[]
+  }
+
+  export type AttendanceUncheckedUpdateManyWithoutWorkScheduleNestedInput = {
+    create?: XOR<AttendanceCreateWithoutWorkScheduleInput, AttendanceUncheckedCreateWithoutWorkScheduleInput> | AttendanceCreateWithoutWorkScheduleInput[] | AttendanceUncheckedCreateWithoutWorkScheduleInput[]
+    connectOrCreate?: AttendanceCreateOrConnectWithoutWorkScheduleInput | AttendanceCreateOrConnectWithoutWorkScheduleInput[]
+    upsert?: AttendanceUpsertWithWhereUniqueWithoutWorkScheduleInput | AttendanceUpsertWithWhereUniqueWithoutWorkScheduleInput[]
+    createMany?: AttendanceCreateManyWorkScheduleInputEnvelope
+    set?: AttendanceWhereUniqueInput | AttendanceWhereUniqueInput[]
+    disconnect?: AttendanceWhereUniqueInput | AttendanceWhereUniqueInput[]
+    delete?: AttendanceWhereUniqueInput | AttendanceWhereUniqueInput[]
+    connect?: AttendanceWhereUniqueInput | AttendanceWhereUniqueInput[]
+    update?: AttendanceUpdateWithWhereUniqueWithoutWorkScheduleInput | AttendanceUpdateWithWhereUniqueWithoutWorkScheduleInput[]
+    updateMany?: AttendanceUpdateManyWithWhereWithoutWorkScheduleInput | AttendanceUpdateManyWithWhereWithoutWorkScheduleInput[]
+    deleteMany?: AttendanceScalarWhereInput | AttendanceScalarWhereInput[]
   }
 
   export type EmployeeCreateNestedOneWithoutLeaveRequestsInput = {
@@ -15148,6 +17247,52 @@ export namespace Prisma {
     update?: LeaveRequestUpdateWithWhereUniqueWithoutLeaveTypeInput | LeaveRequestUpdateWithWhereUniqueWithoutLeaveTypeInput[]
     updateMany?: LeaveRequestUpdateManyWithWhereWithoutLeaveTypeInput | LeaveRequestUpdateManyWithWhereWithoutLeaveTypeInput[]
     deleteMany?: LeaveRequestScalarWhereInput | LeaveRequestScalarWhereInput[]
+  }
+
+  export type EmployeeCreateNestedOneWithoutAttendanceInput = {
+    create?: XOR<EmployeeCreateWithoutAttendanceInput, EmployeeUncheckedCreateWithoutAttendanceInput>
+    connectOrCreate?: EmployeeCreateOrConnectWithoutAttendanceInput
+    connect?: EmployeeWhereUniqueInput
+  }
+
+  export type WorkScheduleCreateNestedOneWithoutAttendanceInput = {
+    create?: XOR<WorkScheduleCreateWithoutAttendanceInput, WorkScheduleUncheckedCreateWithoutAttendanceInput>
+    connectOrCreate?: WorkScheduleCreateOrConnectWithoutAttendanceInput
+    connect?: WorkScheduleWhereUniqueInput
+  }
+
+  export type EnumWorkTypeFieldUpdateOperationsInput = {
+    set?: $Enums.WorkType
+  }
+
+  export type NullableEnumLocationStatusFieldUpdateOperationsInput = {
+    set?: $Enums.LocationStatus | null
+  }
+
+  export type NullableEnumAttendanceStatusFieldUpdateOperationsInput = {
+    set?: $Enums.AttendanceStatus | null
+  }
+
+  export type EnumApprovalStatusFieldUpdateOperationsInput = {
+    set?: $Enums.ApprovalStatus
+  }
+
+  export type EmployeeUpdateOneRequiredWithoutAttendanceNestedInput = {
+    create?: XOR<EmployeeCreateWithoutAttendanceInput, EmployeeUncheckedCreateWithoutAttendanceInput>
+    connectOrCreate?: EmployeeCreateOrConnectWithoutAttendanceInput
+    upsert?: EmployeeUpsertWithoutAttendanceInput
+    connect?: EmployeeWhereUniqueInput
+    update?: XOR<XOR<EmployeeUpdateToOneWithWhereWithoutAttendanceInput, EmployeeUpdateWithoutAttendanceInput>, EmployeeUncheckedUpdateWithoutAttendanceInput>
+  }
+
+  export type WorkScheduleUpdateOneWithoutAttendanceNestedInput = {
+    create?: XOR<WorkScheduleCreateWithoutAttendanceInput, WorkScheduleUncheckedCreateWithoutAttendanceInput>
+    connectOrCreate?: WorkScheduleCreateOrConnectWithoutAttendanceInput
+    upsert?: WorkScheduleUpsertWithoutAttendanceInput
+    disconnect?: WorkScheduleWhereInput | boolean
+    delete?: WorkScheduleWhereInput | boolean
+    connect?: WorkScheduleWhereUniqueInput
+    update?: XOR<XOR<WorkScheduleUpdateToOneWithWhereWithoutAttendanceInput, WorkScheduleUpdateWithoutAttendanceInput>, WorkScheduleUncheckedUpdateWithoutAttendanceInput>
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -15446,6 +17591,74 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
+  export type NestedEnumWorkTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.WorkType | EnumWorkTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.WorkType[] | ListEnumWorkTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WorkType[] | ListEnumWorkTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumWorkTypeFilter<$PrismaModel> | $Enums.WorkType
+  }
+
+  export type NestedEnumLocationStatusNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.LocationStatus | EnumLocationStatusFieldRefInput<$PrismaModel> | null
+    in?: $Enums.LocationStatus[] | ListEnumLocationStatusFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.LocationStatus[] | ListEnumLocationStatusFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumLocationStatusNullableFilter<$PrismaModel> | $Enums.LocationStatus | null
+  }
+
+  export type NestedEnumAttendanceStatusNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.AttendanceStatus | EnumAttendanceStatusFieldRefInput<$PrismaModel> | null
+    in?: $Enums.AttendanceStatus[] | ListEnumAttendanceStatusFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.AttendanceStatus[] | ListEnumAttendanceStatusFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumAttendanceStatusNullableFilter<$PrismaModel> | $Enums.AttendanceStatus | null
+  }
+
+  export type NestedEnumApprovalStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ApprovalStatus | EnumApprovalStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ApprovalStatus[] | ListEnumApprovalStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ApprovalStatus[] | ListEnumApprovalStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumApprovalStatusFilter<$PrismaModel> | $Enums.ApprovalStatus
+  }
+
+  export type NestedEnumWorkTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.WorkType | EnumWorkTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.WorkType[] | ListEnumWorkTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WorkType[] | ListEnumWorkTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumWorkTypeWithAggregatesFilter<$PrismaModel> | $Enums.WorkType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumWorkTypeFilter<$PrismaModel>
+    _max?: NestedEnumWorkTypeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumLocationStatusNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.LocationStatus | EnumLocationStatusFieldRefInput<$PrismaModel> | null
+    in?: $Enums.LocationStatus[] | ListEnumLocationStatusFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.LocationStatus[] | ListEnumLocationStatusFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumLocationStatusNullableWithAggregatesFilter<$PrismaModel> | $Enums.LocationStatus | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumLocationStatusNullableFilter<$PrismaModel>
+    _max?: NestedEnumLocationStatusNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumAttendanceStatusNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AttendanceStatus | EnumAttendanceStatusFieldRefInput<$PrismaModel> | null
+    in?: $Enums.AttendanceStatus[] | ListEnumAttendanceStatusFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.AttendanceStatus[] | ListEnumAttendanceStatusFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumAttendanceStatusNullableWithAggregatesFilter<$PrismaModel> | $Enums.AttendanceStatus | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumAttendanceStatusNullableFilter<$PrismaModel>
+    _max?: NestedEnumAttendanceStatusNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumApprovalStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ApprovalStatus | EnumApprovalStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ApprovalStatus[] | ListEnumApprovalStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ApprovalStatus[] | ListEnumApprovalStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumApprovalStatusWithAggregatesFilter<$PrismaModel> | $Enums.ApprovalStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumApprovalStatusFilter<$PrismaModel>
+    _max?: NestedEnumApprovalStatusFilter<$PrismaModel>
+  }
+
   export type CompanyCreateWithoutMembersInput = {
     companyName: string
     latitude?: Decimal | DecimalJsLike | number | string | null
@@ -15570,6 +17783,7 @@ export namespace Prisma {
     company: CompanyCreateNestedOneWithoutEmployeeInput
     scheduleGroup?: ScheduleGroupCreateNestedOneWithoutEmployeesInput
     leaveRequests?: LeaveRequestCreateNestedManyWithoutEmployeeInput
+    Attendance?: AttendanceCreateNestedManyWithoutEmployeeInput
   }
 
   export type EmployeeUncheckedCreateWithoutUserInput = {
@@ -15593,6 +17807,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     leaveRequests?: LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+    Attendance?: AttendanceUncheckedCreateNestedManyWithoutEmployeeInput
   }
 
   export type EmployeeCreateOrConnectWithoutUserInput = {
@@ -15927,6 +18142,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutEmployeeInput
     scheduleGroup?: ScheduleGroupCreateNestedOneWithoutEmployeesInput
     leaveRequests?: LeaveRequestCreateNestedManyWithoutEmployeeInput
+    Attendance?: AttendanceCreateNestedManyWithoutEmployeeInput
   }
 
   export type EmployeeUncheckedCreateWithoutCompanyInput = {
@@ -15950,6 +18166,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     leaveRequests?: LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+    Attendance?: AttendanceUncheckedCreateNestedManyWithoutEmployeeInput
   }
 
   export type EmployeeCreateOrConnectWithoutCompanyInput = {
@@ -16001,6 +18218,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     scheduleGroup: ScheduleGroupCreateNestedOneWithoutWorkSchedulesInput
+    Attendance?: AttendanceCreateNestedManyWithoutWorkScheduleInput
   }
 
   export type WorkScheduleUncheckedCreateWithoutCompanyInput = {
@@ -16014,6 +18232,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    Attendance?: AttendanceUncheckedCreateNestedManyWithoutWorkScheduleInput
   }
 
   export type WorkScheduleCreateOrConnectWithoutCompanyInput = {
@@ -16460,6 +18679,51 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type AttendanceCreateWithoutEmployeeInput = {
+    date: Date | string
+    checkInTime?: Date | string | null
+    checkOutTime?: Date | string | null
+    workType: $Enums.WorkType
+    latitude?: Decimal | DecimalJsLike | number | string | null
+    longitude?: Decimal | DecimalJsLike | number | string | null
+    proof?: string | null
+    locationStatus?: $Enums.LocationStatus | null
+    attendanceStatus?: $Enums.AttendanceStatus | null
+    approvalStatus?: $Enums.ApprovalStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    workSchedule?: WorkScheduleCreateNestedOneWithoutAttendanceInput
+  }
+
+  export type AttendanceUncheckedCreateWithoutEmployeeInput = {
+    id?: number
+    workScheduleId?: number | null
+    date: Date | string
+    checkInTime?: Date | string | null
+    checkOutTime?: Date | string | null
+    workType: $Enums.WorkType
+    latitude?: Decimal | DecimalJsLike | number | string | null
+    longitude?: Decimal | DecimalJsLike | number | string | null
+    proof?: string | null
+    locationStatus?: $Enums.LocationStatus | null
+    attendanceStatus?: $Enums.AttendanceStatus | null
+    approvalStatus?: $Enums.ApprovalStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+  }
+
+  export type AttendanceCreateOrConnectWithoutEmployeeInput = {
+    where: AttendanceWhereUniqueInput
+    create: XOR<AttendanceCreateWithoutEmployeeInput, AttendanceUncheckedCreateWithoutEmployeeInput>
+  }
+
+  export type AttendanceCreateManyEmployeeInputEnvelope = {
+    data: AttendanceCreateManyEmployeeInput | AttendanceCreateManyEmployeeInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithoutEmployeeInput = {
     update: XOR<UserUpdateWithoutEmployeeInput, UserUncheckedUpdateWithoutEmployeeInput>
     create: XOR<UserCreateWithoutEmployeeInput, UserUncheckedCreateWithoutEmployeeInput>
@@ -16592,6 +18856,44 @@ export namespace Prisma {
     data: XOR<LeaveRequestUpdateManyMutationInput, LeaveRequestUncheckedUpdateManyWithoutEmployeeInput>
   }
 
+  export type AttendanceUpsertWithWhereUniqueWithoutEmployeeInput = {
+    where: AttendanceWhereUniqueInput
+    update: XOR<AttendanceUpdateWithoutEmployeeInput, AttendanceUncheckedUpdateWithoutEmployeeInput>
+    create: XOR<AttendanceCreateWithoutEmployeeInput, AttendanceUncheckedCreateWithoutEmployeeInput>
+  }
+
+  export type AttendanceUpdateWithWhereUniqueWithoutEmployeeInput = {
+    where: AttendanceWhereUniqueInput
+    data: XOR<AttendanceUpdateWithoutEmployeeInput, AttendanceUncheckedUpdateWithoutEmployeeInput>
+  }
+
+  export type AttendanceUpdateManyWithWhereWithoutEmployeeInput = {
+    where: AttendanceScalarWhereInput
+    data: XOR<AttendanceUpdateManyMutationInput, AttendanceUncheckedUpdateManyWithoutEmployeeInput>
+  }
+
+  export type AttendanceScalarWhereInput = {
+    AND?: AttendanceScalarWhereInput | AttendanceScalarWhereInput[]
+    OR?: AttendanceScalarWhereInput[]
+    NOT?: AttendanceScalarWhereInput | AttendanceScalarWhereInput[]
+    id?: IntFilter<"Attendance"> | number
+    employeeId?: IntFilter<"Attendance"> | number
+    workScheduleId?: IntNullableFilter<"Attendance"> | number | null
+    date?: DateTimeFilter<"Attendance"> | Date | string
+    checkInTime?: DateTimeNullableFilter<"Attendance"> | Date | string | null
+    checkOutTime?: DateTimeNullableFilter<"Attendance"> | Date | string | null
+    workType?: EnumWorkTypeFilter<"Attendance"> | $Enums.WorkType
+    latitude?: DecimalNullableFilter<"Attendance"> | Decimal | DecimalJsLike | number | string | null
+    longitude?: DecimalNullableFilter<"Attendance"> | Decimal | DecimalJsLike | number | string | null
+    proof?: StringNullableFilter<"Attendance"> | string | null
+    locationStatus?: EnumLocationStatusNullableFilter<"Attendance"> | $Enums.LocationStatus | null
+    attendanceStatus?: EnumAttendanceStatusNullableFilter<"Attendance"> | $Enums.AttendanceStatus | null
+    approvalStatus?: EnumApprovalStatusFilter<"Attendance"> | $Enums.ApprovalStatus
+    createdAt?: DateTimeFilter<"Attendance"> | Date | string
+    updatedAt?: DateTimeFilter<"Attendance"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"Attendance"> | Date | string | null
+  }
+
   export type CompanyCreateWithoutScheduleGroupInput = {
     companyName: string
     latitude?: Decimal | DecimalJsLike | number | string | null
@@ -16640,6 +18942,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     company: CompanyCreateNestedOneWithoutWorkScheduleInput
+    Attendance?: AttendanceCreateNestedManyWithoutWorkScheduleInput
   }
 
   export type WorkScheduleUncheckedCreateWithoutScheduleGroupInput = {
@@ -16653,6 +18956,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    Attendance?: AttendanceUncheckedCreateNestedManyWithoutWorkScheduleInput
   }
 
   export type WorkScheduleCreateOrConnectWithoutScheduleGroupInput = {
@@ -16685,6 +18989,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutEmployeeInput
     company: CompanyCreateNestedOneWithoutEmployeeInput
     leaveRequests?: LeaveRequestCreateNestedManyWithoutEmployeeInput
+    Attendance?: AttendanceCreateNestedManyWithoutEmployeeInput
   }
 
   export type EmployeeUncheckedCreateWithoutScheduleGroupInput = {
@@ -16708,6 +19013,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     leaveRequests?: LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+    Attendance?: AttendanceUncheckedCreateNestedManyWithoutEmployeeInput
   }
 
   export type EmployeeCreateOrConnectWithoutScheduleGroupInput = {
@@ -16858,6 +19164,51 @@ export namespace Prisma {
     create: XOR<ScheduleGroupCreateWithoutWorkSchedulesInput, ScheduleGroupUncheckedCreateWithoutWorkSchedulesInput>
   }
 
+  export type AttendanceCreateWithoutWorkScheduleInput = {
+    date: Date | string
+    checkInTime?: Date | string | null
+    checkOutTime?: Date | string | null
+    workType: $Enums.WorkType
+    latitude?: Decimal | DecimalJsLike | number | string | null
+    longitude?: Decimal | DecimalJsLike | number | string | null
+    proof?: string | null
+    locationStatus?: $Enums.LocationStatus | null
+    attendanceStatus?: $Enums.AttendanceStatus | null
+    approvalStatus?: $Enums.ApprovalStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    employee: EmployeeCreateNestedOneWithoutAttendanceInput
+  }
+
+  export type AttendanceUncheckedCreateWithoutWorkScheduleInput = {
+    id?: number
+    employeeId: number
+    date: Date | string
+    checkInTime?: Date | string | null
+    checkOutTime?: Date | string | null
+    workType: $Enums.WorkType
+    latitude?: Decimal | DecimalJsLike | number | string | null
+    longitude?: Decimal | DecimalJsLike | number | string | null
+    proof?: string | null
+    locationStatus?: $Enums.LocationStatus | null
+    attendanceStatus?: $Enums.AttendanceStatus | null
+    approvalStatus?: $Enums.ApprovalStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+  }
+
+  export type AttendanceCreateOrConnectWithoutWorkScheduleInput = {
+    where: AttendanceWhereUniqueInput
+    create: XOR<AttendanceCreateWithoutWorkScheduleInput, AttendanceUncheckedCreateWithoutWorkScheduleInput>
+  }
+
+  export type AttendanceCreateManyWorkScheduleInputEnvelope = {
+    data: AttendanceCreateManyWorkScheduleInput | AttendanceCreateManyWorkScheduleInput[]
+    skipDuplicates?: boolean
+  }
+
   export type CompanyUpsertWithoutWorkScheduleInput = {
     update: XOR<CompanyUpdateWithoutWorkScheduleInput, CompanyUncheckedUpdateWithoutWorkScheduleInput>
     create: XOR<CompanyCreateWithoutWorkScheduleInput, CompanyUncheckedCreateWithoutWorkScheduleInput>
@@ -16932,6 +19283,22 @@ export namespace Prisma {
     employees?: EmployeeUncheckedUpdateManyWithoutScheduleGroupNestedInput
   }
 
+  export type AttendanceUpsertWithWhereUniqueWithoutWorkScheduleInput = {
+    where: AttendanceWhereUniqueInput
+    update: XOR<AttendanceUpdateWithoutWorkScheduleInput, AttendanceUncheckedUpdateWithoutWorkScheduleInput>
+    create: XOR<AttendanceCreateWithoutWorkScheduleInput, AttendanceUncheckedCreateWithoutWorkScheduleInput>
+  }
+
+  export type AttendanceUpdateWithWhereUniqueWithoutWorkScheduleInput = {
+    where: AttendanceWhereUniqueInput
+    data: XOR<AttendanceUpdateWithoutWorkScheduleInput, AttendanceUncheckedUpdateWithoutWorkScheduleInput>
+  }
+
+  export type AttendanceUpdateManyWithWhereWithoutWorkScheduleInput = {
+    where: AttendanceScalarWhereInput
+    data: XOR<AttendanceUpdateManyMutationInput, AttendanceUncheckedUpdateManyWithoutWorkScheduleInput>
+  }
+
   export type EmployeeCreateWithoutLeaveRequestsInput = {
     employeeCode: string
     fullName: string
@@ -16952,6 +19319,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutEmployeeInput
     company: CompanyCreateNestedOneWithoutEmployeeInput
     scheduleGroup?: ScheduleGroupCreateNestedOneWithoutEmployeesInput
+    Attendance?: AttendanceCreateNestedManyWithoutEmployeeInput
   }
 
   export type EmployeeUncheckedCreateWithoutLeaveRequestsInput = {
@@ -16975,6 +19343,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    Attendance?: AttendanceUncheckedCreateNestedManyWithoutEmployeeInput
   }
 
   export type EmployeeCreateOrConnectWithoutLeaveRequestsInput = {
@@ -17077,6 +19446,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutEmployeeNestedInput
     company?: CompanyUpdateOneRequiredWithoutEmployeeNestedInput
     scheduleGroup?: ScheduleGroupUpdateOneWithoutEmployeesNestedInput
+    Attendance?: AttendanceUpdateManyWithoutEmployeeNestedInput
   }
 
   export type EmployeeUncheckedUpdateWithoutLeaveRequestsInput = {
@@ -17100,6 +19470,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Attendance?: AttendanceUncheckedUpdateManyWithoutEmployeeNestedInput
   }
 
   export type LeaveTypeUpsertWithoutLeaveRequestsInput = {
@@ -17319,6 +19690,186 @@ export namespace Prisma {
     data: XOR<LeaveRequestUpdateManyMutationInput, LeaveRequestUncheckedUpdateManyWithoutLeaveTypeInput>
   }
 
+  export type EmployeeCreateWithoutAttendanceInput = {
+    employeeCode: string
+    fullName: string
+    dateOfBirth?: Date | string | null
+    nik: string
+    gender: string
+    mobileNumber?: string | null
+    address?: string | null
+    position: string
+    department: string
+    photo?: string | null
+    hireDate: Date | string
+    status?: $Enums.EmployeeStatus
+    promotionHistory?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    user: UserCreateNestedOneWithoutEmployeeInput
+    company: CompanyCreateNestedOneWithoutEmployeeInput
+    scheduleGroup?: ScheduleGroupCreateNestedOneWithoutEmployeesInput
+    leaveRequests?: LeaveRequestCreateNestedManyWithoutEmployeeInput
+  }
+
+  export type EmployeeUncheckedCreateWithoutAttendanceInput = {
+    id?: number
+    userId: number
+    companyId: number
+    employeeCode: string
+    fullName: string
+    dateOfBirth?: Date | string | null
+    nik: string
+    gender: string
+    mobileNumber?: string | null
+    address?: string | null
+    position: string
+    department: string
+    photo?: string | null
+    hireDate: Date | string
+    status?: $Enums.EmployeeStatus
+    promotionHistory?: string | null
+    scheduleGroupId?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    leaveRequests?: LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  }
+
+  export type EmployeeCreateOrConnectWithoutAttendanceInput = {
+    where: EmployeeWhereUniqueInput
+    create: XOR<EmployeeCreateWithoutAttendanceInput, EmployeeUncheckedCreateWithoutAttendanceInput>
+  }
+
+  export type WorkScheduleCreateWithoutAttendanceInput = {
+    dayOfWeek: $Enums.DayOfWeek
+    startTime: string
+    breakStart?: string | null
+    breakEnd?: string | null
+    endTime: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    company: CompanyCreateNestedOneWithoutWorkScheduleInput
+    scheduleGroup: ScheduleGroupCreateNestedOneWithoutWorkSchedulesInput
+  }
+
+  export type WorkScheduleUncheckedCreateWithoutAttendanceInput = {
+    id?: number
+    companyId: number
+    scheduleGroupId: number
+    dayOfWeek: $Enums.DayOfWeek
+    startTime: string
+    breakStart?: string | null
+    breakEnd?: string | null
+    endTime: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+  }
+
+  export type WorkScheduleCreateOrConnectWithoutAttendanceInput = {
+    where: WorkScheduleWhereUniqueInput
+    create: XOR<WorkScheduleCreateWithoutAttendanceInput, WorkScheduleUncheckedCreateWithoutAttendanceInput>
+  }
+
+  export type EmployeeUpsertWithoutAttendanceInput = {
+    update: XOR<EmployeeUpdateWithoutAttendanceInput, EmployeeUncheckedUpdateWithoutAttendanceInput>
+    create: XOR<EmployeeCreateWithoutAttendanceInput, EmployeeUncheckedCreateWithoutAttendanceInput>
+    where?: EmployeeWhereInput
+  }
+
+  export type EmployeeUpdateToOneWithWhereWithoutAttendanceInput = {
+    where?: EmployeeWhereInput
+    data: XOR<EmployeeUpdateWithoutAttendanceInput, EmployeeUncheckedUpdateWithoutAttendanceInput>
+  }
+
+  export type EmployeeUpdateWithoutAttendanceInput = {
+    employeeCode?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nik?: StringFieldUpdateOperationsInput | string
+    gender?: StringFieldUpdateOperationsInput | string
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: StringFieldUpdateOperationsInput | string
+    department?: StringFieldUpdateOperationsInput | string
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
+    hireDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+    promotionHistory?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    user?: UserUpdateOneRequiredWithoutEmployeeNestedInput
+    company?: CompanyUpdateOneRequiredWithoutEmployeeNestedInput
+    scheduleGroup?: ScheduleGroupUpdateOneWithoutEmployeesNestedInput
+    leaveRequests?: LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  }
+
+  export type EmployeeUncheckedUpdateWithoutAttendanceInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    userId?: IntFieldUpdateOperationsInput | number
+    companyId?: IntFieldUpdateOperationsInput | number
+    employeeCode?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nik?: StringFieldUpdateOperationsInput | string
+    gender?: StringFieldUpdateOperationsInput | string
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: StringFieldUpdateOperationsInput | string
+    department?: StringFieldUpdateOperationsInput | string
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
+    hireDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+    promotionHistory?: NullableStringFieldUpdateOperationsInput | string | null
+    scheduleGroupId?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    leaveRequests?: LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  }
+
+  export type WorkScheduleUpsertWithoutAttendanceInput = {
+    update: XOR<WorkScheduleUpdateWithoutAttendanceInput, WorkScheduleUncheckedUpdateWithoutAttendanceInput>
+    create: XOR<WorkScheduleCreateWithoutAttendanceInput, WorkScheduleUncheckedCreateWithoutAttendanceInput>
+    where?: WorkScheduleWhereInput
+  }
+
+  export type WorkScheduleUpdateToOneWithWhereWithoutAttendanceInput = {
+    where?: WorkScheduleWhereInput
+    data: XOR<WorkScheduleUpdateWithoutAttendanceInput, WorkScheduleUncheckedUpdateWithoutAttendanceInput>
+  }
+
+  export type WorkScheduleUpdateWithoutAttendanceInput = {
+    dayOfWeek?: EnumDayOfWeekFieldUpdateOperationsInput | $Enums.DayOfWeek
+    startTime?: StringFieldUpdateOperationsInput | string
+    breakStart?: NullableStringFieldUpdateOperationsInput | string | null
+    breakEnd?: NullableStringFieldUpdateOperationsInput | string | null
+    endTime?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    company?: CompanyUpdateOneRequiredWithoutWorkScheduleNestedInput
+    scheduleGroup?: ScheduleGroupUpdateOneRequiredWithoutWorkSchedulesNestedInput
+  }
+
+  export type WorkScheduleUncheckedUpdateWithoutAttendanceInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    companyId?: IntFieldUpdateOperationsInput | number
+    scheduleGroupId?: IntFieldUpdateOperationsInput | number
+    dayOfWeek?: EnumDayOfWeekFieldUpdateOperationsInput | $Enums.DayOfWeek
+    startTime?: StringFieldUpdateOperationsInput | string
+    breakStart?: NullableStringFieldUpdateOperationsInput | string | null
+    breakEnd?: NullableStringFieldUpdateOperationsInput | string | null
+    endTime?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
   export type CompanyCreateManyOwnerInput = {
     id?: number
     companyName: string
@@ -17462,6 +20013,7 @@ export namespace Prisma {
     company?: CompanyUpdateOneRequiredWithoutEmployeeNestedInput
     scheduleGroup?: ScheduleGroupUpdateOneWithoutEmployeesNestedInput
     leaveRequests?: LeaveRequestUpdateManyWithoutEmployeeNestedInput
+    Attendance?: AttendanceUpdateManyWithoutEmployeeNestedInput
   }
 
   export type EmployeeUncheckedUpdateWithoutUserInput = {
@@ -17485,6 +20037,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     leaveRequests?: LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+    Attendance?: AttendanceUncheckedUpdateManyWithoutEmployeeNestedInput
   }
 
   export type EmployeeUncheckedUpdateManyWithoutUserInput = {
@@ -17688,6 +20241,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutEmployeeNestedInput
     scheduleGroup?: ScheduleGroupUpdateOneWithoutEmployeesNestedInput
     leaveRequests?: LeaveRequestUpdateManyWithoutEmployeeNestedInput
+    Attendance?: AttendanceUpdateManyWithoutEmployeeNestedInput
   }
 
   export type EmployeeUncheckedUpdateWithoutCompanyInput = {
@@ -17711,6 +20265,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     leaveRequests?: LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+    Attendance?: AttendanceUncheckedUpdateManyWithoutEmployeeNestedInput
   }
 
   export type EmployeeUncheckedUpdateManyWithoutCompanyInput = {
@@ -17772,6 +20327,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scheduleGroup?: ScheduleGroupUpdateOneRequiredWithoutWorkSchedulesNestedInput
+    Attendance?: AttendanceUpdateManyWithoutWorkScheduleNestedInput
   }
 
   export type WorkScheduleUncheckedUpdateWithoutCompanyInput = {
@@ -17785,6 +20341,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Attendance?: AttendanceUncheckedUpdateManyWithoutWorkScheduleNestedInput
   }
 
   export type WorkScheduleUncheckedUpdateManyWithoutCompanyInput = {
@@ -17851,6 +20408,24 @@ export namespace Prisma {
     deletedAt?: Date | string | null
   }
 
+  export type AttendanceCreateManyEmployeeInput = {
+    id?: number
+    workScheduleId?: number | null
+    date: Date | string
+    checkInTime?: Date | string | null
+    checkOutTime?: Date | string | null
+    workType: $Enums.WorkType
+    latitude?: Decimal | DecimalJsLike | number | string | null
+    longitude?: Decimal | DecimalJsLike | number | string | null
+    proof?: string | null
+    locationStatus?: $Enums.LocationStatus | null
+    attendanceStatus?: $Enums.AttendanceStatus | null
+    approvalStatus?: $Enums.ApprovalStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+  }
+
   export type LeaveRequestUpdateWithoutEmployeeInput = {
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17901,6 +20476,59 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
+  export type AttendanceUpdateWithoutEmployeeInput = {
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkInTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    checkOutTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    workType?: EnumWorkTypeFieldUpdateOperationsInput | $Enums.WorkType
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    proof?: NullableStringFieldUpdateOperationsInput | string | null
+    locationStatus?: NullableEnumLocationStatusFieldUpdateOperationsInput | $Enums.LocationStatus | null
+    attendanceStatus?: NullableEnumAttendanceStatusFieldUpdateOperationsInput | $Enums.AttendanceStatus | null
+    approvalStatus?: EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    workSchedule?: WorkScheduleUpdateOneWithoutAttendanceNestedInput
+  }
+
+  export type AttendanceUncheckedUpdateWithoutEmployeeInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    workScheduleId?: NullableIntFieldUpdateOperationsInput | number | null
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkInTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    checkOutTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    workType?: EnumWorkTypeFieldUpdateOperationsInput | $Enums.WorkType
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    proof?: NullableStringFieldUpdateOperationsInput | string | null
+    locationStatus?: NullableEnumLocationStatusFieldUpdateOperationsInput | $Enums.LocationStatus | null
+    attendanceStatus?: NullableEnumAttendanceStatusFieldUpdateOperationsInput | $Enums.AttendanceStatus | null
+    approvalStatus?: EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type AttendanceUncheckedUpdateManyWithoutEmployeeInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    workScheduleId?: NullableIntFieldUpdateOperationsInput | number | null
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkInTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    checkOutTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    workType?: EnumWorkTypeFieldUpdateOperationsInput | $Enums.WorkType
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    proof?: NullableStringFieldUpdateOperationsInput | string | null
+    locationStatus?: NullableEnumLocationStatusFieldUpdateOperationsInput | $Enums.LocationStatus | null
+    attendanceStatus?: NullableEnumAttendanceStatusFieldUpdateOperationsInput | $Enums.AttendanceStatus | null
+    approvalStatus?: EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
   export type WorkScheduleCreateManyScheduleGroupInput = {
     id?: number
     companyId: number
@@ -17946,6 +20574,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     company?: CompanyUpdateOneRequiredWithoutWorkScheduleNestedInput
+    Attendance?: AttendanceUpdateManyWithoutWorkScheduleNestedInput
   }
 
   export type WorkScheduleUncheckedUpdateWithoutScheduleGroupInput = {
@@ -17959,6 +20588,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Attendance?: AttendanceUncheckedUpdateManyWithoutWorkScheduleNestedInput
   }
 
   export type WorkScheduleUncheckedUpdateManyWithoutScheduleGroupInput = {
@@ -17994,6 +20624,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutEmployeeNestedInput
     company?: CompanyUpdateOneRequiredWithoutEmployeeNestedInput
     leaveRequests?: LeaveRequestUpdateManyWithoutEmployeeNestedInput
+    Attendance?: AttendanceUpdateManyWithoutEmployeeNestedInput
   }
 
   export type EmployeeUncheckedUpdateWithoutScheduleGroupInput = {
@@ -18017,6 +20648,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     leaveRequests?: LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+    Attendance?: AttendanceUncheckedUpdateManyWithoutEmployeeNestedInput
   }
 
   export type EmployeeUncheckedUpdateManyWithoutScheduleGroupInput = {
@@ -18036,6 +20668,77 @@ export namespace Prisma {
     hireDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
     promotionHistory?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type AttendanceCreateManyWorkScheduleInput = {
+    id?: number
+    employeeId: number
+    date: Date | string
+    checkInTime?: Date | string | null
+    checkOutTime?: Date | string | null
+    workType: $Enums.WorkType
+    latitude?: Decimal | DecimalJsLike | number | string | null
+    longitude?: Decimal | DecimalJsLike | number | string | null
+    proof?: string | null
+    locationStatus?: $Enums.LocationStatus | null
+    attendanceStatus?: $Enums.AttendanceStatus | null
+    approvalStatus?: $Enums.ApprovalStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+  }
+
+  export type AttendanceUpdateWithoutWorkScheduleInput = {
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkInTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    checkOutTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    workType?: EnumWorkTypeFieldUpdateOperationsInput | $Enums.WorkType
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    proof?: NullableStringFieldUpdateOperationsInput | string | null
+    locationStatus?: NullableEnumLocationStatusFieldUpdateOperationsInput | $Enums.LocationStatus | null
+    attendanceStatus?: NullableEnumAttendanceStatusFieldUpdateOperationsInput | $Enums.AttendanceStatus | null
+    approvalStatus?: EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    employee?: EmployeeUpdateOneRequiredWithoutAttendanceNestedInput
+  }
+
+  export type AttendanceUncheckedUpdateWithoutWorkScheduleInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    employeeId?: IntFieldUpdateOperationsInput | number
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkInTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    checkOutTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    workType?: EnumWorkTypeFieldUpdateOperationsInput | $Enums.WorkType
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    proof?: NullableStringFieldUpdateOperationsInput | string | null
+    locationStatus?: NullableEnumLocationStatusFieldUpdateOperationsInput | $Enums.LocationStatus | null
+    attendanceStatus?: NullableEnumAttendanceStatusFieldUpdateOperationsInput | $Enums.AttendanceStatus | null
+    approvalStatus?: EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type AttendanceUncheckedUpdateManyWithoutWorkScheduleInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    employeeId?: IntFieldUpdateOperationsInput | number
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkInTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    checkOutTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    workType?: EnumWorkTypeFieldUpdateOperationsInput | $Enums.WorkType
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    proof?: NullableStringFieldUpdateOperationsInput | string | null
+    locationStatus?: NullableEnumLocationStatusFieldUpdateOperationsInput | $Enums.LocationStatus | null
+    attendanceStatus?: NullableEnumAttendanceStatusFieldUpdateOperationsInput | $Enums.AttendanceStatus | null
+    approvalStatus?: EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null

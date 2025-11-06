@@ -547,15 +547,42 @@ export async function getEmployeeById(req: Request, res: Response) {
 
 // Update Employee
 export async function updateEmployee(req: Request, res: Response) {
-    const { id } = req.params;
+    const { id } = req.params; // id bisa dari params (untuk admin/superadmin) atau dari token
     const data = req.body;
     const file = req.file;
 
     try {
         const currentUser = (req as any).user;
 
+        // Tentukan employeeId yang akan diupdate
+        let employeeIdToUpdate: number;
+
+        // Jika user adalah ADMIN atau SUPERADMIN dan ada id di params, gunakan params id
+        if ((currentUser.role === "ADMIN" || currentUser.role === "SUPERADMIN") && id) {
+            employeeIdToUpdate = Number(id);
+        } 
+        // Jika user adalah EMPLOYEE, gunakan employee id dari token (ignore params id)
+        else if (currentUser.role === "EMPLOYEE") {
+            // Cari employee berdasarkan userId dari token
+            const employeeFromToken = await prisma.employee.findFirst({
+                where: { 
+                    userId: currentUser.id,
+                    deletedAt: null 
+                }
+            });
+
+            if (!employeeFromToken) {
+                return res.status(404).json({ message: "Employee profile not found" });
+            }
+
+            employeeIdToUpdate = employeeFromToken.id;
+        } else {
+            return res.status(403).json({ message: "Unauthorized role" });
+        }
+
+        // Dapatkan data employee yang akan diupdate
         const employee = await prisma.employee.findUnique({
-            where: { id: Number(id) },
+            where: { id: employeeIdToUpdate },
             include: { user: true, company: true },
         });
 
@@ -605,8 +632,17 @@ export async function updateEmployee(req: Request, res: Response) {
             }
         }
 
-        // Validasi scheduleGroupId jika diisi
-        if (data.scheduleGroupId) {
+        // Validasi untuk EMPLOYEE: hanya bisa update profil sendiri
+        if (currentUser.role === "EMPLOYEE") {
+            if (currentUser.id !== employee.userId) {
+                return res.status(403).json({ 
+                    message: "Forbidden: You can only update your own profile" 
+                });
+            }
+        }
+
+        // Validasi scheduleGroupId jika diisi (hanya untuk ADMIN/SUPERADMIN)
+        if (data.scheduleGroupId && (currentUser.role === "ADMIN" || currentUser.role === "SUPERADMIN")) {
             const scheduleGroup = await prisma.scheduleGroup.findFirst({
                 where: { 
                     id: Number(data.scheduleGroupId),
@@ -625,7 +661,7 @@ export async function updateEmployee(req: Request, res: Response) {
         let updateUserData: any = {};
         let updateEmployeeData: any = {};
 
-        // ADMIN / SUPERADMIN
+        // ADMIN / SUPERADMIN - bisa update semua field
         if (currentUser.role === "ADMIN" || currentUser.role === "SUPERADMIN") {
             if (data.name || data.email) {
                 updateUserData = {
@@ -655,14 +691,8 @@ export async function updateEmployee(req: Request, res: Response) {
             }
         } 
         
-        // EMPLOYEE
+        // EMPLOYEE - hanya bisa update field tertentu
         else if (currentUser.role === "EMPLOYEE") {
-            if (currentUser.id !== employee.userId) {
-                return res.status(403).json({ 
-                    message: "Forbidden: You can only update your own profile" 
-                });
-            }
-
             updateEmployeeData = {
                 ...(data.fullName && { fullName: data.fullName }),
                 ...(data.mobileNumber && { mobileNumber: data.mobileNumber }),
@@ -671,16 +701,18 @@ export async function updateEmployee(req: Request, res: Response) {
                 ...(file && { photo: file.filename }),
             };
 
-            if (data.name || data.email || data.nik || data.gender || 
-                data.position || data.department || data.status || 
-                data.promotionHistory || data.scheduleGroupId) { // Tambah scheduleGroupId
+            // Validasi: employee tidak boleh update field tertentu
+            const forbiddenFields = [
+                'name', 'email', 'nik', 'gender', 'position', 
+                'department', 'status', 'promotionHistory', 'scheduleGroupId'
+            ];
+            
+            const attemptedForbiddenUpdate = forbiddenFields.some(field => data[field] !== undefined);
+            if (attemptedForbiddenUpdate) {
                 return res.status(403).json({ 
                     message: "Forbidden: You cannot update these fields" 
                 });
             }
-        } 
-        else {
-            return res.status(403).json({ message: "Unauthorized role" });
         }
 
         if (Object.keys(updateUserData).length === 0 && 
@@ -716,7 +748,7 @@ export async function updateEmployee(req: Request, res: Response) {
                 include: { 
                     user: { select: { id: true, name: true, email: true, role: true } },
                     company: true,
-                    scheduleGroup: { // include scheduleGroup
+                    scheduleGroup: {
                         select: {
                             id: true,
                             nameOfShift: true

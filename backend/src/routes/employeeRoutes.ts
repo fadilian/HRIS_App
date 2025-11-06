@@ -45,6 +45,14 @@ router.patch(
   updateEmployee
 );
 
+// Employee update profilenya sendiri
+router.patch(
+  "/update/my-profile",
+  authMiddleware,
+  uploadEmployeePhoto.single("photo"),
+  updateEmployee
+);
+
 // Soft Delete Employee (Admin/Superadmin only)
 router.delete("/delete/:id", authMiddleware, deleteEmployee);
 
