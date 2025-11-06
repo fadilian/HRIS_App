@@ -1,5 +1,10 @@
 import { Request, Response, NextFunction } from "express";
-import { fromUTCToWIB, toUTCFromWIB, getTodayWIB, formatWIB } from "../utils/timezone";
+import { 
+  fromUTCToWIB, 
+  toUTCFromWIB, 
+  getTodayWIB, 
+  formatWIB
+} from "../utils/timezone";
 
 declare global {
     namespace Express {
@@ -23,7 +28,7 @@ export function timezoneMiddleware(req: Request, res: Response, next: NextFuncti
     // Utility untuk konversi
     req.toUTCFromWIB = toUTCFromWIB;
     req.fromUTCToWIB = fromUTCToWIB;
-    req.formatWIB = formatWIB;
+    req.formatWIB = formatWIB;   
 
     next();
 }

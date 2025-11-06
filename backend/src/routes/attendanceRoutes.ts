@@ -1,5 +1,8 @@
 import express from "express";
-import { createAttendance } from "../controllers/attendanceController";
+import { 
+    createAttendance,
+    getAttendances,
+ } from "../controllers/attendanceController";
 import { authMiddleware } from "../middlewares/authMiddleware";
 import uploadProofAttendance from "../middlewares/uploadProofAttendance";
 import { timezoneMiddleware } from "../middlewares/timezoneMiddleware";
@@ -13,6 +16,13 @@ router.post(
     timezoneMiddleware, 
     uploadProofAttendance.single("proof"), 
     createAttendance
+);
+
+router.get(
+    "/show-attendance",
+    authMiddleware,
+    timezoneMiddleware,
+    getAttendances
 );
 
 
