@@ -110,6 +110,7 @@ model Employee {
   company       Company        @relation(fields: [companyId], references: [id])
   scheduleGroup ScheduleGroup? @relation(fields: [scheduleGroupId], references: [id])
   leaveRequests LeaveRequest[] // relasi ke LeaveRequest
+  Attendance    Attendance[]
 
   @@unique([companyId, nik])
   @@map("employees")
@@ -146,6 +147,7 @@ model WorkSchedule {
 
   company       Company       @relation(fields: [companyId], references: [id])
   scheduleGroup ScheduleGroup @relation(fields: [scheduleGroupId], references: [id])
+  Attendance    Attendance[]
 
   @@map("work_schedules")
 }
@@ -207,4 +209,52 @@ enum LeaveStatus {
   APPROVED
   REJECTED
   CANCELLED
+}
+
+model Attendance {
+  id               Int               @id @default(autoincrement())
+  employeeId       Int               @map("employee_id")
+  workScheduleId   Int?              @map("work_schedule_id")
+  date             DateTime          @db.Date
+  checkInTime      DateTime?         @map("check_in_time")
+  checkOutTime     DateTime?         @map("check_out_time")
+  workType         WorkType          @map("work_type")
+  latitude         Decimal?          @db.Decimal(10, 8)
+  longitude        Decimal?          @db.Decimal(11, 8)
+  proof            String?           @db.VarChar(255)
+  locationStatus   LocationStatus?   @map("location_status")
+  attendanceStatus AttendanceStatus? @map("attendance_status")
+  approvalStatus   ApprovalStatus    @default(PENDING) @map("approval_status")
+  createdAt        DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime          @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt        DateTime?         @map("deleted_at") @db.Timestamptz(6)
+
+  employee     Employee      @relation(fields: [employeeId], references: [id])
+  workSchedule WorkSchedule? @relation(fields: [workScheduleId], references: [id])
+
+  @@unique([employeeId, date])
+  @@map("attendances")
+}
+
+enum WorkType {
+  WFO
+  WFA
+  HYBRID
+}
+
+enum LocationStatus {
+  INSIDE
+  OUTSIDE
+}
+
+enum AttendanceStatus {
+  ONTIME
+  LATE
+  ALPHA
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }

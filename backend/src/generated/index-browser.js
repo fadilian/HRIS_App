@@ -230,6 +230,25 @@ exports.Prisma.LeaveTypeScalarFieldEnum = {
   deletedAt: 'deletedAt'
 };
 
+exports.Prisma.AttendanceScalarFieldEnum = {
+  id: 'id',
+  employeeId: 'employeeId',
+  workScheduleId: 'workScheduleId',
+  date: 'date',
+  checkInTime: 'checkInTime',
+  checkOutTime: 'checkOutTime',
+  workType: 'workType',
+  latitude: 'latitude',
+  longitude: 'longitude',
+  proof: 'proof',
+  locationStatus: 'locationStatus',
+  attendanceStatus: 'attendanceStatus',
+  approvalStatus: 'approvalStatus',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -272,6 +291,29 @@ exports.LeaveStatus = exports.$Enums.LeaveStatus = {
   CANCELLED: 'CANCELLED'
 };
 
+exports.WorkType = exports.$Enums.WorkType = {
+  WFO: 'WFO',
+  WFA: 'WFA',
+  HYBRID: 'HYBRID'
+};
+
+exports.LocationStatus = exports.$Enums.LocationStatus = {
+  INSIDE: 'INSIDE',
+  OUTSIDE: 'OUTSIDE'
+};
+
+exports.AttendanceStatus = exports.$Enums.AttendanceStatus = {
+  ONTIME: 'ONTIME',
+  LATE: 'LATE',
+  ALPHA: 'ALPHA'
+};
+
+exports.ApprovalStatus = exports.$Enums.ApprovalStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Company: 'Company',
@@ -280,7 +322,8 @@ exports.Prisma.ModelName = {
   ScheduleGroup: 'ScheduleGroup',
   WorkSchedule: 'WorkSchedule',
   LeaveRequest: 'LeaveRequest',
-  LeaveType: 'LeaveType'
+  LeaveType: 'LeaveType',
+  Attendance: 'Attendance'
 };
 
 /**

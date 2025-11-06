@@ -4,7 +4,8 @@ import {
     register, 
     loginAdmin,
     loginEmployee, 
-    profile, 
+    adminProfile,
+    employeeProfile, 
     updateProfile, 
     deleteAccount, 
     requestPasswordReset, 
@@ -21,7 +22,8 @@ const router = Router();
 router.post("/register", upload.none(), register);
 router.post("/login/admin", loginAdmin);
 router.post("/login/employee", loginEmployee);
-router.get("/admin/profile", authMiddleware, profile);
+router.get("/admin/profile", authMiddleware, adminProfile);
+router.get("/employee/profile", authMiddleware, employeeProfile);
 router.patch("/admin/profile/update", authMiddleware, updateProfile);
 router.delete("/profile/delete", authMiddleware, deleteAccount);
 router.post("/forgot-password", requestPasswordReset);

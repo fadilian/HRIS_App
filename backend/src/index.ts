@@ -9,6 +9,7 @@ import scheduleGroupRoutes from "./routes/scheduleGroupRoutes";
 import workSchedule from "./routes/workScheduleRoutes";
 import leaveTypeRoutes from "./routes/leaveTypeRoutes";
 import leaveRequestRoutes from "./routes/leaveRequestRoutes";
+import attendanceRoutes from "./routes/attendanceRoutes";
 
 dotenv.config();
 // console.log("✅ Loaded JWT_SECRET:", process.env.JWT_SECRET);
@@ -37,14 +38,8 @@ app.use("/api/schedule-group", scheduleGroupRoutes);
 app.use("/api/work-schedule", workSchedule);
 app.use("/api/leave-types", leaveTypeRoutes);
 app.use("/api/leave-requests", leaveRequestRoutes);
+app.use("/api/attendance", attendanceRoutes);
 
-// route cek waktu sekarang (wib)
-app.get("/time", (req, res) => {
-  res.json({
-    nowWIB: req.formatWIB(req.nowWIB, "dd MMM yyyy HH:mm:ss"),
-    todayWIB: req.todayWIB,
-  });
-});
 
 app.listen(8000, () => {
   console.log("Server running on http://localhost:8000");

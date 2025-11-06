@@ -132,7 +132,7 @@ export async function loginEmployee(req: Request, res: Response) {
 }
 
 
-export async function profile(req: Request, res: Response) {
+export async function adminProfile(req: Request, res: Response) {
     try {
         const userId = (req as any).user.id; // ambil dari JWT
 
@@ -152,6 +152,29 @@ export async function profile(req: Request, res: Response) {
         //         },
         //     },
         // }
+        });
+
+        if (!user) {
+        return res.status(404).json({ message: "User not found" });
+        }
+
+        res.json({ status: true, user });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Error fetching profile" });
+    }
+}
+
+export async function employeeProfile(req: Request, res: Response) {
+    try {
+        const userId = (req as any).user.id; // ambil dari JWT
+
+        const user = await prisma.user.findFirst({
+        where: { id: userId, deletedAt: null },
+            include: { 
+                company: true,
+                Employee: true
+            },
         });
 
         if (!user) {

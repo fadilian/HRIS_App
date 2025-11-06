@@ -1,13 +1,7 @@
 import { Request, Response } from "express";
 import prisma from "../utils/prisma";
+import { formatDecimal } from "../utils/formatNumber";
 
-// Helper untuk membatasi angka di belakang koma (maks 8 digit)
-const formatDecimal = (value: any, precision = 8) => {
-    if (value === undefined || value === null || value === "") return null;
-    const num = Number(value); // parse string → number
-    if (isNaN(num)) return null;
-    return Number(num.toFixed(precision));
-};
 
 export async function createCompany(req: Request, res: Response) {
     try {
