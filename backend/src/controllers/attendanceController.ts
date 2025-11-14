@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import prisma from "../utils/prisma";
-import { calculateDistance } from "../utils/distance";
+import { calculateDistance, formatDistance } from "../utils/distance";
 import { formatDecimal } from "../utils/formatNumber";
 import { parse, isBefore, isAfter } from "date-fns";
 
-
+// Fungsi mengambil data absensi (sudah dibatasi berdasarkan role) include fitur search
 export async function getAttendances(req: Request, res: Response) {
     try {
         const userId = (req as any).user.id;
@@ -20,7 +20,7 @@ export async function getAttendances(req: Request, res: Response) {
             search        // single search bar untuk semua field
         } = req.query as any;
 
-        // Ambil user → untuk cek companyId jika admin
+        // Ambil user untuk cek companyId jika admin
         const userData = await prisma.user.findFirst({
             where: { id: userId, deletedAt: null },
             include: { company: true, ownedCompanies: true }
@@ -137,7 +137,13 @@ export async function getAttendances(req: Request, res: Response) {
                         select: {
                             fullName: true,
                             employeeCode: true,
-                            company: { select: { companyName: true } }
+                            company: { select: { companyName: true } },
+                            scheduleGroup: { select: { nameOfShift: true } }
+                        }
+                    },
+                    workSchedule: {
+                        select: {
+                            dayOfWeek: true
                         }
                     }
                 },
@@ -182,7 +188,7 @@ export async function getAttendances(req: Request, res: Response) {
     }
 }
 
-
+// Fungsi menambahkan data absensi
 export async function createAttendance(req: Request, res: Response) {
     try {
         const userId = (req as any).user.id;
@@ -389,3 +395,359 @@ export async function createAttendance(req: Request, res: Response) {
         });
     }
 }
+
+// Fungsi update data attendance hanya untuk admin/superadmin
+export async function updateAttendance(req: Request, res: Response) {
+    try {
+        const userId = (req as any).user.id;
+        const userRole = (req as any).user.role;
+        const attendanceId = Number(req.params.id);
+
+        // 1. Validasi role
+        if (userRole !== "ADMIN" && userRole !== "SUPERADMIN") {
+            return res.status(403).json({ message: "Unauthorized" });
+        }
+
+        // 2. Ambil data user login
+        const user = await prisma.user.findFirst({
+            where: { id: userId, deletedAt: null },
+            include: { company: true, ownedCompanies: true },
+        });
+
+        if (!user) {
+            return res.status(404).json({ message: "User tidak ditemukan" });
+        }
+
+        // Tentukan companyId user login
+        let companyId: number | null = null;
+        if (user.ownedCompanies.length > 0) {
+            companyId = user.ownedCompanies[0].id;
+        } else if (user.companyId) {
+            companyId = user.companyId;
+        }
+
+        // 3. Ambil data attendance yang akan diupdate
+        const existing = await prisma.attendance.findFirst({
+            where: { id: attendanceId, deletedAt: null },
+            include: {
+                employee: { include: { company: true } },
+            },
+        });
+
+        if (!existing) {
+            return res.status(404).json({ message: "Data absensi tidak ditemukan" });
+        }
+
+        // 4. Validasi akses berdasarkan role
+        if (userRole === "ADMIN" && existing.employee.companyId !== companyId) {
+            return res.status(403).json({
+                message: "Anda tidak memiliki akses untuk mengedit absensi dari company lain",
+            });
+        }
+
+        // 5. Ambil data dari body
+        const {
+            checkInTime,
+            checkOutTime,
+            attendanceStatus,
+            approvalStatus,
+            workType,
+            locationStatus,
+            latitude,
+            longitude,
+        } = req.body;
+
+        const proofFile = req.file ? req.file.filename : undefined;
+
+        // Format latitude & longitude (maks 8 digit desimal)
+        const formattedLatitude = formatDecimal(latitude);
+        const formattedLongitude = formatDecimal(longitude);
+
+        // 6. Konversi waktu check-in/out (WIB → UTC)
+        let checkInTimeUTC = existing.checkInTime;
+        let checkOutTimeUTC = existing.checkOutTime;
+
+        const dateStringWIB = req.formatWIB(req.fromUTCToWIB(existing.date), "yyyy-MM-dd");
+
+        if (checkInTime) {
+            const wibToUtc = req.toUTCFromWIB(new Date(`${dateStringWIB}T${checkInTime}:00`));
+            checkInTimeUTC = wibToUtc;
+        }
+
+        if (checkOutTime) {
+            const wibToUtc = req.toUTCFromWIB(new Date(`${dateStringWIB}T${checkOutTime}:00`));
+            checkOutTimeUTC = wibToUtc;
+        }
+
+        // 7. Update data attendance
+        const updatedAttendance = await prisma.attendance.update({
+            where: { id: attendanceId },
+            data: {
+                checkInTime: checkInTimeUTC,
+                checkOutTime: checkOutTimeUTC,
+                attendanceStatus: attendanceStatus?.toUpperCase(),
+                approvalStatus: approvalStatus?.toUpperCase(),
+                workType: workType?.toUpperCase(),
+                locationStatus: locationStatus?.toUpperCase(),
+                latitude: formattedLatitude ?? existing.latitude,
+                longitude: formattedLongitude ?? existing.longitude,
+                proof: proofFile || existing.proof,
+                updatedAt: new Date(),
+            },
+        });
+
+        // 8. Format output agar tetap WIB saat ditampilkan
+        const responseData = {
+            ...updatedAttendance,
+            date: req.formatWIB(updatedAttendance.date, "yyyy-MM-dd"),
+            checkInTime: updatedAttendance.checkInTime
+                ? req.formatWIB(updatedAttendance.checkInTime, "HH:mm:ss")
+                : null,
+            checkOutTime: updatedAttendance.checkOutTime
+                ? req.formatWIB(updatedAttendance.checkOutTime, "HH:mm:ss")
+                : null,
+            createdAt: req.formatWIB(updatedAttendance.createdAt),
+            updatedAt: req.formatWIB(updatedAttendance.updatedAt),
+        };
+
+        res.status(200).json({
+            message: "Data absensi berhasil diperbarui",
+            data: responseData,
+        });
+    } catch (err: any) {
+        console.error("Error updateAttendance:", err);
+        res.status(500).json({
+            message: err.message || "Terjadi kesalahan saat memperbarui absensi",
+        });
+    }
+}
+
+// Fungsi menampilkan detail attendance berdasarkan id
+export async function getAttendanceById(req: Request, res: Response) {
+    try {
+        const userId = (req as any).user.id;
+        const role = (req as any).user.role;
+        const attendanceId = Number(req.params.id);
+
+        if (!attendanceId) {
+            return res.status(400).json({ message: "Attendance ID tidak valid" });
+        }
+
+        // Ambil user
+        const user = await prisma.user.findFirst({
+            where: { id: userId, deletedAt: null },
+            include: {
+                company: true,
+                ownedCompanies: true
+            }
+        });
+
+        if (!user) {
+            return res.status(404).json({ message: "User tidak ditemukan" });
+        }
+
+        let companyId: number | null = null;
+        if (role === "ADMIN") {
+            if (user.ownedCompanies.length > 0) {
+                companyId = user.ownedCompanies[0].id;
+            } else if (user.companyId) {
+                companyId = user.companyId;
+            }
+        }
+
+        // Ambil data attendance
+        const attendance = await prisma.attendance.findFirst({
+            where: {
+                id: attendanceId,
+                deletedAt: null
+            },
+            include: {
+                employee: {
+                    select: {
+                        id: true,
+                        userId: true,
+                        fullName: true,
+                        employeeCode: true,
+                        companyId: true,
+                        company: {
+                            select: {
+                                companyName: true,
+                                latitude: true,
+                                longitude: true,
+                                radius: true
+                            }
+                        },
+                        scheduleGroup: { select: { nameOfShift: true } }
+                    }
+                },
+                workSchedule: {
+                    select: {
+                        dayOfWeek: true,
+                        startTime: true,
+                        breakStart: true,
+                        endTime: true
+                    }
+                }
+            }
+        });
+
+        if (!attendance) {
+            return res.status(404).json({ message: "Data absensi tidak ditemukan" });
+        }
+
+        // Validasi akses
+        if (role === "EMPLOYEE" && attendance.employee.userId !== userId) {
+            return res.status(403).json({ message: "Anda tidak memiliki akses ke data ini" });
+        }
+
+        if (role === "ADMIN" && attendance.employee.companyId !== companyId) {
+            return res.status(403).json({
+                message: "Anda tidak memiliki akses ke absensi dari perusahaan lain"
+            });
+        }
+
+        // Hitung distance jika tipe kerja WFO & ada lat long pada absensi
+        let distanceFromOffice: number | null = null;
+
+        if (
+            attendance.workType === "WFO" &&
+            attendance.latitude &&
+            attendance.longitude &&
+            attendance.employee.company.latitude &&
+            attendance.employee.company.longitude
+        ) {
+            distanceFromOffice = formatDistance (
+                calculateDistance(
+                    Number(attendance.latitude),
+                    Number(attendance.longitude),
+                    Number(attendance.employee.company.latitude),
+                    Number(attendance.employee.company.longitude)
+                )
+            );
+        }
+
+        // Format WIB
+        const result = {
+            ...attendance,
+            date: req.formatWIB(req.fromUTCToWIB(attendance.date), "yyyy-MM-dd"),
+            checkInTime: attendance.checkInTime
+                ? req.formatWIB(req.fromUTCToWIB(attendance.checkInTime), "HH:mm:ss")
+                : null,
+            checkOutTime: attendance.checkOutTime
+                ? req.formatWIB(req.fromUTCToWIB(attendance.checkOutTime), "HH:mm:ss")
+                : null,
+            createdAt: req.formatWIB(req.fromUTCToWIB(attendance.createdAt)),
+            updatedAt: attendance.updatedAt
+                ? req.formatWIB(req.fromUTCToWIB(attendance.updatedAt))
+                : null,
+
+            hasProof: !!attendance.proof,
+            isLate: attendance.attendanceStatus === "LATE",
+
+            distanceFromOffice
+        };
+
+        res.status(200).json({
+            message: "Detail absensi berhasil diambil",
+            data: result
+        });
+
+    } catch (err: any) {
+        console.error("Error getAttendanceById:", err);
+        res.status(500).json({
+            message: err.message || "Terjadi kesalahan saat mengambil detail absensi"
+        });
+    }
+}
+
+// Fungsi menghapus data attendance, hanya bisa dilakukan ketika status approval masih PENDING (kecuali superadmin)
+export async function deleteAttendance(req: Request, res: Response) {
+    try {
+        const user = (req as any).user;
+        const userId = user.id;
+        const role = user.role;
+
+        const attendanceId = Number(req.params.id);
+
+        if (isNaN(attendanceId)) {
+            return res.status(400).json({ message: "ID tidak valid" });
+        }
+
+        // Ambil data attendance
+        const attendance = await prisma.attendance.findFirst({
+            where: { id: attendanceId, deletedAt: null },
+            include: {
+                employee: {
+                    include: {
+                        company: true
+                    }
+                }
+            }
+        });
+
+        if (!attendance) {
+            return res.status(404).json({ message: "Data absensi tidak ditemukan" });
+        }
+
+        // EMPLOYEE hanya bisa hapus absensinya sendiri
+        if (role === "EMPLOYEE") {
+            if (attendance.employee.userId !== userId) {
+                return res.status(403).json({ message: "Tidak boleh menghapus absensi milik orang lain" });
+            }
+
+            if (attendance.approvalStatus !== "PENDING") {
+                return res.status(400).json({
+                    message: "Absensi sudah diproses dan tidak dapat dihapus"
+                });
+            }
+        }
+
+        // ADMIN hanya boleh hapus untuk company miliknya
+        if (role === "ADMIN") {
+            // ambil companyId dengan pola yang konsisten: cek ownedCompanies dulu, lalu companyId
+            const currentUser = await prisma.user.findFirst({
+                where: { id: userId, deletedAt: null },
+                include: { ownedCompanies: true }
+            });
+
+            let adminCompanyId: number | null = null;
+            if (currentUser) {
+                if (currentUser.ownedCompanies && currentUser.ownedCompanies.length > 0) {
+                    adminCompanyId = currentUser.ownedCompanies[0].id;
+                } else if ((currentUser as any).companyId) {
+                    adminCompanyId = (currentUser as any).companyId;
+                }
+            }
+
+            if (!adminCompanyId || attendance.employee.companyId !== adminCompanyId) {
+                return res.status(403).json({ message: "Tidak dapat menghapus absensi employee perusahaan lain" });
+            }
+
+            if (attendance.approvalStatus !== "PENDING") {
+                return res.status(400).json({
+                    message: "Absensi sudah diproses dan tidak dapat dihapus"
+                });
+            }
+        }
+
+        // Soft delete
+        await prisma.attendance.update({
+            where: { id: attendanceId },
+            data: {
+                deletedAt: new Date()
+            }
+        });
+
+        return res.status(200).json({
+            message: "Absensi berhasil dihapus (soft delete)"
+        });
+
+    } catch (err: any) {
+        console.error("Error deleteAttendance:", err);
+        res.status(500).json({
+            message: err.message || "Terjadi kesalahan saat menghapus absensi"
+        });
+    }
+}
+
+

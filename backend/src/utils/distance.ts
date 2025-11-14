@@ -14,3 +14,9 @@ export function calculateDistance(lat1: number, lon1: number, lat2: number, lon2
 
   return R * c; // hasil meter
 }
+
+// membatasi jarak yang ditampilkan adalah 2 angka dibelakang koma (dalam satuan meter)
+export function formatDistance(value: number): number {
+    return Number(value.toFixed(2));
+}
+

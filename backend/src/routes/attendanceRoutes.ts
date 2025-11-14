@@ -2,6 +2,9 @@ import express from "express";
 import { 
     createAttendance,
     getAttendances,
+    updateAttendance,
+    getAttendanceById,
+    deleteAttendance
  } from "../controllers/attendanceController";
 import { authMiddleware } from "../middlewares/authMiddleware";
 import uploadProofAttendance from "../middlewares/uploadProofAttendance";
@@ -18,11 +21,36 @@ router.post(
     createAttendance
 );
 
+// tampilkan data absensi (include search)
 router.get(
     "/show-attendance",
     authMiddleware,
     timezoneMiddleware,
     getAttendances
+);
+
+// tampilan detail data absensi (berdasarkan id attendance)
+router.get(
+    "/show-detail/:id",
+    authMiddleware,
+    timezoneMiddleware,
+    getAttendanceById
+)
+
+// update data absensi (admin/superadmin only)
+router.patch(
+    "/update-attendance/:id", 
+    authMiddleware, 
+    timezoneMiddleware,
+    uploadProofAttendance.single("proof"), 
+    updateAttendance
+);
+
+// soft delete attendance
+router.delete(
+    "/delete-attendance/:id",
+    authMiddleware,
+    deleteAttendance
 );
 
 
