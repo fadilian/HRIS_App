@@ -241,6 +241,7 @@ enum WorkType {
   WFO
   WFA
   HYBRID
+  ABSENT
 }
 
 enum LocationStatus {

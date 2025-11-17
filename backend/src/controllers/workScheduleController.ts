@@ -58,19 +58,22 @@ export async function createWorkSchedule(req: Request, res: Response) {
             });
         }
 
-        // Cek duplikat jadwal (company yang sama, hari yang sama dan schedule group yang sama)
+        // Standardisasi dayOfWeek menjadi uppercase
+        const dayOfWeekUpper = dayOfWeek.toUpperCase();
+
+        // Cek duplikat jadwal
         const existing = await prisma.workSchedule.findFirst({
             where: {
                 companyId,
                 scheduleGroupId,
-                dayOfWeek,
+                dayOfWeek: dayOfWeekUpper,
                 deletedAt: null,
             },
         });
 
         if (existing) {
             return res.status(409).json({
-                message: `Jadwal untuk hari ${dayOfWeek} sudah ada di shift ini`,
+                message: `Jadwal untuk hari ${dayOfWeekUpper} sudah ada di shift ini`,
             });
         }
 
@@ -79,7 +82,7 @@ export async function createWorkSchedule(req: Request, res: Response) {
             data: {
                 companyId,
                 scheduleGroupId,
-                dayOfWeek,
+                dayOfWeek: dayOfWeekUpper,
                 startTime,
                 breakStart,
                 breakEnd,

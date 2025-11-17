@@ -4,7 +4,9 @@ import {
     getAttendances,
     updateAttendance,
     getAttendanceById,
-    deleteAttendance
+    deleteAttendance,
+    getAdminDashboard,
+    getEmployeeDashboard
  } from "../controllers/attendanceController";
 import { authMiddleware } from "../middlewares/authMiddleware";
 import uploadProofAttendance from "../middlewares/uploadProofAttendance";
@@ -53,7 +55,21 @@ router.delete(
     deleteAttendance
 );
 
+// dashboard admin (perhari)
+router.get(
+    "/admin-dashboard",
+    authMiddleware,
+    timezoneMiddleware,
+    getAdminDashboard
+);
 
+// dashboard employee (perbulan)
+router.get(
+    "/employee-dashboard",
+    authMiddleware,
+    timezoneMiddleware,
+    getEmployeeDashboard
+);
 
 // route cek waktu sekarang (wib)
 router.get("/time", (req, res) => {

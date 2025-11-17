@@ -10,6 +10,7 @@ import workSchedule from "./routes/workScheduleRoutes";
 import leaveTypeRoutes from "./routes/leaveTypeRoutes";
 import leaveRequestRoutes from "./routes/leaveRequestRoutes";
 import attendanceRoutes from "./routes/attendanceRoutes";
+import "./cron/autoAlpha";
 
 dotenv.config();
 // console.log("✅ Loaded JWT_SECRET:", process.env.JWT_SECRET);

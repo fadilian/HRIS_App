@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import prisma from "../utils/prisma";
 import { calculateDistance, formatDistance } from "../utils/distance";
+import { calculateTotalDays } from "../utils/calculateTotalDays";
 import { formatDecimal } from "../utils/formatNumber";
 import { parse, isBefore, isAfter } from "date-fns";
 
@@ -704,7 +705,7 @@ export async function deleteAttendance(req: Request, res: Response) {
 
         // ADMIN hanya boleh hapus untuk company miliknya
         if (role === "ADMIN") {
-            // ambil companyId dengan pola yang konsisten: cek ownedCompanies dulu, lalu companyId
+            // ambil companyId
             const currentUser = await prisma.user.findFirst({
                 where: { id: userId, deletedAt: null },
                 include: { ownedCompanies: true }
@@ -746,6 +747,363 @@ export async function deleteAttendance(req: Request, res: Response) {
         console.error("Error deleteAttendance:", err);
         res.status(500).json({
             message: err.message || "Terjadi kesalahan saat menghapus absensi"
+        });
+    }
+}
+
+// Fungsi untuk menampilkan data di dashboard admin
+export async function getAdminDashboard(req: Request, res: Response) {
+    try {
+        const userId = (req as any).user.id;
+        const role = (req as any).user.role;
+
+        if (role !== "ADMIN" && role !== "SUPERADMIN") {
+            return res.status(403).json({ message: "Unauthorized" });
+        }
+
+        // Ambil company admin
+        const user = await prisma.user.findFirst({
+            where: { id: userId, deletedAt: null },
+            include: { company: true, ownedCompanies: true }
+        });
+
+        if (!user) {
+            return res.status(404).json({ message: "User tidak ditemukan" });
+        }
+
+        // Tentukan companyId admin
+        let companyId: number | null = null;
+        if (user.ownedCompanies.length > 0) {
+            companyId = user.ownedCompanies[0].id;
+        } else if (user.companyId) {
+            companyId = user.companyId;
+        }
+
+        if (!companyId) {
+            return res.status(400).json({
+                message: "Admin tidak memiliki akses ke perusahaan manapun"
+            });
+        }
+
+        // 1. Total employees
+        const employees = await prisma.employee.findMany({
+            where: { companyId, deletedAt: null },
+            include: {
+                scheduleGroup: {
+                    include: { workSchedules: true }
+                }
+            }
+        });
+        const totalEmployees = employees.length;
+
+        // 2. Waktu hari ini (UTC date)
+        const nowWIB = req.nowWIB;
+        const todayString = req.formatWIB(nowWIB, "yyyy-MM-dd");
+        const todayUTC = new Date(`${todayString}T00:00:00.000Z`);
+        const todayDay = req.todayWIB.toUpperCase(); // contoh: "MONDAY"
+
+        // 3. Attendance hari ini
+        const todaysAttendance = await prisma.attendance.findMany({
+            where: {
+                date: todayUTC,
+                deletedAt: null,
+                employee: { companyId }
+            },
+            include: {
+                employee: {
+                    select: {
+                        id: true,
+                        fullName: true,
+                        employeeCode: true
+                    }
+                }
+            }
+        });
+
+        // untuk cetak card entry
+        const employeeDataEntry = todaysAttendance.map(a => ({
+            fullName: a.employee.fullName,
+            employeeCode: a.employee.employeeCode,
+            status: a.attendanceStatus,
+            checkInTime: a.checkInTime
+                ? req.formatWIB(a.checkInTime, "HH:mm")
+                : null
+        }));
+
+        // 4. Hitung ontime & late
+        const onTime = todaysAttendance.filter(a => a.attendanceStatus === "ONTIME").length;
+        const late = todaysAttendance.filter(a => a.attendanceStatus === "LATE").length;
+
+        // 5. Leave hari ini
+        const todaysLeaves = await prisma.leaveRequest.findMany({
+            where: {
+                deletedAt: null,
+                status: "APPROVED",
+                startDate: { lte: todayUTC },
+                endDate: { gte: todayUTC },
+                employee: { companyId }
+            },
+            include: {
+                employee: {
+                    select: {
+                        id: true,
+                        fullName: true,
+                        employeeCode: true
+                    }
+                }
+            }
+        });
+
+        const leave = todaysLeaves.length;
+
+        // 6. Hitung Alpha berdasarkan schedule perusahaan
+        const attendedIds = new Set(todaysAttendance.map(a => a.employeeId));
+        const leaveIds = new Set(todaysLeaves.map(l => l.employeeId));
+
+        const alphaEmployees = employees.filter(emp => {
+            // harus punya jadwal kerja hari ini
+            const hasWorkToday =
+                emp.scheduleGroup?.workSchedules?.some(
+                    ws => ws.dayOfWeek.toUpperCase() === todayDay
+                );
+
+            if (!hasWorkToday) return false;       // hari libur = bukan alpha
+            if (attendedIds.has(emp.id)) return false; // sudah absen = bukan alpha
+            if (leaveIds.has(emp.id)) return false;    // sedang leave = bukan alpha
+
+            return true; // sisanya = alpha
+        });
+
+        const alpha = alphaEmployees.length;
+
+        // 7. Response
+        res.status(200).json({
+            message: "Dashboard admin berhasil diambil",
+            summary: {
+                totalEmployees,
+                onTime,
+                late,
+                leave,
+                alpha
+            },
+            lists: {
+                employeeDataEntry,    // untuk card Entry
+                onTime: todaysAttendance
+                    .filter(a => a.attendanceStatus === "ONTIME")
+                    .slice(0, 5),
+                late: todaysAttendance
+                    .filter(a => a.attendanceStatus === "LATE")
+                    .slice(0, 5),
+                leave: todaysLeaves.slice(0, 5),
+                alpha: alphaEmployees.slice(0, 5)
+            }
+        });
+
+    } catch (err: any) {
+        console.error("Error getAdminDashboard:", err);
+        res.status(500).json({
+            message: err.message || "Terjadi kesalahan saat mengambil dashboard admin"
+        });
+    }
+}
+
+// Fungsi untuk menampilkan data di dashboard employee
+export async function getEmployeeDashboard(req: Request, res: Response) {
+    try {
+        const userId = (req as any).user.id;
+        const role = (req as any).user.role;
+
+        if (role !== "EMPLOYEE") {
+            return res.status(403).json({ message: "Unauthorized" });
+        }
+
+        // 1. Ambil data employee + schedule group
+        const employee = await prisma.employee.findFirst({
+            where: { userId, deletedAt: null },
+            include: {
+                scheduleGroup: {
+                    include: {
+                        workSchedules: {
+                            where: { deletedAt: null }
+                        }
+                    }
+                }
+            }
+        });
+
+        if (!employee) {
+            return res.status(404).json({ message: "Employee tidak ditemukan" });
+        }
+
+        const schedule = employee.scheduleGroup?.workSchedules || [];
+        const workDaysUpper = schedule.map(s => s.dayOfWeek.toUpperCase());
+
+        // 2. Tentukan bulan berjalan
+        const nowWIB = req.nowWIB;
+        const month = Number(req.query.month) || nowWIB.getMonth() + 1;
+        const year = Number(req.query.year) || nowWIB.getFullYear();
+
+        const startOfMonthUTC = new Date(Date.UTC(year, month - 1, 1));
+
+        // END DATE = Hari ini (jika bulan ini) atau akhir bulan (jika bulan lain)
+        let endDateUTC: Date;
+
+        // jika bulan yang dipilih adalah bulan sekarang
+        if (month === nowWIB.getMonth() + 1 && year === nowWIB.getFullYear()) {
+            const todayWIBString = req.formatWIB(nowWIB, "yyyy-MM-dd");
+            endDateUTC = new Date(`${todayWIBString}T00:00:00.000Z`);
+        } else {
+            // bulan yang dipilih bukan bulan sekarang = end of selected month
+            endDateUTC = new Date(Date.UTC(year, month, 0)); 
+        }
+
+        // Helper: Hitung hari kerja (weekday berdasarkan work schedule)
+        function countWorkingDays(startUTC: Date, endUTC: Date): number {
+            let count = 0;
+            const cur = new Date(startUTC);
+
+            while (cur <= endUTC) {
+                const curWIB = req.fromUTCToWIB(cur);
+                const dayName = req.formatWIB(curWIB, "EEEE").toUpperCase();
+
+                if (workDaysUpper.includes(dayName)) {
+                    count++;
+                }
+                cur.setUTCDate(cur.getUTCDate() + 1);
+            }
+            return count;
+        }
+
+        // 3. Total hari kerja sampai hari ini
+        const totalWorkingDays = countWorkingDays(startOfMonthUTC, endDateUTC);
+
+        // 4. Ambil attendance bulan berjalan
+        const attendances = await prisma.attendance.findMany({
+            where: {
+                employeeId: employee.id,
+                deletedAt: null,
+                date: {
+                    gte: startOfMonthUTC,
+                    lte: endDateUTC
+                }
+            }
+        });
+
+        let onTime = 0;
+        let late = 0;
+        let alphaMarked = 0;
+
+        attendances.forEach(a => {
+            if (a.attendanceStatus === "ONTIME") onTime++;
+            else if (a.attendanceStatus === "LATE") late++;
+            else if (a.attendanceStatus === "ALPHA") alphaMarked++;
+        });
+
+        const totalPresent = onTime + late;
+
+        // 5. Ambil leave request bulan ini (APPROVED)
+        const leaves = await prisma.leaveRequest.findMany({
+            where: {
+                employeeId: employee.id,
+                deletedAt: null,
+                status: "APPROVED",
+                OR: [
+                    { startDate: { gte: startOfMonthUTC, lte: endDateUTC } },
+                    { endDate: { gte: startOfMonthUTC, lte: endDateUTC } },
+                    {
+                        startDate: { lte: startOfMonthUTC },
+                        endDate: { gte: endDateUTC }
+                    }
+                ]
+            },
+            include: {
+                employee: true
+            }
+        });
+
+        // 6. Hitung hanya leave yang SUDAH TERJADI
+        async function countLeaveDaysUntilToday(): Promise<number> {
+            let total = 0;
+
+            for (const lv of leaves) {
+                const lvStart = new Date(lv.startDate);
+                const lvEnd = new Date(lv.endDate);
+
+                // batas maksimal leave dihitung sampai hari ini
+                const effectiveEnd = lvEnd < endDateUTC ? lvEnd : endDateUTC;
+
+                // pakai helper calculateTotalDays (hari kerja saja)
+                const days = await calculateTotalDays(
+                    lvStart,
+                    effectiveEnd,
+                    employee!.scheduleGroupId!
+                );
+
+                total += days;
+            }
+
+            return total;
+        }
+
+        const totalLeaveDays = await countLeaveDaysUntilToday();
+
+        // 7. Hitung alpha
+        let alpha = totalWorkingDays - totalPresent - totalLeaveDays;
+        if (alpha < 0) alpha = 0;
+
+        // 8. Hitung total jam kerja
+        let totalSecondsWorked = 0;
+
+        attendances.forEach(a => {
+            if (a.checkInTime && a.checkOutTime) {
+                const inWIB = req.fromUTCToWIB(a.checkInTime).getTime();
+                const outWIB = req.fromUTCToWIB(a.checkOutTime).getTime();
+
+                if (outWIB > inWIB) {
+                    totalSecondsWorked += (outWIB - inWIB) / 1000;
+                }
+            }
+        });
+
+        const hours = Math.floor(totalSecondsWorked / 3600);
+        const minutes = Math.floor((totalSecondsWorked % 3600) / 60);
+
+        // 9. Grafik harian
+        const workHoursDaily: any[] = [];
+
+        attendances.forEach(a => {
+            if (a.checkInTime && a.checkOutTime) {
+                const inWIB = req.fromUTCToWIB(a.checkInTime).getTime();
+                const outWIB = req.fromUTCToWIB(a.checkOutTime).getTime();
+
+                const workedHours = ((outWIB - inWIB) / 1000) / 3600;
+
+                workHoursDaily.push({
+                    date: req.formatWIB(req.fromUTCToWIB(a.date), "dd MMM"),
+                    hours: Number(workedHours.toFixed(2))
+                });
+            }
+        });
+
+        // Response
+        res.status(200).json({
+            message: "Dashboard employee berhasil diambil",
+            summary: {
+                totalWorkHours: `${hours}h ${minutes}m`,
+                onTime,
+                late,
+                leave: totalLeaveDays,
+                alpha
+            },
+            charts: {
+                workHoursDaily
+            }
+        });
+
+    } catch (err: any) {
+        console.error("Error getEmployeeDashboard:", err);
+        res.status(500).json({
+            message: err.message || "Terjadi kesalahan saat mengambil dashboard employee"
         });
     }
 }
