@@ -294,7 +294,8 @@ exports.LeaveStatus = exports.$Enums.LeaveStatus = {
 exports.WorkType = exports.$Enums.WorkType = {
   WFO: 'WFO',
   WFA: 'WFA',
-  HYBRID: 'HYBRID'
+  HYBRID: 'HYBRID',
+  ABSENT: 'ABSENT'
 };
 
 exports.LocationStatus = exports.$Enums.LocationStatus = {

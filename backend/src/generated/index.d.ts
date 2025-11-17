@@ -106,7 +106,8 @@ export type LeaveStatus = (typeof LeaveStatus)[keyof typeof LeaveStatus]
 export const WorkType: {
   WFO: 'WFO',
   WFA: 'WFA',
-  HYBRID: 'HYBRID'
+  HYBRID: 'HYBRID',
+  ABSENT: 'ABSENT'
 };
 
 export type WorkType = (typeof WorkType)[keyof typeof WorkType]

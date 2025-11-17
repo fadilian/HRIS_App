@@ -1,22 +1,6 @@
 import { Request, Response } from "express";
 import prisma from "../utils/prisma";
-
-// Helper: Calculate total days (excluding weekends)
-function calculateTotalDays(startDate: Date, endDate: Date): number {
-    let count = 0;
-    const current = new Date(startDate);
-    
-    while (current <= endDate) {
-        const dayOfWeek = current.getDay();
-        // Skip Sabtu (6) dan Minggu (0)
-        if (dayOfWeek !== 0 && dayOfWeek !== 6) {
-            count++;
-        }
-        current.setDate(current.getDate() + 1);
-    }
-    
-    return count;
-}
+import { calculateTotalDays } from "../utils/calculateTotalDays";
 
 // Create Leave Request - Employee
 export async function createLeaveRequest(req: Request, res: Response) {
@@ -31,15 +15,25 @@ export async function createLeaveRequest(req: Request, res: Response) {
             });
         }
 
-        // Cek employee
+        // Cek employee dengan schedule group
         const employee = await prisma.employee.findFirst({
             where: { userId, deletedAt: null },
-            include: { company: true },
+            include: { 
+                company: true,
+                scheduleGroup: true 
+            },
         });
 
         if (!employee) {
             return res.status(404).json({
                 message: "Employee tidak ditemukan",
+            });
+        }
+
+        // Validasi employee punya schedule group
+        if (!employee.scheduleGroupId) {
+            return res.status(400).json({
+                message: "Employee belum memiliki schedule group yang ditentukan",
             });
         }
 
@@ -68,8 +62,18 @@ export async function createLeaveRequest(req: Request, res: Response) {
             });
         }
 
-        // Hitung total hari (exclude weekend)
-        const totalDays = calculateTotalDays(start, end);
+        // Hitung total hari berdasarkan work schedule employee
+        const totalDays = await calculateTotalDays(
+            start, 
+            end, 
+            employee.scheduleGroupId
+        );
+
+        if (totalDays === 0) {
+            return res.status(400).json({
+                message: "Tidak ada hari kerja dalam rentang tanggal yang dipilih",
+            });
+        }
 
         if (totalDays > leaveType.maxDays) {
             return res.status(400).json({
@@ -114,6 +118,7 @@ export async function createLeaveRequest(req: Request, res: Response) {
                 employee: {
                     include: {
                         user: { select: { id: true, name: true, email: true } },
+                        scheduleGroup: true
                     },
                 },
             },
