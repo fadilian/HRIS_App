@@ -10,7 +10,8 @@ import {
   getDeletedEmployees,
   exportEmployeesCsv,
   importEmployeesCsv
-} from "../controllers/employeeController"
+} from "../controllers/employeeController";
+import { requireFeature } from "../middlewares/requireFeatureMiddleware";
 import { authMiddleware } from "../middlewares/authMiddleware";
 import uploadEmployeePhoto from "../middlewares/uploadEmployeePhotoMiddleware";
 import uploadCsvEmployee from "../middlewares/uploadCsvEmployeeMiddleware";
@@ -60,12 +61,18 @@ router.delete("/delete/:id", authMiddleware, deleteEmployee);
 router.patch("/restore/:id", authMiddleware, restoreEmployee);
 
 // Export Employee to CSV
-router.get("/export/csv", authMiddleware, exportEmployeesCsv);
+router.get(
+  "/export/csv", 
+  authMiddleware, 
+  requireFeature("ALL_FEATURES"), 
+  exportEmployeesCsv
+);
 
 // Import Employee from CSV
 router.post(
   "/import/csv",
   authMiddleware,
+  requireFeature("ALL_FEATURES"),
   uploadCsvEmployee.single("file"),
   importEmployeesCsv
 );

@@ -8,6 +8,7 @@ import {
     getAdminDashboard,
     getEmployeeDashboard
  } from "../controllers/attendanceController";
+import { requireFeature } from "../middlewares/requireFeatureMiddleware";
 import { authMiddleware } from "../middlewares/authMiddleware";
 import uploadProofAttendance from "../middlewares/uploadProofAttendance";
 import { timezoneMiddleware } from "../middlewares/timezoneMiddleware";
@@ -18,7 +19,8 @@ const router = express.Router();
 router.post(
     "/create-attendance", 
     authMiddleware, 
-    timezoneMiddleware, 
+    timezoneMiddleware,
+    requireFeature("ATTENDANCE"), 
     uploadProofAttendance.single("proof"), 
     createAttendance
 );
@@ -28,6 +30,7 @@ router.get(
     "/show-attendance",
     authMiddleware,
     timezoneMiddleware,
+    requireFeature("ATTENDANCE"),
     getAttendances
 );
 
@@ -36,6 +39,7 @@ router.get(
     "/show-detail/:id",
     authMiddleware,
     timezoneMiddleware,
+    requireFeature("ATTENDANCE"),
     getAttendanceById
 )
 
@@ -44,6 +48,7 @@ router.patch(
     "/update-attendance/:id", 
     authMiddleware, 
     timezoneMiddleware,
+    requireFeature("ATTENDANCE"),
     uploadProofAttendance.single("proof"), 
     updateAttendance
 );
@@ -52,6 +57,7 @@ router.patch(
 router.delete(
     "/delete-attendance/:id",
     authMiddleware,
+    requireFeature("ATTENDANCE"),
     deleteAttendance
 );
 
@@ -60,6 +66,7 @@ router.get(
     "/admin-dashboard",
     authMiddleware,
     timezoneMiddleware,
+    requireFeature("ATTENDANCE"),
     getAdminDashboard
 );
 
@@ -68,6 +75,7 @@ router.get(
     "/employee-dashboard",
     authMiddleware,
     timezoneMiddleware,
+    requireFeature("ATTENDANCE"),
     getEmployeeDashboard
 );
 

@@ -249,9 +249,62 @@ exports.Prisma.AttendanceScalarFieldEnum = {
   deletedAt: 'deletedAt'
 };
 
+exports.Prisma.PlanScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  planType: 'planType',
+  featureType: 'featureType',
+  description: 'description',
+  detail: 'detail',
+  price: 'price',
+  maxEmployees: 'maxEmployees',
+  durationInDays: 'durationInDays',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+};
+
+exports.Prisma.SubscriptionScalarFieldEnum = {
+  id: 'id',
+  companyId: 'companyId',
+  planId: 'planId',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  status: 'status',
+  autoRenew: 'autoRenew',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+};
+
+exports.Prisma.TransactionScalarFieldEnum = {
+  id: 'id',
+  companyId: 'companyId',
+  subscriptionId: 'subscriptionId',
+  planId: 'planId',
+  type: 'type',
+  status: 'status',
+  amount: 'amount',
+  externalId: 'externalId',
+  xenditInvoiceId: 'xenditInvoiceId',
+  invoiceUrl: 'invoiceUrl',
+  paymentMethod: 'paymentMethod',
+  expiryDate: 'expiryDate',
+  paidAt: 'paidAt',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
 };
 
 exports.Prisma.QueryMode = {
@@ -262,6 +315,12 @@ exports.Prisma.QueryMode = {
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
+};
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
 };
 exports.Role = exports.$Enums.Role = {
   SUPERADMIN: 'SUPERADMIN',
@@ -315,6 +374,37 @@ exports.ApprovalStatus = exports.$Enums.ApprovalStatus = {
   REJECTED: 'REJECTED'
 };
 
+exports.PlanType = exports.$Enums.PlanType = {
+  SUBSCRIPTION: 'SUBSCRIPTION',
+  PAYGO: 'PAYGO',
+  TRIAL: 'TRIAL'
+};
+
+exports.FeatureType = exports.$Enums.FeatureType = {
+  ALL_FEATURES: 'ALL_FEATURES',
+  ATTENDANCE: 'ATTENDANCE',
+  LEAVE_PERMISSION: 'LEAVE_PERMISSION',
+  WORKSCHEDULE: 'WORKSCHEDULE'
+};
+
+exports.SubscriptionStatus = exports.$Enums.SubscriptionStatus = {
+  ACTIVE: 'ACTIVE',
+  EXPIRED: 'EXPIRED',
+  CANCELLED: 'CANCELLED'
+};
+
+exports.TransactionType = exports.$Enums.TransactionType = {
+  PURCHASE: 'PURCHASE',
+  RENEWAL: 'RENEWAL'
+};
+
+exports.TransactionStatus = exports.$Enums.TransactionStatus = {
+  PENDING: 'PENDING',
+  PAID: 'PAID',
+  FAILED: 'FAILED',
+  EXPIRED: 'EXPIRED'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Company: 'Company',
@@ -324,7 +414,10 @@ exports.Prisma.ModelName = {
   WorkSchedule: 'WorkSchedule',
   LeaveRequest: 'LeaveRequest',
   LeaveType: 'LeaveType',
-  Attendance: 'Attendance'
+  Attendance: 'Attendance',
+  Plan: 'Plan',
+  Subscription: 'Subscription',
+  Transaction: 'Transaction'
 };
 
 /**

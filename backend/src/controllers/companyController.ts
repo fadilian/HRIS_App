@@ -5,50 +5,119 @@ import { formatDecimal } from "../utils/formatNumber";
 
 export async function createCompany(req: Request, res: Response) {
     try {
-        const userId = (req as any).user.id; // ambil dari JWT
+        const userId = (req as any).user.id;
         const { companyName, latitude, longitude, radius } = req.body;
 
-        // cek role
-        const user = await prisma.user.findFirst({ where: { id: userId, deletedAt: null } });
-        if (!user || (user.role !== "ADMIN" && user.role !== "SUPERADMIN")) {
-        return res.status(403).json({ message: "Unauthorized" });
-        }
-
-        // cek apakah sudah punya company
-        const existing = await prisma.company.findFirst({
-        where: { ownerUserId: userId, deletedAt: null },
+        // 1. Validasi user
+        const user = await prisma.user.findFirst({
+            where: { id: userId, deletedAt: null },
         });
-        if (existing) {
-        return res.status(400).json({ message: "User already owns a company" });
+
+        if (!user || (user.role !== "ADMIN" && user.role !== "SUPERADMIN")) {
+            return res.status(403).json({ message: "Unauthorized" });
         }
 
-        // ambil nama file logo dari multer
+        // 2. Cari company berdasarkan ownerUserId (include soft delete)
+        const existingCompany = await prisma.company.findFirst({
+            where: { ownerUserId: userId },
+        });
+
+        // 3. Jika company masih aktif → tolak
+        if (existingCompany && existingCompany.deletedAt === null) {
+            return res.status(400).json({
+                message: "User already owns a company",
+            });
+        }
+
+        // ambil logo dari multer
         const logoFile = req.file ? req.file.filename : null;
 
-        // buat company baru
+        // 4. AUTO RESTORE COMPANY
+        if (existingCompany && existingCompany.deletedAt !== null) {
+            const restoredCompany = await prisma.company.update({
+                where: { id: existingCompany.id },
+                data: {
+                    companyName,
+                    latitude: formatDecimal(latitude),
+                    longitude: formatDecimal(longitude),
+                    radius: radius ? Number(radius) : 200,
+                    logo: logoFile,
+                    deletedAt: null,
+                    updatedAt: new Date(),
+                },
+            });
+
+            // reconnect user ke company
+            await prisma.user.update({
+                where: { id: userId },
+                data: { companyId: restoredCompany.id },
+            });
+
+            return res.status(200).json({
+                message: "Company restored successfully",
+                company: restoredCompany,
+            });
+        }
+
+        // 5. CREATE COMPANY BARU
         const company = await prisma.company.create({
-        data: {
-            companyName,
-            ownerUserId: userId,
-            latitude: formatDecimal(latitude),
-            longitude: formatDecimal(longitude),
-            radius: radius ? Number(radius) : 200, // default 200 kalau kosong
-            logo: logoFile,
-        },
+            data: {
+                companyName,
+                ownerUserId: userId,
+                latitude: formatDecimal(latitude),
+                longitude: formatDecimal(longitude),
+                radius: radius ? Number(radius) : 200,
+                logo: logoFile,
+            },
         });
 
-        // update user → companyId
+        // update user > companyId
         await prisma.user.update({
-        where: { id: userId },
-        data: { companyId: company.id },
+            where: { id: userId },
+            data: { companyId: company.id },
         });
 
-        res.json({ message: "Company created successfully", company });
+        // 6. AKTIFKAN TRIAL
+        const trialPlan = await prisma.plan.findFirst({
+            where: {
+                planType: "TRIAL",
+                deletedAt: null,
+            },
+        });
+
+        if (!trialPlan) {
+            return res.status(500).json({
+                message: "Trial plan not found",
+            });
+        }
+
+        const startDate = new Date();
+        const endDate = new Date(startDate);
+        endDate.setDate(endDate.getDate() + trialPlan.durationInDays);
+
+        await prisma.subscription.create({
+            data: {
+                companyId: company.id,
+                planId: trialPlan.id,
+                startDate,
+                endDate,
+                status: "ACTIVE",
+            },
+        });
+
+        return res.status(201).json({
+            message: "Company created & trial activated",
+            company,
+        });
+
     } catch (err) {
         console.error("Error createCompany:", err);
-        res.status(500).json({ message: "Error creating company" });
+        return res.status(500).json({
+            message: "Error creating company",
+        });
     }
 }
+
 
 export async function getMyCompany(req: Request, res: Response) {
     try {
@@ -287,5 +356,48 @@ export async function getAllCompanies(req: Request, res: Response) {
     } catch (err) {
         console.error("Error getAllCompanies:", err);
         res.status(500).json({ message: "Error fetching companies" });
+    }
+}
+
+export async function getTotalEmployees(req: Request, res: Response) {
+    try {
+        const userId = (req as any).user.id;
+
+        // ambil data user
+        const user = await prisma.user.findFirst({
+            where: { id: userId, deletedAt: null },
+        });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // cek role (hanya ADMIN & SUPERADMIN)
+        if (user.role !== "ADMIN" && user.role !== "SUPERADMIN") {
+            return res.status(403).json({ message: "Unauthorized" });
+        }
+
+        // cek apakah user punya company
+        if (!user.companyId) {
+            return res.status(400).json({
+                message: "User is not assigned to any company.",
+            });
+        }
+
+        // hitung employee
+        const totalEmployees = await prisma.employee.count({
+            where: {
+                companyId: user.companyId,
+                deletedAt: null,
+            },
+        });
+
+        return res.json({
+            companyId: user.companyId,
+            totalEmployees,
+        });
+    } catch (err) {
+        console.error("Error getTotalEmployees:", err);
+        return res.status(500).json({ message: "Error while counting employees" });
     }
 }

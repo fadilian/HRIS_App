@@ -11,6 +11,11 @@ import leaveTypeRoutes from "./routes/leaveTypeRoutes";
 import leaveRequestRoutes from "./routes/leaveRequestRoutes";
 import attendanceRoutes from "./routes/attendanceRoutes";
 import "./cron/autoAlpha";
+import planRoutes from "./routes/planRoutes";
+import paymentRoutes from "./routes/paymentRoutes";
+import "./cron/autoExpireSubscriptions";
+import { injectActiveFeatures } from "./middlewares/injectActiveFeature";
+import "./cron/autoBilling";
 
 dotenv.config();
 // console.log("✅ Loaded JWT_SECRET:", process.env.JWT_SECRET);
@@ -31,6 +36,9 @@ app.use(cors({
 // Expose folder upload agar bisa diakses FE
 app.use("/uploads", express.static("public/uploads"));
 
+// untuk memberi tahu aplikasi/fe: “fitur apa saja yang sedang dimiliki company ini sekarang”. (opsional kalau fe butuh)
+app.use(injectActiveFeatures);
+
 // route
 app.use("/api/auth", authRoutes);
 app.use("/api/company", companyRoutes);
@@ -40,6 +48,8 @@ app.use("/api/work-schedule", workSchedule);
 app.use("/api/leave-types", leaveTypeRoutes);
 app.use("/api/leave-requests", leaveRequestRoutes);
 app.use("/api/attendance", attendanceRoutes);
+app.use("/api/plans", planRoutes);
+app.use("/api/payment", paymentRoutes);
 
 
 app.listen(8000, () => {

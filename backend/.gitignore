@@ -12,3 +12,5 @@ workSchedule.rest
 leaveType.rest
 leaveRequest.rest
 attendance.rest
+plan.rest
+payment.rest
