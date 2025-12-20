@@ -6,14 +6,15 @@ import {
     updateWorkSchedule,
     deleteWorkSchedule
  } from "../controllers/workScheduleController";
+import { requireFeature } from "../middlewares/requireFeatureMiddleware";
 import { authMiddleware } from "../middlewares/authMiddleware";
 
 const router = express.Router();
 
-router.post("/create-schedule", authMiddleware, createWorkSchedule);
-router.get("/show/my-work-schedule-company", authMiddleware, getMyWorkSchedules);
-router.get("/show/all-work-schedule-company", authMiddleware, getAllWorkSchedules);
-router.put("/update-schedule/:id", authMiddleware, updateWorkSchedule);
-router.delete("/delete-schedule/:id", authMiddleware, deleteWorkSchedule);
+router.post("/create-schedule", authMiddleware, requireFeature("WORKSCHEDULE"), createWorkSchedule);
+router.get("/show/my-work-schedule-company", authMiddleware, requireFeature("WORKSCHEDULE"), getMyWorkSchedules);
+router.get("/show/all-work-schedule-company", authMiddleware, requireFeature("WORKSCHEDULE"), getAllWorkSchedules);
+router.put("/update-schedule/:id", authMiddleware, requireFeature("WORKSCHEDULE"), updateWorkSchedule);
+router.delete("/delete-schedule/:id", authMiddleware, requireFeature("WORKSCHEDULE"), deleteWorkSchedule);
 
 export default router;
