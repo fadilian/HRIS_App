@@ -12,20 +12,15 @@ cron.schedule(
         console.log("[AUTO EXPIRE SUBSCRIPTION] Job START (00:00 WIB)");
 
         try {
-            // Ambil waktu WIB
-            const nowUTC = new Date();
-            const nowWIB = fromUTCToWIB(nowUTC);
-
-            // Ambil tanggal hari ini WIB (awal hari)
-            const todayStr = formatWIB(nowWIB, "yyyy-MM-dd");
-            const todayUTC = new Date(`${todayStr}T00:00:00.000Z`);
+            // Ambil waktu sekarang
+            const now = new Date();
 
             // Expire subscription yang lewat endDate
             const result = await prisma.subscription.updateMany({
                 where: {
                     status: "ACTIVE",
                     deletedAt: null,
-                    endDate: { lt: todayUTC },
+                    endDate: { lte: now },
                 },
                 data: {
                     status: "EXPIRED",
